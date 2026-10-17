@@ -784,7 +784,7 @@ scanner before it leaves the machine.
 Redaction driven only by a few assignment patterns fails on the shapes that
 actually occur. A closing quote in JSON (`"api_key": "..."`) defeats a pattern
 that expects the key name to be followed directly by the separator; authorization
-headers, cookies and connection strings are not assignments at all; and
+headers, cookies, and connection strings are not assignments at all; and
 shape-only provider tokens carry no key name to anchor on. The masker below
 covers each of those classes, keeps surrounding structure so the snippet stays
 useful for debugging, and then re-scans its own output so that anything it missed
@@ -1477,7 +1477,7 @@ For higher security requirements, use VM-based sandboxes. Firecracker has no
 command-line interface for running a program: it boots a microVM from a kernel
 and a root filesystem, and is driven through its API socket or a configuration
 file.[^15] Production deployments **MUST** wrap it in the `jailer`, which builds
-the chroot, drops to an unprivileged uid/gid and applies resource limits.[^16]
+the chroot, drops to an unprivileged uid/gid, and applies resource limits.[^16]
 
 ##### Why
 
@@ -1673,7 +1673,7 @@ The jailer creates `<chroot-base-dir>/<exec-file-name>/<id>/root`, so resources
 staged there before launch are visible to the guest at the paths named in the
 configuration file.[^16] The root filesystem **MUST** ship the guest agent that
 listens on the vsock port; the host never gains a shell in the guest. Teams
-without capacity to operate kernels, root filesystems and guest agents **SHOULD**
+without capacity to operate kernels, root filesystems, and guest agents **SHOULD**
 use a maintained sandbox service or a container runtime with a syscall boundary
 such as gVisor or Kata Containers instead of building this themselves.
 
@@ -2755,7 +2755,7 @@ appropriate safeguards at every layer.
     requires.
     [Getting started](https://github.com/firecracker-microvm/firecracker/blob/main/docs/getting-started.md)
 
-[^16]: **Firecracker jailer**: chroot layout, uid/gid drop, resource limits and
+[^16]: **Firecracker jailer**: chroot layout, uid/gid drop, resource limits, and
     the `--` convention for forwarding arguments to Firecracker.
     [Jailer documentation](https://github.com/firecracker-microvm/firecracker/blob/main/docs/jailer.md)
 

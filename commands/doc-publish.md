@@ -76,7 +76,7 @@ declaration cannot be consumed as an integration schema.
 #### Artifact boundaries
 
 This command emits tool declarations only. It **MUST NOT** label its output an
-"MCP config", because three distinct artifacts exist:
+"MCP config," because three distinct artifacts exist:
 
 | Artifact | Shape | Produced by |
 | -------- | ----- | ----------- |

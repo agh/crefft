@@ -11,12 +11,12 @@ when, they appear in all capitals, as shown here.
 
 Libraries **MUST** use Semantic Versioning 2.0.0[^2]. A library is a package
 published for other code to depend on through a package manager or module
-system, including npm, crates.io, PyPI, RubyGems, NuGet, Maven, Go modules
+system, including npm, crates.io, PyPI, RubyGems, NuGet, Maven, Go modules,
 and similar ecosystems. A project that ships both a command and importable
 packages is a library.
 
 Everything else — applications, services, sites, command-line tools,
-documentation standards such as crefft itself and configuration — **MUST**
+documentation standards such as crefft itself, and configuration — **MUST**
 use calendar versioning (CalVer[^1]) in the `YYYY.M.N` format.
 
 ## Quick Reference
@@ -37,7 +37,7 @@ use calendar versioning (CalVer[^1]) in the `YYYY.M.N` format.
 ## Semantic Versioning for Libraries
 
 Libraries **MUST** use `MAJOR.MINOR.PATCH`: increment MAJOR for breaking
-changes, MINOR for backward-compatible features and PATCH for fixes.
+changes, MINOR for backward-compatible features, and PATCH for fixes.
 Reset lower components to 0 when incrementing MAJOR or MINOR.
 Breaking changes **MUST** still appear under `### Breaking`, first in the
 changelog release section, with migration instructions.
@@ -103,8 +103,8 @@ The month and counter **MUST NOT** contain leading zeros.
 
 A release number identifies when a release was made and its order within
 that month. It does not encode a judgment about compatibility. The format
-also has valid SemVer syntax[^2]: npm, Cargo, PEP 440 and Homebrew accept
-`2026.10.0`. npm, Cargo and Go reject leading zeros, so `2026.03.001`
+also has valid SemVer syntax[^2]: npm, Cargo, PEP 440, and Homebrew accept
+`2026.10.0`. npm, Cargo, and Go reject leading zeros, so `2026.03.001`
 is not a portable alternative.
 
 ```text
@@ -163,7 +163,7 @@ SemVer release with the first CalVer release. Libraries **MUST NOT** migrate
 to CalVer.
 Previously published versions and tags **MUST NOT** be rewritten or
 re-tagged. Projects **MUST** update their version files, release templates,
-tag references and changelog comparison links together.
+tag references, and changelog comparison links together.
 
 ### Why
 
@@ -240,7 +240,7 @@ and this project adheres to calendar versioning (`YYYY.M.N`).
 
 | Section | Content |
 | ------- | ------- |
-| Breaking | Incompatible changes, impact and migration instructions; first when present |
+| Breaking | Incompatible changes, impact, and migration instructions; first when present |
 | Added | New features |
 | Changed | Changes to existing functionality |
 | Deprecated | Features due for removal |
@@ -274,7 +274,7 @@ git tag 2026.10.0
 
 ### Why
 
-One spelling lets release workflows, archives and comparison links identify
+One spelling lets release workflows, archives, and comparison links identify
 the same release. The `VERSION` file and package metadata contain
 `2026.10.0`; the tag contains `v2026.10.0`.
 
@@ -282,7 +282,7 @@ the same release. The `VERSION` file and package metadata contain
 
 Projects **SHOULD** use Conventional Commits[^5] for commit messages.
 Types classify changes for release notes. For libraries, `feat` selects
-MINOR, `fix` selects PATCH and a breaking marker takes precedence and
+MINOR, `fix` selects PATCH, and a breaking marker takes precedence and
 selects MAJOR. For CalVer projects, commit types **MUST NOT** affect
 release-number arithmetic:
 
@@ -336,9 +336,9 @@ feat: remove deprecated API endpoint
 ## Release Automation
 
 Release automation **MUST** first classify the project: a library uses a
-SemVer bump from breaking, feature or fix changes; anything else uses the
+SemVer bump from breaking, feature, or fix changes; anything else uses the
 next `YYYY.M.N` from the release date and release history. It **MUST**
-update version files, the changelog and tag references consistently and
+update version files, the changelog, and tag references consistently and
 put breaking changes under `### Breaking` in both cases.
 
 ### Why

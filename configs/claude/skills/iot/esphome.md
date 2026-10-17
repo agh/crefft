@@ -53,7 +53,7 @@ exists for the Home Assistant integration until that migrates to the `/ws`
 multiplexed API.
 
 There are no per-device REST routes. `/devices/<name>/info`,
-`/devices/<name>/logs`, `/devices/<name>/compile` and `/devices/<name>/upload`
+`/devices/<name>/logs`, `/devices/<name>/compile`, and `/devices/<name>/upload`
 do not exist. An unmatched `GET` returns the front-end HTML shell rather than a
 `404`, so a script that only checks the status code will treat the failure as
 success.

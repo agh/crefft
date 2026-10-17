@@ -13,7 +13,7 @@ Extends [Rust style guide](../languages/rust.md) with Axum-specific conventions.
 
 **Target Version**: Axum 0.8.9 on the Rust 2024 edition, checked against Rust
 1.98.1. Everything in the [Rust style guide](../languages/rust.md) applies
-unchanged — formatting, linting, test invocation, error-type design and general
+unchanged — formatting, linting, test invocation, error-type design, and general
 SQLx usage all live there. This guide adds only what Axum changes.
 
 ## Quick Reference
@@ -34,7 +34,7 @@ SQLx usage all live there. This guide adds only what Axum changes.
 | Circuit Breaker | recloser | See [Circuit Breakers](#circuit-breakers) |
 | Feature Flags | unleash-api-client | See [Feature Flags](#feature-flags) |
 
-**Why**: `cargo fmt`, `cargo clippy`, `cargo test` and `cargo sqlx prepare` are
+**Why**: `cargo fmt`, `cargo clippy`, `cargo test`, and `cargo sqlx prepare` are
 language-level tooling, specified once in the [Rust style
 guide](../languages/rust.md#formatting-rustfmt). Restating them here creates two
 places to update and two chances to drift apart.
@@ -164,14 +164,14 @@ for the Tokio ecosystem with focus on type safety and ergonomics.
 **When to use Axum**: Axum suits async Rust services that already sit in the
 Tokio ecosystem and want their middleware to be ordinary Tower layers.
 
-Choose between Axum, Actix-web[^5] and Rocket[^6] on criteria you can check
+Choose between Axum, Actix-web[^5], and Rocket[^6] on criteria you can check
 against your own workload:
 
 | Criterion | Favors |
 | --------- | ------- |
-| The service already uses Tokio, Hyper, Tower or tonic | Axum — same runtime, same middleware, no bridging |
+| The service uses Tokio, Hyper, Tower, or tonic | Axum — same runtime and middleware, no bridging |
 | Middleware must be shared with non-HTTP services (gRPC, queues) | Axum — Tower layers are transport-agnostic |
-| The team wants routing and guards expressed as attribute macros | Rocket — `#[get]`, `#[launch]` and typed request guards |
+| Routes and guards as attribute macros | Rocket — `#[get]`, `#[launch]`, and typed request guards |
 | An actor model fits the domain | Actix-web — actor supervision is native |
 | Latency and throughput must meet a stated budget | Whichever wins **your** benchmark against **your** payloads |
 
@@ -255,7 +255,7 @@ async fn main() -> anyhow::Result<()> {
 ```
 
 **Why**: Adding an endpoint under the layered tree touches `routes/`,
-`handlers/`, `models/` and `tests/`, so every feature branch collides with every
+`handlers/`, `models/`, and `tests/`, so every feature branch collides with every
 other feature branch in the same four `mod.rs` files. Under the feature tree the
 same change touches one directory, deleting a feature is `rm -r`, and the
 compiler enforces the boundary: anything a feature needs from outside must be
@@ -368,7 +368,7 @@ the whole router. Prefer rewriting the route.
 
 A handler **MUST** place its single body-consuming extractor last. Every other
 extractor **MAY** appear in any order, and **SHOULD** be ordered for
-readability: path parameters first, then query, then state and request-scoped
+readability: path parameters first, then query, then state, and request-scoped
 guards.
 
 ```rust
@@ -438,7 +438,7 @@ pub async fn update_user(
 
 **Why**: Axum splits extraction into two traits. `FromRequestParts` sees only
 the head — method, URI, headers, extensions — and leaves the body untouched, so
-`Path`, `Query`, `State`, `HeaderMap`, `Extension`, `TypedHeader` and custom
+`Path`, `Query`, `State`, `HeaderMap`, `Extension`, `TypedHeader`, and custom
 guards built on that trait impose no ordering constraints on each other.
 `FromRequest` takes the whole request and consumes the body, which is why Axum
 implements the handler traits with the `FromRequest` argument in the final
@@ -528,7 +528,7 @@ impl<S: Send + Sync> FromRequestParts<S> for AuthUser { /* ... */ }
 ```
 
 **Why**: Axum 0.8 dropped its `async_trait` re-export because
-`FromRequestParts`, `FromRequest` and `Handler` now use native `async fn` in
+`FromRequestParts`, `FromRequest`, and `Handler` now use native `async fn` in
 traits. Importing the removed re-export fails to resolve, and applying
 `#[async_trait]` to a trait that does not use it rewrites the method into a
 boxed future whose signature no longer matches the trait. Write the plain
@@ -680,7 +680,7 @@ Self::Database(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
 **Why**: One error type is what lets `?` work in every handler, and one
 `IntoResponse` is what makes the API answer consistently. Splitting the type —
 one enum in the error module, other variants invented ad hoc in the
-authentication, jobs and resilience code — produces handlers that will not
+authentication, jobs, and resilience code — produces handlers that will not
 compile against the declared enum, which is exactly the drift this section
 exists to prevent. `#[from]` on `sqlx::Error` and `JoinError` keeps the original
 error as the source, so `tracing::error!(error = ?self)` records the whole
@@ -917,7 +917,7 @@ CorsLayer::permissive()
 ```
 
 **Why**: `CorsLayer::permissive` is a development convenience. It allows any
-origin, method and header, which is defensible for a public read-only API with
+origin, method, and header, which is defensible for a public read-only API with
 no credentials, and indefensible the moment a cookie or an `Authorization`
 header is involved. Naming the origins in configuration keeps the policy
 reviewable and per-environment.
@@ -949,7 +949,7 @@ explain it. `SetRequestIdLayer` accepts an inbound `x-request-id` when one is
 present and generates a UUID otherwise; `PropagateRequestIdLayer` copies it onto
 the response so the caller can quote it back.
 
-WebSocket connections need their own controls — origin checks, frame-size caps
+WebSocket connections need their own controls — origin checks, frame-size caps,
 and idle timeouts — because the middleware above only runs on the upgrade
 request. See [WebSocket Security](#websocket-security).
 
@@ -1187,8 +1187,8 @@ pub async fn create_test_user(pool: &PgPool, name: &str) -> User {
 
 Happy-path tests prove the router is wired up. They prove nothing about the
 contract a client actually depends on. Projects **MUST** test extractor
-rejections, authentication failures and body limits, and **SHOULD** test
-timeouts, rate limits, WebSocket lifecycle and shutdown.
+rejections, authentication failures, and body limits, and **SHOULD** test
+timeouts, rate limits, WebSocket lifecycle, and shutdown.
 
 Drive the rejection contract from a table, so adding a case is one line:
 
@@ -2097,7 +2097,7 @@ public key.
 unchecked until `set_issuer` and `set_audience` are called, and `nbf` is
 unchecked until `validate_nbf` is set, so a token minted for a different
 service is otherwise accepted. `set_required_spec_claims` recognizes
-`exp`, `nbf`, `aud`, `iss` and `sub` only; any other required claim, such
+`exp`, `nbf`, `aud`, `iss`, and `sub` only; any other required claim, such
 as `jti` for replay tracking, has to be checked by the application. Use
 short-lived access tokens with refresh-token rotation.
 
@@ -2252,7 +2252,7 @@ than `403` — "you are not allowed" — which is the accurate statement when th
 service could not evaluate the policy at all.
 
 Note that `enforce` on a loaded, in-memory model rarely fails; the failures this
-guards against arrive with database adapters, watchers and runtime policy
+guards against arrive with database adapters, watchers, and runtime policy
 reloads, which is precisely when a silent denial is hardest to trace.
 
 ### Tower-HTTP Auth Layers
@@ -3047,11 +3047,11 @@ storage.push(job).await?;
 ```
 
 **Why**: Apalis provides type-safe, Tower-based job processing with support for
-Redis, PostgreSQL and other backends, and because a worker *is* a Tower service,
-retries, panic recovery and concurrency limits are layers rather than bespoke
+Redis, PostgreSQL, and other backends, and because a worker *is* a Tower service,
+retries, panic recovery, and concurrency limits are layers rather than bespoke
 code.
 
-The named `Job` trait, `JobContext` and `RedisStorage::connect` belong to a
+The named `Job` trait, `JobContext`, and `RedisStorage::connect` belong to a
 pre-0.7 API and no longer resolve. In 0.7 the handler's extra arguments are
 extractors — `Data<T>` for shared state, `Worker<Context>` for worker identity,
 `Attempt` for the retry count — and connection setup is split between
@@ -3967,10 +3967,10 @@ client.start().await?;
 ```
 
 **Why**: Unleash provides runtime feature toggles with gradual rollouts, A/B
-testing and user targeting, so a flag can be flipped without a deployment.
+testing, and user targeting, so a flag can be flipped without a deployment.
 
 The 0.17 client is constructed by converting the builder — `into_client::<F>`
-takes the API URL, application name, instance id and optional authorization in
+takes the API URL, application name, instance id, and optional authorization in
 one call — and it is generic over a `FeatureKey` type, so `Client` alone is not
 a type. Startup is two steps that the removed `start` used to hide:
 `register()` announces the instance and its strategies once, and
@@ -4213,7 +4213,7 @@ what makes people delete it, or set it to the request timeout, both of which are
 wrong.
 
 Nothing in that mechanism touches spawned tasks. Background workers, WebSocket
-send and receive loops, the Unleash poller and the session-expiry sweeper all
+send and receive loops, the Unleash poller, and the session-expiry sweeper all
 outlive the server future, so a process can report a clean shutdown while a job
 is halfway through a database transaction. A `CancellationToken` shared by all
 of them makes cancellation a single call, and `TaskTracker` turns "did they

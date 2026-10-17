@@ -2644,7 +2644,7 @@ function createUser(type: string): User {
 
 **Prevention**:
 
-- Specify "simple" or "minimal" in prompts
+- Specify `simple` or `minimal` in prompts
 - Provide simple examples as templates
 - Request explanation of design choices
 

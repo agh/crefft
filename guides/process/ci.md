@@ -232,7 +232,7 @@ jobs:
 
 ## Rust
 
-Rust-specific lanes — MSRV, feature matrix, cross-target checks and fuzzing —
+Rust-specific lanes — MSRV, feature matrix, cross-target checks, and fuzzing —
 are in the [Rust Style Guide](../languages/rust.md). Actions are pinned to full
 commit SHAs; see [Pinning Actions](../languages/rust/ci.md#pinning-actions).
 
@@ -547,7 +547,7 @@ jobs:
 ## Release Workflow
 
 Release automation **MUST** classify the project first. Libraries in every
-ecosystem use Semantic Versioning 2.0.0 bumps from breaking, feature or fix
+ecosystem use Semantic Versioning 2.0.0 bumps from breaking, feature, or fix
 changes. Everything else uses the next `YYYY.M.N` from the release date
 and released versions, not commit types. Breaking changes **MUST**
 be flagged under `### Breaking`, first in the changelog release section.
@@ -619,7 +619,7 @@ Configure in repository settings:
 ## See Also
 
 - [Testing Guide](testing.md) - Testing strategy and best practices
-- [Versioning Guide](versioning.md) - Library SemVer, CalVer and release automation
+- [Versioning Guide](versioning.md) - Library SemVer, CalVer, and release automation
 - [GitHub Templates](github-templates.md) - Issue and PR templates
 
 ## References

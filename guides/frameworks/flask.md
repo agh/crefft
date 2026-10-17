@@ -908,10 +908,10 @@ The `async_mode` passed to `socketio.init_app` **MUST** match the deployed
 worker: `"threading"` for the command above, `"gevent"` for a greenlet stack.
 
 **Why**: The gevent WebSocket worker requires five packages that must all be
-present — Flask-SocketIO, gevent, gevent-websocket, `packaging` and Gunicorn
+present — Flask-SocketIO, gevent, gevent-websocket, `packaging`, and Gunicorn
 itself — and its WebSocket layer, `gevent-websocket`, has been archived by its
 author[^29], so it receives no compatibility fixes. Installing only
-Flask-SocketIO, gevent and gevent-websocket leaves no `gunicorn` executable
+Flask-SocketIO, gevent, and gevent-websocket leaves no `gunicorn` executable
 and makes the documented worker import fail with `ModuleNotFoundError: No
 module named 'gunicorn'`. The threaded worker with `simple-websocket` is a
 maintained path documented by Flask-SocketIO[^13] and avoids monkey patching
@@ -1762,7 +1762,7 @@ data" and "the service is broken" with `HTTPError`. Excluding the class means
 five consecutive 500 responses leave the breaker closed with `fail_counter`
 at 0, so the breaker never opens and every request keeps paying the full
 timeout. A predicate that reads `exc.response.status_code` excludes only the
-4xx range and leaves 5xx, `ConnectionError` and `Timeout` counting. Because a
+4xx range and leaves 5xx, `ConnectionError`, and `Timeout` counting. Because a
 payment request may have been processed before the response failed, replaying
 it without the original idempotency key can charge the customer twice; the
 key makes the retry safe to repeat.

@@ -220,7 +220,7 @@ table inet filter {
 
 An `inet` table sees both address families, so a default-drop input chain that
 only accepts `ip protocol icmp` breaks IPv6: neighbor discovery, router
-advertisements and `packet-too-big` are dropped, which costs the host its IPv6
+advertisements, and `packet-too-big` are dropped, which costs the host its IPv6
 neighbor cache and path-MTU discovery. Hosts that carry IPv6 traffic **MUST**
 permit the ICMPv6 types above (RFC 4890); hosts that genuinely have no IPv6
 **MUST** disable it explicitly instead of relying on the firewall.

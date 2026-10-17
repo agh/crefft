@@ -1860,7 +1860,7 @@ a package that only uses URL construction **MUST** import it blank
 
 Migration tests **MUST** run against a database of their own, since `Up` and
 `Down` rewrite the whole schema, and **MUST** check every `Up`, `Down`,
-`Version` and `Close` result. Only the first `Up` may legitimately return
+`Version`, and `Close` result. Only the first `Up` may legitimately return
 `migrate.ErrNoChange`. The `database/sql` driver lib/pq[^18] (v1.12.3) is
 imported explicitly rather than relied on transitively through
 `database/postgres`.

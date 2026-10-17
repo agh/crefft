@@ -11,8 +11,8 @@ when, they appear in all capitals, as shown here.
 
 This guide covers the tools that make a Rust test suite trustworthy: coverage,
 fuzzing, property and mutation testing, public-API compatibility checks,
-benchmarking, suite throughput and concurrency permutation testing with Loom.
-The toolchain, lint, formatting and pre-commit rules in the
+benchmarking, suite throughput, and concurrency permutation testing with Loom.
+The toolchain, lint, formatting, and pre-commit rules in the
 [Rust Style Guide](../rust.md) apply and are not repeated here, and so do the
 [dependency](dependencies.md) and [CI](ci.md) rules; every version quoted is
 listed in the [Tested Version Matrix](versions.md#tested-version-matrix) and was
@@ -174,14 +174,14 @@ cargo afl fuzz -i in -o out target/debug/my_target
 ## Property Testing
 
 Projects **SHOULD** state invariants as property tests where a round trip, an
-ordering or an algebraic law can be expressed. proptest[^32] **SHOULD** be
+ordering, or an algebraic law can be expressed. proptest[^32] **SHOULD** be
 used.
 
 ### Why
 
 An example test asserts one point; a property test asserts a rule over a
 generated domain and shrinks any counterexample to a minimal failing input,
-which is usually the whole diagnosis. Round trips, idempotence and ordering
+which is usually the whole diagnosis. Round trips, idempotence, and ordering
 laws are the highest-value candidates because they hold for every input by
 construction.
 
@@ -321,7 +321,7 @@ it does not measure anything.
 ### Why
 
 `cargo test -- --test-threads=4` sets how many tests run at once. It produces
-no timing, no distribution and no comparison, so quoting it as a performance
+no timing, no distribution, and no comparison, so quoting it as a performance
 figure measures the runner's scheduling rather than the code. Worse, lowering
 it is the standard workaround for tests that share global state, so a project
 that treats the flag as a performance knob usually ends up hiding a real
@@ -497,5 +497,5 @@ are not explored, so a clean Loom run is not a proof.[^15]
 
 ## See Also
 
-- [Rust Style Guide](../rust.md) - Toolchain, lints, formatting, dependencies and CI
+- [Rust Style Guide](../rust.md) - Toolchain, lints, formatting, dependencies, and CI
 - [Rust topic guides](README.md) - The other Rust topic guides

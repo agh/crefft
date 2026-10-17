@@ -1081,7 +1081,7 @@ parameters. An attacker controls the whole body, so `req.params["user"]` may be 
 string, or an array. `req.params["user"]["email"]` raises `NoMethodError` on an empty POST and
 `TypeError` on `user[]=a`, turning a throttle into a 500. `dig` alone is not enough either:
 `String` and `Array` do not respond to `dig` the way `Hash` does. Returning `nil` — via `next` —
-means "do not throttle this request", which is the correct outcome for a request that carries no
+means "do not throttle this request," which is the correct outcome for a request that carries no
 email to throttle.
 
 **Why hash the email?** The discriminator becomes part of the cache key. Hashing a canonicalized

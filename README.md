@@ -280,13 +280,19 @@ Three directories are indexed rather than listed file by file:
 | --------- | -------- | ---------- |
 | [reference/ietf/](reference/ietf/) | RFC 2119 plus a crefft-written index | [reference/ietf/README.md](reference/ietf/README.md) |
 | [reference/rust/](reference/rust/) | Rust API Guidelines plus a crefft 2024 supplement | [reference/rust/README.md](reference/rust/README.md) |
-| [reference/security/](reference/security/) | Security corpora (MITRE, OWASP, NIST, CIS, CWE, KEV) | [reference/security/manifest.json](reference/security/manifest.json) records the upstream, version and license of every source |
+| [Security][sec] | Security corpora | [Manifest][sec-manifest] |
+
+The security corpora cover MITRE, OWASP, NIST, CIS, CWE, and KEV. The manifest
+records the upstream, version, and license of every source.
+
+[sec]: reference/security/
+[sec-manifest]: reference/security/manifest.json
 
 ---
 
 ## License
 
-crefft's own guides, configuration files and agent definitions are licensed
+crefft's own guides, configuration files, and agent definitions are licensed
 under the [MIT Licence](LICENSE), Copyright (c) 2026 Alex Howells.
 
 Everything under `reference/` is third-party material and is **NOT** covered

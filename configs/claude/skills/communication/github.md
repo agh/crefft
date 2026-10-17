@@ -129,7 +129,7 @@ write access turns a review agent into an agent that can push.
    a leaving employee's account.
 2. Otherwise go to GitHub -> Settings -> Developer Settings -> Personal Access
    Tokens -> **Fine-grained tokens**.
-3. Select the specific repositories, never "All repositories".
+3. Select the specific repositories, never `All repositories`.
 4. Set an expiry. 90 days or less is **REQUIRED**.
 
 **For readonly analysis:**
@@ -171,7 +171,7 @@ marked read-write or releases stays unregistered under `--read-only`.
 | `list_releases` | `repos` | readonly | List releases |
 | `get_latest_release` | `repos` | readonly | Newest published release |
 | `list_commits` | `repos` | readonly | Commit history for a branch |
-| `actions_list` | `actions` | readonly | Workflows, runs and job status |
+| `actions_list` | `actions` | readonly | Workflows, runs, and job status |
 | `issue_write` | `issues` | read-write | Create and update issues |
 | `create_pull_request` | `pull_requests` | read-write | Open a pull request |
 | `merge_pull_request` | `pull_requests` | read-write | Merge a pull request |
@@ -266,7 +266,7 @@ GitHub applies several independent limits. The values below were read from
 
 | Resource | Limit | Applies to |
 | -------- | ----- | ---------- |
-| `core` | 5,000/hour | REST, user-to-server and PAT requests |
+| `core` | 5,000/hour | REST, user-to-server, and PAT requests |
 | `graphql` | 5,000/hour | GraphQL API |
 | `search` | 30/minute | Search API |
 | `code_search` | 10/minute | Code search |
@@ -276,7 +276,7 @@ GitHub App installation tokens scale with installation size rather than using a
 flat 5,000, so an App is also the answer when a fixed hourly ceiling is the
 constraint.
 
-Separately, **secondary rate limits** cap concurrency, per-minute request bursts
+Separately, **secondary rate limits** cap concurrency, per-minute request bursts,
 and content-creation actions such as opening issues or comments. They are not
 reported by `GET /rate_limit` and they return `403` or `429`.
 

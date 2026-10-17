@@ -180,8 +180,8 @@ live `tools/list` response, not from prose:
 | ---------- | ----------- |
 | `execute_sql` | Run SQL; read-only under `--access-mode=restricted` |
 | `list_schemas` | List all schemas in the database |
-| `list_objects` | List tables, views, sequences or extensions in a schema |
-| `get_object_details` | Column, constraint and index detail for one object |
+| `list_objects` | List tables, views, sequences, or extensions in a schema |
+| `get_object_details` | Column, constraint, and index detail for one object |
 | `explain_query` | Return an execution plan, optionally with `ANALYZE` |
 | `analyze_db_health` | Health checks (bloat, connections, vacuum, indexes) |
 | `analyze_workload_indexes` | Recommend indexes from `pg_stat_statements` |

@@ -809,7 +809,7 @@ Projects **SHOULD** follow these versioning principles:
 
 ## Authentication
 
-### Credentials, Token Formats and Delegated Authorization
+### Credentials, Token Formats, and Delegated Authorization
 
 These three concerns are routinely conflated. Keep them separate:
 
@@ -828,15 +828,15 @@ verify a signature and then trust whatever the payload asserts.
 
 | Method                   | Use case             | Notes                                    |
 | ------------------------ | -------------------- | ---------------------------------------- |
-| API keys                 | Server-to-server     | Long-lived; scope, rotate and revoke them |
+| API keys                 | Server-to-server     | Long-lived; scope, rotate, and revoke them |
 | Bearer tokens (RFC 6750) | Any client           | Short-lived; carries a JWT or opaque token |
 | OAuth 2.0 (BCP 240)      | Third-party access   | Delegated, scoped, user-consented         |
-| Session cookies          | Browser applications | Require `Secure`, `HttpOnly`, `SameSite` and CSRF defense |
+| Session cookies | Browsers | Require `Secure`, `HttpOnly`, `SameSite`, and CSRF defense |
 
 ### Credentials in URLs
 
 Projects **MUST NOT** accept API keys, access tokens, refresh tokens, session
-identifiers or passwords in a URL path or query string, and **MUST** reject
+identifiers, or passwords in a URL path or query string, and **MUST** reject
 requests that supply them there:
 
 ```http
@@ -859,8 +859,8 @@ reusable, and the URL is recorded by systems the API does not control.
 
 Projects **MUST** redact credentials from telemetry:
 
-- Redact `Authorization`, `Proxy-Authorization`, `Cookie` and `Set-Cookie`
-  headers in application logs, access logs, traces and crash reports.
+- Redact `Authorization`, `Proxy-Authorization`, `Cookie`, and `Set-Cookie`
+  headers in application logs, access logs, traces, and crash reports.
 - Redact query strings by allowlist, not by pattern-matching known key
   prefixes; an unknown format is still a credential.
 - Treat any credential that has reached a log as compromised and rotate it.
@@ -917,7 +917,7 @@ different service is accepted here.
 
 Projects using OAuth 2.0 **MUST** follow
 [RFC 9700](https://www.rfc-editor.org/rfc/rfc9700.html) (BCP 240, January
-2025), which updates RFCs 6749, 6750 and 6819:
+2025), which updates RFCs 6749, 6750, and 6819:
 
 - Authorization servers **MUST** support PKCE (RFC 7636) and public clients
   **MUST** use it. `S256` is the only challenge method that does not expose
@@ -972,7 +972,7 @@ vendored in this repository at
 | API10 Unsafe consumption of APIs                     | [Consuming Upstream APIs](#consuming-upstream-apis) |
 
 **Why**: Authenticating a request settles who is calling. It does not settle
-whether that caller may read this object, write this property or invoke this
+whether that caller may read this object, write this property, or invoke this
 function. Those are the top three risks in the list, and each needs its own
 check.
 
@@ -1133,7 +1133,7 @@ shipping with no check at all.
 [Rate Limiting](#rate-limiting) and [Pagination Defaults](#pagination-defaults)
 bound request volume and page size. Projects **MUST** additionally bound:
 
-- Request body size, upload size and decompressed size
+- Request body size, upload size, and decompressed size
 - Execution time and memory per request
 - Fan-out per request: records returned, joins performed, upstream calls made
 - Operations that spend money or a third-party quota — email, SMS, telephone
@@ -1187,8 +1187,8 @@ Projects **MUST** also:
   DNS-rebinding window
 - Disable redirect following, or revalidate every redirect target
 - Apply a dedicated timeout and response size limit to the fetch
-- Send no credentials, cookies or instance-metadata tokens with the fetch
-- Return a fixed error, never the upstream body, status or connection error
+- Send no credentials, cookies, or instance-metadata tokens with the fetch
+- Return a fixed error, never the upstream body, status, or connection error
 
 **Why**: Checking the URL string alone is not enough, because a permitted
 hostname can resolve to a private or link-local address such as the cloud
@@ -1199,9 +1199,9 @@ turns the fetch into a read primitive for the internal network.
 
 Projects **MUST** maintain an inventory of every deployed API, recording:
 
-- Every host and environment, including staging, debug and internal
+- Every host and environment, including staging, debug, and internal
   deployments
-- Every version in service, its owner and its retirement date
+- Every version in service, its owner, and its retirement date
 - The data classes each version exposes
 
 Projects **MUST NOT** leave a superseded version running past its announced
@@ -1221,7 +1221,7 @@ as untrusted input:
   input
 - Use TLS for every upstream call, including internal ones, and verify
   certificates
-- Apply timeouts, response size limits and circuit breaking
+- Apply timeouts, response size limits, and circuit breaking
 - Do not follow redirects returned by an upstream without revalidating the
   target
 
@@ -1704,7 +1704,7 @@ Projects **MUST** validate the description in CI with a pinned validator:
 npx --yes @redocly/cli@2.51.2 lint openapi.yaml
 ```
 
-**Why**: An unresolvable `$ref`, an undeclared security scheme or a missing
+**Why**: An unresolvable `$ref`, an undeclared security scheme, or a missing
 error response is easy to miss in review and breaks every generated client.
 Pinning the validator version keeps the gate reproducible.
 

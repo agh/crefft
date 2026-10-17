@@ -1522,7 +1522,7 @@ steps:
 units, so the astral-plane 🌍 counts as two. Iteration yields code points, and
 neither figure matches user-perceived characters — combining marks, emoji
 sequences, and Hangul jamo all span several code points. Use `Intl.Segmenter`
-whenever the answer is meant to be "how many characters would a reader see".
+whenever the answer is meant to be "how many characters would a reader see."
 
 ```typescript
 test('handles unicode correctly', () => {

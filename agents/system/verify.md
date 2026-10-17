@@ -487,8 +487,8 @@ if (!session) {
 
 #### Affected Tests
 
-- `auth.test.ts:45` - "should handle missing session"
-- `auth.test.ts:67` - "should redirect unauthenticated users"
+- `auth.test.ts:45` - `should handle missing session`
+- `auth.test.ts:67` - `should redirect unauthenticated users`
 
 [Apply fix automatically?]
 

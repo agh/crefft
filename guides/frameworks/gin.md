@@ -4804,7 +4804,9 @@ efficient middleware composition, and conditional execution for complex routing 
 
 [^5]: **swaggo/swag** - Automatically generate RESTful API documentation with Swagger 2.0 for Go. [GitHub](https://github.com/swaggo/swag)
 
-[^6]: **go-playground/validator** - Go Struct and Field validation, including Cross Field, Cross Struct, Map, Slice and Array diving. [GitHub](https://github.com/go-playground/validator)
+[^6]: **go-playground/validator** - Go Struct and Field validation, including Cross Field,
+    Cross Struct, Map, Slice, and Array diving.
+    [GitHub](https://github.com/go-playground/validator)
 
 [^7]: **golang-jwt/jwt** - Go implementation of JSON Web Tokens (JWT). v5 is the current stable version with improved validation and security. [GitHub](https://github.com/golang-jwt/jwt) | [pkg.go.dev](https://pkg.go.dev/github.com/golang-jwt/jwt/v5)
 

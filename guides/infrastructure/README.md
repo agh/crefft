@@ -15,7 +15,7 @@ Style guides for operating systems, infrastructure-as-code, and container orches
 
 | Service | Guide | Description |
 | ------- | ----- | ----------- |
-| Overview | [services/README.md](services/README.md) | Service index, maturity and roadmap |
+| Overview | [services/README.md](services/README.md) | Service index, maturity, and roadmap |
 | SSH | [services/ssh.md](services/ssh.md) | SSH server hardening |
 | NTP | [services/ntp.md](services/ntp.md) | Time synchronization with chrony (draft) |
 | DNS | [services/dns.md](services/dns.md) | Resolver and local DNS (draft) |

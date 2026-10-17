@@ -1206,7 +1206,7 @@ cannot serve traffic:
 
 A load balancer reading the untagged readiness probe admits traffic to an
 instance whose database is unreachable. Liveness keeps the empty predicate on
-purpose: it answers "is this process running", and adding dependency checks to
+purpose: it answers "is this process running," and adding dependency checks to
 it turns a database outage into a restart loop.
 
 **Custom health check:**
@@ -2703,7 +2703,7 @@ Under Central Package Management, drop the `Version` attribute here and declare
 With either package-reference form, set the `v` tag prefix. CalVer
 applications **MUST** supply the calendar version explicitly; MinVer's
 inferred next version is not the project's calendar-release calculation.
-Libraries **MUST** select a SemVer bump from breaking, compatible feature
+Libraries **MUST** select a SemVer bump from breaking, compatible feature,
 or fix changes and verify that the resulting package version matches it.
 The following override is for a CalVer application:
 

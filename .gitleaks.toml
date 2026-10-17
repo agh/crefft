@@ -35,7 +35,7 @@ paths = [
 # 2. Placeholder idioms inside documentation.
 #
 # Scoped with condition = "AND" so these relaxations apply *only* to Markdown
-# under the documentation trees. Source, configuration and vendored data are
+# under the documentation trees. Source, configuration, and vendored data are
 # still scanned with the unmodified upstream ruleset.
 # ---------------------------------------------------------------------------
 [[allowlists]]

@@ -2,7 +2,7 @@
 
 > [crefft](README.md) > Third-Party Notices
 
-crefft's own guides, configurations and agents are licensed under the MIT
+crefft's own guides, configurations, and agents are licensed under the MIT
 Licence (see [LICENSE](LICENSE)). Everything under `reference/` is third-party
 material and is **NOT** covered by that grant. This file records, for every
 vendored source: the upstream project, its URL, the exact license and license
@@ -215,7 +215,7 @@ and any JA4+ variant material, or obtain permission from the rights holders.
 
 ## Security references
 
-Every file under `reference/security/` is a crefft-authored summary, index
+Every file under `reference/security/` is a crefft-authored summary, index,
 or cross-mapping rather than a verbatim upstream dump. That does not remove
 the upstream terms: the summaries are derived from the sources below and
 **MUST** carry their attribution. Machine-readable `license` and `license_url`
@@ -226,7 +226,7 @@ fields for each source are in `reference/security/manifest.json`.
 - **Upstream**: MITRE ATT&CK — <https://attack.mitre.org/>,
   <https://github.com/mitre/cti>
 - **License**: MITRE ATT&CK Terms of Use. MITRE grants a non-exclusive,
-  royalty-free license to use ATT&CK for research, development and commercial
+  royalty-free license to use ATT&CK for research, development, and commercial
   purposes, conditional on reproducing MITRE's copyright designation and the
   license in any copy.
 - **License URL**:
@@ -272,7 +272,7 @@ fields for each source are in `reference/security/manifest.json`.
 - **Upstream**: <https://capec.mitre.org/>
 - **Copyright**: Copyright (c) 2007-2026, The MITRE Corporation
 - **License**: CAPEC Terms of Use — non-exclusive, royalty-free license for
-  research, development and commercial purposes, conditional on reproducing
+  research, development, and commercial purposes, conditional on reproducing
   MITRE's copyright designation and the license.
 - **License URL**: <https://capec.mitre.org/about/termsofuse.html>
 - **License text**: `reference/security/LICENSES/MITRE-CAPEC-Terms-of-Use.txt`
@@ -301,7 +301,7 @@ fields for each source are in `reference/security/manifest.json`.
   <https://github.com/OWASP/www-project-top-10-for-large-language-model-applications>
 - **License**: Creative Commons Attribution-ShareAlike 4.0 International
   (CC BY-SA 4.0), verified individually for the Top 10, API Security, LLM Top
-  10 and ASVS repositories.
+  10, and ASVS repositories.
 - **License URL**: <https://github.com/OWASP/Top10/blob/master/LICENSE>,
   <https://github.com/OWASP/ASVS/blob/master/LICENSE.md>
 - **License text**: `reference/security/LICENSES/CC-BY-SA-4.0.txt`
@@ -364,7 +364,7 @@ fields for each source are in `reference/security/manifest.json`.
 - **crefft's modifications**: `slsa/slsa-levels.json` summarizes the build
   and source track levels.
 - **Required attribution**: section 1.2 requires attribution to the Working
-  Group including the material's name, version number and source. Cite
+  Group including the material's name, version number, and source. Cite
   "SLSA v1.2, SLSA Working Group, <https://slsa.dev/>".
 - **Previous label**: the manifest said Apache-2.0. That was wrong.
 
@@ -461,7 +461,7 @@ titles plus links to the CIS publication.
 
 ### crefft-authored security summaries
 
-`compliance/*.json`, `containers/container-security.json` and
+`compliance/*.json`, `containers/container-security.json`, and
 `exploits/exploit-availability.json` are crefft's own writing. They name
 third-party frameworks and tools — ISO 27001, PCI DSS, SOC 2, the CIS Docker
 and Kubernetes Benchmarks, the NSA/CISA Kubernetes Hardening Guidance,

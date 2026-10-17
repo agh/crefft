@@ -966,7 +966,7 @@ sets the bar in both places.
 |-------|---------------------------|--------|
 | Critical only | `critical` | Blocks on Critical |
 | Default | `high` | Blocks on Critical and High |
-| Strict | `medium` | Blocks on Critical, High and Medium |
+| Strict | `medium` | Blocks on Critical, High, and Medium |
 
 ## Integration
 

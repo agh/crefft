@@ -12,7 +12,7 @@ when, they appear in all capitals, as shown here.
 This guide covers test patterns for behaviors that unit tests miss: end-to-end
 acceptance, idempotence, reliability under failure, compatibility across
 versions and platforms, internationalization, and data integrity. The toolchain,
-lint, formatting and pre-commit rules in the [Rust Style Guide](../rust.md)
+lint, formatting, and pre-commit rules in the [Rust Style Guide](../rust.md)
 apply and are not repeated here, and so do the [dependency](dependencies.md) and
 [CI](ci.md) rules; every version quoted is listed in the
 [Tested Version Matrix](versions.md#tested-version-matrix) and was current on 8
@@ -155,7 +155,7 @@ async fn test_api_endpoint() {
 
 ## Idempotence Testing
 
-Operations that a client **MAY** retry — anything behind a network, a queue or
+Operations that a client **MAY** retry — anything behind a network, a queue, or
 a timeout — **MUST** be tested by invoking them twice and asserting on the
 resulting state, not on the second return value.
 
@@ -230,7 +230,7 @@ it to occur naturally.
 
 ### Why
 
-Timeouts, partial failures and circuit-breaker transitions are the code paths
+Timeouts, partial failures, and circuit-breaker transitions are the code paths
 least covered by ordinary tests and most likely to be wrong, because they only
 execute when something is already going badly. A test that depends on a real
 slow dependency is also the classic flaky test: it passes on a fast machine and
@@ -325,7 +325,7 @@ Crates **MUST** verify every platform and toolchain they claim to support.
 ### Why
 
 A crate's supported set is whatever CI proves, not whatever the README says.
-Conditional compilation, C dependencies and integer widths all differ by
+Conditional compilation, C dependencies, and integer widths all differ by
 target, so a `cfg`-gated item that is missing on macOS or a `usize` assumption
 that breaks on `wasm32` compiles cleanly everywhere except the platform nobody
 built. The MSRV is the same claim in the time dimension and is verified the
@@ -333,8 +333,8 @@ same way — with a lane that uses the exact version.
 
 ### Version Pinning with rust-toolchain.toml
 
-The toolchain pin, the MSRV declaration and the two CI lanes are specified in
-[Toolchain, Edition and MSRV](../rust.md#toolchain-edition-and-msrv). The pinned channel
+The toolchain pin, the MSRV declaration, and the two CI lanes are specified in
+[Toolchain, Edition, and MSRV](../rust.md#toolchain-edition-and-msrv). The pinned channel
 **MUST** be at least the highest `rust-version` in the dependency graph:
 cucumber 0.23.0 requires Rust 1.88 and SQLx 0.9.0 requires 1.94.0, so a 1.75
 pin cannot build this guide's own examples.[^12][^17]
@@ -431,7 +431,7 @@ fn test_unicode_handling() {
 ### Unicode Normalization
 
 unic **MUST NOT** be used. Normalization-only work **SHOULD** use
-unicode-normalization[^16]; locale-aware formatting, collation, segmentation
+unicode-normalization[^16]; locale-aware formatting, collation, segmentation,
 and case mapping **SHOULD** use ICU4X[^47].
 
 **Why**: unic 0.9.0 was published on 3 March 2019 and carries Unicode 10 data.
@@ -529,12 +529,12 @@ selected explicitly. The repository moved from `launchbadge/sqlx` to
 links.
 
 **Why**: SQLx has no default runtime or TLS backend. `runtime-tokio`,
-`runtime-smol` and `runtime-async-global-executor` are mutually exclusive
+`runtime-smol`, and `runtime-async-global-executor` are mutually exclusive
 choices, and TLS is a separate axis: `tls-none`, `tls-native-tls`, or one of
 the `tls-rustls-*` variants which differ in cryptographic provider and
 certificate store. Leaving TLS unstated works locally over a Unix socket and
 fails on a managed database that requires TLS. `default-features = false` makes
-the choice explicit rather than inheriting `any`, `macros`, `migrate` and
+the choice explicit rather than inheriting `any`, `macros`, `migrate`, and
 `json`.[^17]
 
 ```toml
@@ -649,5 +649,5 @@ async fn test_without_migrations(pool: PgPool) -> sqlx::Result<()> {
 
 ## See Also
 
-- [Rust Style Guide](../rust.md) - Toolchain, lints, formatting, dependencies and CI
+- [Rust Style Guide](../rust.md) - Toolchain, lints, formatting, dependencies, and CI
 - [Rust topic guides](README.md) - The other Rust topic guides

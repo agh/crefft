@@ -161,7 +161,7 @@ Every collected signal record **MUST** carry:
 | `target_sha` | `string` | Full 40-character SHA of the commit being released |
 | `evidence_sha` | `string` | Full SHA the evidence was actually produced from |
 | `source` | `string` | Concrete producer, e.g. `github_actions`, `trivy`, `codeowners` |
-| `run_id` | `string` | Workflow run, job or scan ID that produced the evidence |
+| `run_id` | `string` | Workflow run, job, or scan ID that produced the evidence |
 | `event` | `string` | Trigger that produced it, e.g. `push`, `pull_request` |
 | `lockfile_digest` | `string` | SHA-256 of the resolved dependency lockfile |
 | `artifact_digest` | `string` | SHA-256 digest of the artifact the evidence covers |
@@ -674,7 +674,7 @@ Collectors **MUST**:
 - Honor the `X-Sentry-Rate-Limit-*` response
   [headers](https://github.com/getsentry/sentry-docs/blob/master/docs/api/ratelimits.mdx)
   and back off on 429. `stats_v2` is rate limited to 20 requests per second
-  per IP, user and organization.
+  per IP, user, and organization.
 
 Collectors **MUST NOT** put a DSN in a read configuration. A DSN belongs in a
 configuration block only where the agent itself emits telemetry to Sentry.
@@ -1165,7 +1165,7 @@ The engine **MUST** classify the project using the
 published for other code to depend on through a package manager or module
 system. A project with both a command and importable packages is a library.
 Libraries in every ecosystem **MUST** use Semantic Versioning 2.0.0:
-MAJOR for breaking changes, MINOR for compatible features and PATCH for
+MAJOR for breaking changes, MINOR for compatible features, and PATCH for
 fixes. Breaking changes take precedence over features, then fixes.
 
 Anything else **MUST** use the next calendar version (`YYYY.M.N`) from
@@ -1189,7 +1189,7 @@ This example accepts stable numeric versions without tag prefixes, including
 historical SemVer releases before a non-library project's CalVer migration.
 The caller supplies the project classification and classified changes.
 For a library with no releases, bumps start from `0.0.0`; a release needs
-breaking, feature or fix changes. SemVer defines library pre-releases;
+breaking, feature, or fix changes. SemVer defines library pre-releases;
 CalVer pre-release suffix policy remains undecided and is outside this
 example:
 
@@ -1259,7 +1259,7 @@ def calculate_version(
 ```
 
 **Do**: bump a library from `1.4.2` to `2.0.0` for breaking changes,
-`1.5.0` for compatible features or `1.4.3` for fixes. For anything else,
+`1.5.0` for compatible features, or `1.4.3` for fixes. For anything else,
 compute `2026.10.1` after `2026.10.0` regardless of change type.
 **Don't**: use the monthly counter for a library or a compatibility bump
 for an application.
@@ -1794,7 +1794,7 @@ advanced:
 Configured model IDs **MUST** be exact, currently available snapshot IDs from
 the provider. The agent **MUST** validate every configured ID against the
 provider's model list before collecting signals, and **MUST** refuse to run
-when an ID is unknown, deprecated or retired.
+when an ID is unknown, deprecated, or retired.
 
 #### Why
 
@@ -1826,7 +1826,7 @@ static table.
 #### Why `effort` Replaces `temperature`
 
 Claude 5 models reject non-default sampling parameters: setting `temperature`,
-`top_p` or `top_k` returns
+`top_p`, or `top_k` returns
 [HTTP 400](https://platform.claude.com/docs/en/models/sonnet-5/migration-guide).
 Thinking depth is controlled with the
 [effort parameter](https://platform.claude.com/docs/en/build-with-claude/effort)
@@ -1960,7 +1960,7 @@ llm:
 #### Why Line-Oriented Regexes Are Not Enough
 
 The patterns this guide previously recommended — `password[=:].*`,
-`api[_-]?key[=:].*` and `secret[=:].*` — miss most real credential formats.
+`api[_-]?key[=:].*`, and `secret[=:].*` — miss most real credential formats.
 Executed against a 14-case corpus of ordinary credential shapes, **10 samples
 survived redaction intact**: uppercase `PASSWORD=`, quoted JSON
 `"password": "…"` and `"api_key": "…"`, `Authorization: Bearer …`, `token=…`,
@@ -1970,7 +1970,7 @@ or encoded; they are what configuration files and log lines normally look
 like.
 
 Path exclusions do not compensate. A credential pasted into a commit message,
-a test fixture or a stack trace lives outside `**/secrets/**`, and
+a test fixture, or a stack trace lives outside `**/secrets/**`, and
 `send_code: false` still ships summaries derived from that text.
 
 #### Reference Redaction

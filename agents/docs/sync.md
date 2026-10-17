@@ -214,7 +214,7 @@ permissions.
 
 ### Invocation Rules
 
-- `--pr`, `--fix`, `--versions` and any path argument are agent arguments,
+- `--pr`, `--fix`, `--versions`, and any path argument are agent arguments,
   not CLI options, so they **MUST** sit inside the quoted prompt.
 - The job **MUST** install a pinned release. Claude Code 2.1.263 is the
   current published version.

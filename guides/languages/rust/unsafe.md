@@ -11,7 +11,7 @@ when, they appear in all capitals, as shown here.
 
 This guide covers when `unsafe` is justified, the invariants every unsafe block
 **MUST** document, Edition 2024 rules for `extern` and unsafe attributes, FFI,
-and checking with Miri. The toolchain, lint, formatting and pre-commit rules in
+and checking with Miri. The toolchain, lint, formatting, and pre-commit rules in
 the [Rust Style Guide](../rust.md) apply and are not repeated here, and so do
 the [dependency](dependencies.md) and [CI](ci.md) rules; every version quoted is
 listed in the [Tested Version Matrix](versions.md#tested-version-matrix) and was
@@ -464,5 +464,5 @@ unsafe impl<T: Sync> Sync for MyWrapper<T> {}
 
 ## See Also
 
-- [Rust Style Guide](../rust.md) - Toolchain, lints, formatting, dependencies and CI
+- [Rust Style Guide](../rust.md) - Toolchain, lints, formatting, dependencies, and CI
 - [Rust topic guides](README.md) - The other Rust topic guides

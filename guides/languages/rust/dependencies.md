@@ -10,10 +10,10 @@ BCP 14 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)
 [RFC 8174](https://datatracker.ietf.org/doc/html/rfc8174) when, and only
 when, they appear in all capitals, as shown here.
 
-This guide covers choosing, constraining and auditing dependencies: cargo-audit
+This guide covers choosing, constraining, and auditing dependencies: cargo-audit
 against the RustSec database, cargo-deny and cargo-vet policy, the Cargo.lock
 decision table, version constraints, and Dependabot. The toolchain, lint,
-formatting and pre-commit rules in the [Rust Style Guide](../rust.md) apply and
+formatting, and pre-commit rules in the [Rust Style Guide](../rust.md) apply and
 are not repeated here; every version quoted is listed in the [Tested Version
 Matrix](versions.md) and was current on 8 September 2026.
 
@@ -24,10 +24,10 @@ Projects **MUST** run cargo-audit[^3] to check for known vulnerabilities in depe
 ### Why cargo-audit
 
 cargo-audit[^3] checks the crates in `Cargo.lock` against the RustSec Advisory
-Database[^7]. It reports the advisory ID, the affected version range and the
+Database[^7]. It reports the advisory ID, the affected version range, and the
 first patched release for each finding, and exits non-zero, which is what makes
 it usable as a CI gate. It reads the lockfile only, so it says nothing about
-licenses, duplicate versions or crate provenance — those belong to cargo-deny,
+licenses, duplicate versions, or crate provenance — those belong to cargo-deny,
 below.
 
 ```bash
@@ -49,7 +49,7 @@ cargo audit
 cargo-audit[^3] answers one question: are any dependencies subject to a
 published advisory? Projects **MUST** also enforce a license and provenance
 policy. cargo-deny[^31] **MUST** be used for advisories, licenses, banned
-crates and permitted sources. cargo-vet[^43] **SHOULD** be used where audit
+crates, and permitted sources. cargo-vet[^43] **SHOULD** be used where audit
 provenance is a requirement.
 
 ### Why
@@ -267,12 +267,13 @@ updates:
 
 [^3]: [cargo-audit](https://github.com/rustsec/rustsec/tree/main/cargo-audit) - Audit Cargo.lock for security vulnerabilities
 [^7]: [RustSec Advisory Database](https://rustsec.org/) - Security advisory database for Rust crates
-[^31]: [cargo-deny](https://github.com/EmbarkStudios/cargo-deny) - Advisory, license, ban and source policy for Cargo dependencies
+[^31]: [cargo-deny](https://github.com/EmbarkStudios/cargo-deny) - Advisory, license, ban, and
+    source policy for Cargo dependencies
 [^43]: [cargo-vet](https://mozilla.github.io/cargo-vet/) - Recording and enforcing dependency audits
 [^45]: [Change in Guidance on Committing Lockfiles](https://blog.rust-lang.org/2023/08/29/committing-lockfiles/) - The Cargo team's 2023 reversal
 [^46]: [Cargo.toml vs Cargo.lock](https://doc.rust-lang.org/cargo/guide/cargo-toml-vs-cargo-lock.html) - "When in doubt, check Cargo.lock into the version control system"
 
 ## See Also
 
-- [Rust Style Guide](../rust.md) - Toolchain, lints, formatting and pre-commit
+- [Rust Style Guide](../rust.md) - Toolchain, lints, formatting, and pre-commit
 - [Rust topic guides](README.md) - The other Rust topic guides

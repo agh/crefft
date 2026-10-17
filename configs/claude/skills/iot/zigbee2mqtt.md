@@ -223,7 +223,7 @@ zigbee2mqtt/bridge/logging:
   namespace: "z2m"
 ```
 
-Current measured values — `battery`, `linkquality`, `temperature` and the rest
+Current measured values — `battery`, `linkquality`, `temperature`, and the rest
 — arrive only on each device's own state topic,
 `zigbee2mqtt/{friendly_name}`, when the device reports. They are not in
 `bridge/devices`.

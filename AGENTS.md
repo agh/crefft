@@ -75,7 +75,7 @@ crefft/
 Everything under `reference/` except `reference/security/` is a verbatim
 third-party document.
 
-- **MUST NOT** run markdownlint, prettier or any other formatter or auto-fixer
+- **MUST NOT** run markdownlint, prettier, or any other formatter or auto-fixer
   over `reference/`; the root `.markdownlint-cli2.jsonc` ignores it and CI lints
   with `#reference/**`
 - **MUST NOT** apply crefft house style (breadcrumbs, RFC 2119 boilerplate,
@@ -205,8 +205,8 @@ pipx run grip==4.6.2
   package manager or module system. A project with both a command and
   importable packages is a library.
 - Libraries increment MAJOR for breaking changes, MINOR for compatible
-  features and PATCH for fixes.
-- CalVer projects use the four-digit release year, month without a leading zero and a
+  features, and PATCH for fixes.
+- CalVer projects use the four-digit release year, month without a leading zero, and a
   monthly counter starting at 0; increment the counter for each further
   release that month, regardless of commit type.
 - Breaking changes **MUST** appear under `### Breaking`, first in the
@@ -231,7 +231,7 @@ chore: bump tool versions for Q4 2025
 
 ## Time-Sensitive Information
 
-- **MUST** use Web Search for "current date and time" at the start of each
+- **MUST** use Web Search for `current date and time` at the start of each
   session
 - **MUST** use Web Search to verify release dates, version status, and
   deprecation timelines
@@ -245,7 +245,7 @@ unreliable. Always verify time-sensitive claims against current sources.
 
 ## Do Not
 
-- **MUST NOT** use vague language ("consider", "you might want to")
+- **MUST NOT** use vague language ("consider," "you might want to")
 - **MUST NOT** omit rationale for recommendations
 - **MUST NOT** include tool-specific config without version pinning
 - **MUST NOT** reformat or lint-fix anything under `reference/`
