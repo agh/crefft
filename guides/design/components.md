@@ -102,11 +102,18 @@ Every project MUST define these button variants:
 
 Every button MUST define these states:
 
+Button labels **MUST** retain at least 4.5:1 against their actual background in
+every theme and state, including disabled and loading states.
+
+**Why**: A fixed white label fails on the dark theme's light button fills.
+Reducing a disabled button's opacity also reduces its text contrast; a cursor
+and the disabled state can signal unavailability without making its label faint.
+
 ```css
 .btn {
   /* Default state */
   background: var(--interactive-default);
-  color: white;
+  color: var(--text-on-fill);
 }
 
 .btn:hover {
@@ -125,7 +132,6 @@ Every button MUST define these states:
 }
 
 .btn:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
 }

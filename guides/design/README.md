@@ -58,7 +58,8 @@ everywhere. Novelty forces relearning.
 ### 3. Accessibility Over Convenience
 
 Accessibility MUST NOT be deferred or treated as optional. All interfaces MUST
-meet WCAG 2.1 AA standards at minimum.
+meet WCAG 2.1 AA standards at minimum. Text and non-text contrast **MUST** also
+meet the [shared contrast rule](./accessibility.md#14-distinguishable).
 
 **Why**: Accessible design benefits everyone. Keyboard navigation helps power
 users. High contrast helps users in bright environments. Captions help users
@@ -131,7 +132,7 @@ Every interface MUST pass this checklist before shipping:
 
 - [ ] Uses design tokens exclusively (no hardcoded values)
 - [ ] Works in light and dark modes
-- [ ] Meets WCAG 2.1 AA contrast requirements
+- [ ] Meets 4.5:1 for all text and 3:1 for non-text UI and focus in every theme
 - [ ] Fully keyboard navigable
 - [ ] Tested with screen reader
 - [ ] Responsive at all breakpoints (mobile, tablet, desktop)
@@ -150,7 +151,7 @@ Every interface MUST pass this checklist before shipping:
 | --------------------- | --------------------------- | ----------------------------------------- |
 | Design tokens         | CSS Custom Properties       | See [Design Systems](./design-systems.md) |
 | Icons                 | Lucide, Heroicons, Phosphor | Consistent stroke width required          |
-| Typography            | Inter, system fonts         | See [Design Systems](./design-systems.md) |
+| Typography | Project-selected typefaces | [Font criteria](./design-systems.md#font-stack) |
 | Color                 | OKLCH color space           | Perceptually uniform                      |
 | Accessibility testing | axe, WAVE, Lighthouse       | Automated + manual testing required       |
 
