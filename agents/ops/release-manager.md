@@ -115,10 +115,10 @@ year and unpadded month; start the monthly counter at 0 or increment the
 highest released counter for that month. Commit types **MUST NOT** select
 major, minor or patch bumps.
 
-Follow the [Versioning Guide](../../guides/process/versioning.md), which
-records naws decisions D0002 and D0003. Imported Go modules retain Semantic
-Versioning (`v0.x.y` or `v1.x.y`); command-only Go tools using calendar tags
-**MUST** be built from checkouts or shipped as release artefacts.
+Follow the [Versioning Guide](../../guides/process/versioning.md). Imported
+Go modules retain Semantic Versioning (`v0.x.y` or `v1.x.y`); command-only Go
+tools using calendar tags **MUST** be built from checkouts or shipped as
+release artefacts.
 
 ### Why
 

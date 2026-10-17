@@ -46,11 +46,10 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 - **BREAKING**: crefft now versions itself with CalVer (`YYYY.M.N`).
   Its [versioning guide](guides/process/versioning.md) requires CalVer for
-  every project, except Go libraries imported by other modules, as recorded
-  in naws decisions D0002 and D0003. Versions no longer signal
-  compatibility; breaking changes have their own first `### Breaking`
-  section. Consumers pinning crefft by version move from `v2.11.0` to
-  `v2026.10.0`.
+  every project, except Go libraries imported by other modules. Versions no
+  longer signal compatibility; breaking changes have their own first
+  `### Breaking` section. Consumers pinning crefft by version move from
+  `v2.11.0` to `v2026.10.0`.
 
 ### Added
 

@@ -1162,7 +1162,7 @@ blockers:
 
 The engine **MUST** calculate the next calendar version (`YYYY.M.N`) from
 the release date and release history, following the
-[Versioning Guide](../process/versioning.md) and naws decisions D0002 and D0003.
+[Versioning Guide](../process/versioning.md).
 Imported Go modules retain Semantic Versioning (`v0.x.y` or `v1.x.y`);
 they **MUST NOT** use the CalVer calculation below. A command-only Go tool
 with calendar tags **MUST** be built from its checkout or shipped as release

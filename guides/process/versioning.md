@@ -11,8 +11,8 @@ when, they appear in all capitals, as shown here.
 
 Every project **MUST** use calendar versioning (CalVer[^1]) in the
 `YYYY.M.N` format, except imported Go modules as described under
-[Go Modules](#go-modules). This policy records naws decisions D0002 and D0003,
-made on 17 October 2026; this guide defines its mechanics.
+[Go Modules](#go-modules). The policy took effect on 17 October 2026;
+this guide defines its mechanics.
 
 ## Quick Reference
 

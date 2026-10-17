@@ -199,7 +199,7 @@ pipx run grip==4.6.2
 ### Versioning
 
 - Releases **MUST** follow [calendar versioning](guides/process/versioning.md)
-  (`YYYY.M.N`), as recorded in naws decisions D0002 and D0003.
+  (`YYYY.M.N`).
 - Use the four-digit release year, month without a leading zero and a
   monthly counter starting at 0; increment the counter for each further
   release that month, regardless of commit type.
