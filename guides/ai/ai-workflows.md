@@ -1,6 +1,6 @@
 # AI-Assisted Development Workflows
 
-> [Doctrine](../../README.md) > [AI](README.md) > AI Workflows
+> [crefft](../../README.md) > [AI](README.md) > AI Workflows
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this

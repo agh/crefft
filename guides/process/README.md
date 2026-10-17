@@ -1,13 +1,13 @@
 # Process Guides
 
-> [Doctrine](../../README.md) > Process
+> [crefft](../../README.md) > Process
 
 Guides for development processes and infrastructure.
 
 | Topic      | Guide                                      | Description                           |
 | ---------- | ------------------------------------------ | ------------------------------------- |
 | Testing    | [testing.md](testing.md)                   | Testing pyramid, test types, coverage |
-| Versioning | [versioning.md](versioning.md)             | SemVer, changelogs, releases          |
+| Versioning | [versioning.md](versioning.md)             | CalVer, Go exception, changelogs, releases |
 | CI/CD      | [ci.md](ci.md)                             | GitHub Actions workflows              |
 | GitHub     | [github-templates.md](github-templates.md) | Issue templates, CODEOWNERS           |
 

@@ -1,11 +1,55 @@
 # Changelog
 
-All notable changes to the Doctrine Style Guide will be documented in this file.
+All notable changes to crefft will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/versioning.md).
 
 ## [Unreleased]
+
+## [2026.10.0] - 2026-10-17
+
+### Breaking
+
+- **BREAKING**: Rename Doctrine to crefft (Welsh for craft) and move the
+  repository from `agh/doctrine` to `agh/crefft`. GitHub redirects the old
+  repository URL, but downstream copies **MUST** be updated. Machine
+  identifiers are renamed outright, with no deprecated aliases:
+
+  | Old | New |
+  | --- | --- |
+  | `sync-doctrine.yml` | `sync-crefft.yml` |
+  | `.github/workflows/sync-doctrine.yml` | `.github/workflows/sync-crefft.yml` |
+  | `DOCTRINE_REPO` | `CREFFT_REPO` |
+  | `DOCTRINE_BRANCH` | `CREFFT_BRANCH` |
+  | `DOCTRINE_SYNC_TOKEN` | `CREFFT_SYNC_TOKEN` |
+  | `$DOCTRINE` | `$CREFFT` |
+  | `DOCTRINE_VERSION` | `CREFFT_VERSION` |
+  | `$HOME/src/doctrine` | `$HOME/src/crefft` |
+  | `~/.doctrine` | `~/.crefft` |
+  | `.doctrine-upstream` | `.crefft-upstream` |
+  | `.doctrine/verify.yml` | `.crefft/verify.yml` |
+  | `/doctrine-system` | `/crefft-system` |
+  | `.claude/skills/doctrine-system` | `.claude/skills/crefft-system` |
+  | `.claude/commands/doctrine-system.md` | `.claude/commands/crefft-system.md` |
+  | `doctrine-discovery-probe` | `crefft-discovery-probe` |
+  | `doctrine/release-manager-agent` | `crefft/release-manager-agent` |
+  | `sync-doctrine-configs` | `sync-crefft-configs` |
+  | `chore/sync-doctrine` | `chore/sync-crefft` |
+  | `doctrine/verify-build` | `crefft/verify-build` |
+  | `#syncing-from-doctrine` | `#syncing-from-crefft` |
+  | `doctrine-main` | `crefft-main` |
+  | `doctrine-2.11.0` | `crefft-2026.10.0` |
+  | `inet doctrine` | `inet crefft` |
+  | `doctrine/` (tree roots) | `crefft/` |
+  | `"name": "doctrine"` (package metadata) | `"name": "crefft"` |
+
+- **BREAKING**: crefft now versions itself with CalVer (`YYYY.M.N`).
+  Its [versioning guide](guides/process/versioning.md) requires CalVer for
+  every project, except Go libraries imported by other modules. Versions no
+  longer signal compatibility; breaking changes have their own first
+  `### Breaking` section. Consumers pinning crefft by version move from
+  `v2.11.0` to `v2026.10.0`.
 
 ### Added
 
@@ -13,7 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   chain (cargo-deny, cargo-vet), property, mutation, SemVer and benchmark
   testing, and a tested version matrix. Axum guide: HTTP hardening, WebSocket
   controls, RFC 9457 problem details, negative and lifecycle tests.
-- `LICENSE` (MIT) for Doctrine-authored content and `THIRD_PARTY_NOTICES.md`
+- `LICENSE` (MIT) for crefft-authored content and `THIRD_PARTY_NOTICES.md`
   recording the licence, upstream and required attribution of every vendored
   source, with licence texts and NOTICE files placed next to the material
   under `reference/`.
@@ -32,6 +76,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and lockfile pinning the documentation tools; `.github/dependabot.yml`.
 
 ### Changed
+
+- `.gitattributes` marks `reference/` as vendored and counts Markdown, so
+  GitHub reports the repository as Markdown rather than HTML.
 
 - CI: the external URL check moved out of `doc-lint.yml` into a weekly
   `external-links.yml` workflow (also on demand), with a 10 s timeout, one
@@ -53,8 +100,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the 0.8 migration completed (`Utf8Bytes`, no `async_trait`, a graceful
   shutdown that coordinates background tasks); the extractor-order and
   `ServiceBuilder` layer-order rules corrected.
-- The repository moved to `agh/doctrine`; all references updated (the old
-  URL redirects).
 - `CLAUDE.md` and `GEMINI.md` are real files importing `AGENTS.md` instead
   of symlinks, and the `configs/claude/agents` and `configs/claude/commands`
   symlinks are removed in favour of the root `agents/` and `commands/`
@@ -67,7 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   matched the guides' own examples, link checking across all first-party
   Markdown, the version validator run as a blocking step. The security
   reference monitor reads SLSA from tags and fails on HTTP errors.
-- `sync-doctrine.yml` and `doc-sync.yml` moved to
+- `sync-crefft.yml` and `doc-sync.yml` moved to
   `configs/github/workflows/` as downstream templates, with the Boolean
   `dry_run` comparison, `rsync --delete` synchronisation and complete
   change reporting fixed.
@@ -484,18 +529,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Vendored Google style guides (Python, Markdown, Shell, C#, HTML/CSS, Go,
   TypeScript)
 
-[Unreleased]: https://github.com/agh/doctrine/compare/v2.11.0...HEAD
-[2.11.0]: https://github.com/agh/doctrine/compare/v2.10.0...v2.11.0
-[2.10.0]: https://github.com/agh/doctrine/compare/v2.9.0...v2.10.0
-[2.9.0]: https://github.com/agh/doctrine/compare/v2.8.0...v2.9.0
-[2.8.0]: https://github.com/agh/doctrine/compare/v2.7.0...v2.8.0
-[2.7.0]: https://github.com/agh/doctrine/compare/v2.6.0...v2.7.0
-[2.6.0]: https://github.com/agh/doctrine/compare/v2.5.0...v2.6.0
-[2.5.0]: https://github.com/agh/doctrine/compare/v2.4.0...v2.5.0
-[2.4.0]: https://github.com/agh/doctrine/compare/v2.3.0...v2.4.0
-[2.3.0]: https://github.com/agh/doctrine/compare/v2.2.0...v2.3.0
-[2.2.0]: https://github.com/agh/doctrine/compare/v2.1.0...v2.2.0
-[2.1.0]: https://github.com/agh/doctrine/compare/v2.0.1...v2.1.0
-[2.0.1]: https://github.com/agh/doctrine/compare/v2.0.0...v2.0.1
-[2.0.0]: https://github.com/agh/doctrine/compare/v1.0.0...v2.0.0
-[1.0.0]: https://github.com/agh/doctrine/releases/tag/v1.0.0
+[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.0...HEAD
+[2026.10.0]: https://github.com/agh/crefft/compare/v2.11.0...v2026.10.0
+[2.11.0]: https://github.com/agh/crefft/compare/v2.10.0...v2.11.0
+[2.10.0]: https://github.com/agh/crefft/compare/v2.9.0...v2.10.0
+[2.9.0]: https://github.com/agh/crefft/compare/v2.8.0...v2.9.0
+[2.8.0]: https://github.com/agh/crefft/compare/v2.7.0...v2.8.0
+[2.7.0]: https://github.com/agh/crefft/compare/v2.6.0...v2.7.0
+[2.6.0]: https://github.com/agh/crefft/compare/v2.5.0...v2.6.0
+[2.5.0]: https://github.com/agh/crefft/compare/v2.4.0...v2.5.0
+[2.4.0]: https://github.com/agh/crefft/compare/v2.3.0...v2.4.0
+[2.3.0]: https://github.com/agh/crefft/compare/v2.2.0...v2.3.0
+[2.2.0]: https://github.com/agh/crefft/compare/v2.1.0...v2.2.0
+[2.1.0]: https://github.com/agh/crefft/compare/v2.0.1...v2.1.0
+[2.0.1]: https://github.com/agh/crefft/compare/v2.0.0...v2.0.1
+[2.0.0]: https://github.com/agh/crefft/compare/v1.0.0...v2.0.0
+[1.0.0]: https://github.com/agh/crefft/releases/tag/v1.0.0

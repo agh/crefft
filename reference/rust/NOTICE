@@ -1,4 +1,4 @@
-NOTICE — Rust API Guidelines vendored in Doctrine
+NOTICE — Rust API Guidelines vendored in crefft
 
 Upstream:      Rust API Guidelines
 Upstream URL:  https://github.com/rust-lang/api-guidelines
@@ -12,9 +12,9 @@ Licence URLs:  https://www.apache.org/licenses/LICENSE-2.0
 Licence text:  ./LICENSE-APACHE and ./LICENSE-MIT (verbatim copies of the
                upstream files)
 
-Doctrine redistributes this material under the MIT option.
+crefft redistributes this material under the MIT option.
 
-Modifications by Doctrine
+Modifications by crefft
 -------------------------
 The copies in this directory are NOT byte-identical to upstream. The book
 sources from upstream src/ are vendored here under their upstream file names,

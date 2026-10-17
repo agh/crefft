@@ -923,7 +923,7 @@ For language-specific guidance, see:
 
 ## Agent Composition
 
-This agent works best when composed with other Doctrine agents:
+This agent works best when composed with other crefft agents:
 
 ```text
 test-writer → verify-build → code-reviewer → code-simplifier

@@ -1,4 +1,4 @@
-NOTICE — IETF material vendored in Doctrine
+NOTICE — IETF material vendored in crefft
 
 Upstream:      RFC 2119, "Key words for use in RFCs to Indicate Requirement
                Levels", S. Bradner, BCP 14, March 1997
@@ -23,7 +23,7 @@ to the TLP itself.
   IETF Trust copyright and licence information:
   https://trustee.ietf.org/documents/trust-legal-provisions/
 
-Modifications by Doctrine
+Modifications by crefft
 -------------------------
 None of substance. reference/ietf/rfc2119.txt is the canonical RFC Editor text
 with form-feed page separators and some trailing whitespace stripped; verified

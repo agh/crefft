@@ -1,6 +1,6 @@
 # System Agent Family Guide
 
-> [Doctrine](../../README.md) > [AI](./README.md) > System Agents
+> [crefft](../../README.md) > [AI](./README.md) > System Agents
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
@@ -26,13 +26,13 @@ interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc
 | `/system messaging` | Messaging Reviewer | Sonnet | EMQX/Kafka config |
 
 Commands are listed under the family's own name. Claude Code 2.1.263 already claims
-`/system`, so the installed entrypoint is `/doctrine-system`: see
+`/system`, so the installed entrypoint is `/crefft-system`: see
 [Installation](#installation) for the copy steps, the name probe, and the discovery check.
 Nothing works until the definitions are copied into a discovery path.
 
 ## Overview
 
-The Doctrine System Agent Family is a coordinated set of specialized AI agents
+The crefft System Agent Family is a coordinated set of specialized AI agents
 for comprehensive infrastructure and system analysis. Unlike ad-hoc reviews,
 this family provides:
 
@@ -46,7 +46,7 @@ this family provides:
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      DOCTRINE SYSTEM AGENT FAMILY                           │
+│                       CREFFT  SYSTEM AGENT FAMILY                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │                      ┌────────────────────────────┐                         │
@@ -142,7 +142,7 @@ Container and Docker Compose security specialist.
 - Networking and secrets management
 - Logging configuration
 
-**Reference**: [Doctrine Docker Guide](../infrastructure/docker.md)
+**Reference**: [crefft Docker Guide](../infrastructure/docker.md)
 
 #### Ansible Reviewer
 
@@ -165,7 +165,7 @@ Ansible playbook and role review specialist.
 - Molecule testing setup
 - Inventory best practices
 
-**Reference**: [Doctrine Ansible Guide](../infrastructure/ansible.md)
+**Reference**: [crefft Ansible Guide](../infrastructure/ansible.md)
 
 ---
 
@@ -190,7 +190,7 @@ Linux system configuration and hardening specialist.
 - Automatic updates (unattended-upgrades)
 - Logging and auditing (journald)
 
-**Reference**: [Doctrine Linux Guide](../infrastructure/os/linux.md), [SSH Guide](../infrastructure/services/ssh.md)
+**Reference**: [crefft Linux Guide](../infrastructure/os/linux.md), [SSH Guide](../infrastructure/services/ssh.md)
 
 ---
 
@@ -456,7 +456,7 @@ All system agents **MUST** use this output format:
   [fixed config]
   ```
 
-  **Why**: [explanation with Doctrine reference]
+  **Why**: [explanation with crefft reference]
 
 ### 🟡 Warning (should fix)
 
@@ -631,20 +631,20 @@ the path, so the names below are what `--agent` and explicit delegation accept:
 
 | Source file | Agent `name` | Model | Command |
 |-------------|--------------|-------|---------|
-| `architect.md` | `system-architect` | opus | `/doctrine-system` |
-| `docker.md` | `docker-reviewer` | sonnet | `/doctrine-system docker` |
-| `ansible.md` | `ansible-reviewer` | sonnet | `/doctrine-system ansible` |
-| `linux.md` | `linux-reviewer` | sonnet | `/doctrine-system linux` |
-| `verify.md` | `build-verification` | sonnet | `/doctrine-system verify` |
-| `secrets.md` | `secrets-reviewer` | sonnet | `/doctrine-system secrets` |
-| `backup.md` | `backup-reviewer` | sonnet | `/doctrine-system backup` |
-| `networking.md` | `networking-reviewer` | sonnet | `/doctrine-system networking` |
-| `monitoring.md` | `monitoring-reviewer` | sonnet | `/doctrine-system monitoring` |
-| `database.md` | `database-reviewer` | sonnet | `/doctrine-system database` |
-| `traefik.md` | `traefik-reviewer` | sonnet | `/doctrine-system traefik` |
-| `identity.md` | `identity-reviewer` | sonnet | `/doctrine-system identity` |
-| `storage.md` | `storage-reviewer` | sonnet | `/doctrine-system storage` |
-| `messaging.md` | `messaging-reviewer` | sonnet | `/doctrine-system messaging` |
+| `architect.md` | `system-architect` | opus | `/crefft-system` |
+| `docker.md` | `docker-reviewer` | sonnet | `/crefft-system docker` |
+| `ansible.md` | `ansible-reviewer` | sonnet | `/crefft-system ansible` |
+| `linux.md` | `linux-reviewer` | sonnet | `/crefft-system linux` |
+| `verify.md` | `build-verification` | sonnet | `/crefft-system verify` |
+| `secrets.md` | `secrets-reviewer` | sonnet | `/crefft-system secrets` |
+| `backup.md` | `backup-reviewer` | sonnet | `/crefft-system backup` |
+| `networking.md` | `networking-reviewer` | sonnet | `/crefft-system networking` |
+| `monitoring.md` | `monitoring-reviewer` | sonnet | `/crefft-system monitoring` |
+| `database.md` | `database-reviewer` | sonnet | `/crefft-system database` |
+| `traefik.md` | `traefik-reviewer` | sonnet | `/crefft-system traefik` |
+| `identity.md` | `identity-reviewer` | sonnet | `/crefft-system identity` |
+| `storage.md` | `storage-reviewer` | sonnet | `/crefft-system storage` |
+| `messaging.md` | `messaging-reviewer` | sonnet | `/crefft-system messaging` |
 
 Names **MUST** stay unique across the whole `.claude/agents/` tree. Two files declaring the
 same `name` in one directory leave only one loaded, chosen by filesystem read order.
@@ -657,8 +657,8 @@ Restart Claude Code after the first install; later edits are picked up within se
 Install the entrypoint as a skill, which is the current form of a custom command:
 
 ```bash
-mkdir -p .claude/skills/doctrine-system
-cp configs/claude/commands/system.md .claude/skills/doctrine-system/SKILL.md
+mkdir -p .claude/skills/crefft-system
+cp configs/claude/commands/system.md .claude/skills/crefft-system/SKILL.md
 ```
 
 Add YAML frontmatter with a `description` to the top of the copied `SKILL.md` so Claude can
@@ -666,12 +666,12 @@ load it on its own rather than only on an explicit invocation:
 
 ```yaml
 ---
-description: Route an infrastructure review to the Doctrine system agent family.
+description: Route an infrastructure review to the crefft system agent family.
 ---
 ```
 
 Installations that still use the legacy layout **MAY** copy the file to
-`.claude/commands/doctrine-system.md` instead; a skill and a command of the same name resolve
+`.claude/commands/crefft-system.md` instead; a skill and a command of the same name resolve
 to the skill. New installations **SHOULD** use the skill form, because only skills carry a
 directory for supporting files and frontmatter that controls who may invoke them.
 
@@ -681,8 +681,8 @@ Claude Code 2.1.263 claims `/system` for itself, so a project skill of that name
 relied on to run:
 
 ```console
-$ HOME="$(mktemp -d)" claude --safe-mode -p '/doctrine-system probe'
-Unknown command: /doctrine-system
+$ HOME="$(mktemp -d)" claude --safe-mode -p '/crefft-system probe'
+Unknown command: /crefft-system
 
 $ HOME="$(mktemp -d)" claude --safe-mode -p '/system probe'
 Not logged in · Please run /login
@@ -697,7 +697,7 @@ command, so the outcome of the collision is undefined.
 Installations therefore **MUST** install the entrypoint under a name Claude Code does not
 claim, and **MUST** check the chosen name first with the probe above: `Unknown command`
 means the name is free, any other output means it is taken. This guide uses
-`doctrine-system`. Read every `/system <mode>` in this guide as `/doctrine-system <mode>`.
+`crefft-system`. Read every `/system <mode>` in this guide as `/crefft-system <mode>`.
 
 **Why**: the throwaway `HOME` keeps the probe out of your own configuration, so a claimed
 name stops at the login check instead of running whatever Claude Code has bound to it.
@@ -709,7 +709,7 @@ not exist makes Claude Code print every registered agent and exit non-zero witho
 contacting a model:
 
 ```bash
-claude --agent doctrine-discovery-probe -p 'noop' 2>&1 |
+claude --agent crefft-discovery-probe -p 'noop' 2>&1 |
   grep -q system-architect && echo 'system agents discovered'
 ```
 

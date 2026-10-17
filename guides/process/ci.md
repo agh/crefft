@@ -1,6 +1,6 @@
 # CI/CD Guide
 
-> [Doctrine](../../README.md) > [Process](../README.md) > CI/CD
+> [crefft](../../README.md) > [Process](../README.md) > CI/CD
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -546,26 +546,42 @@ jobs:
 
 ## Release Workflow
 
+Release automation **MUST** compute the next `YYYY.M.N` from the release
+date and released versions, not commit types. Breaking changes **MUST**
+be flagged under `### Breaking`, first in the changelog release section.
+The [Versioning Guide](versioning.md) defines the calculation and imported
+Go-module exception. The workflow below checks an already prepared release;
+it does not select a version or publish anything.
+
+### Why
+
+A default commit-driven release action would infer compatibility bumps,
+which no longer determine project release numbers.
+
 ```yaml
 # .github/workflows/release.yml
-name: Release
+name: Release checks
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
-        with:
-          release-type: python  # or node, rust, go, etc.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check the prepared release
+        run: make check
+      - name: Report the prepared version
+        run: printf 'Release candidate v%s\n' "$(cat VERSION)"
 ```
+
+**Do**: calculate the calendar version first, then validate the prepared
+release. **Don't**: let `feat`, `fix` or a breaking marker select a numeric
+component to bump.
 
 ## Dependabot
 
@@ -600,7 +616,7 @@ Configure in repository settings:
 ## See Also
 
 - [Testing Guide](testing.md) - Testing strategy and best practices
-- [Versioning Guide](versioning.md) - Semantic versioning and release automation
+- [Versioning Guide](versioning.md) - CalVer, Go exception and release automation
 - [GitHub Templates](github-templates.md) - Issue and PR templates
 
 ## References

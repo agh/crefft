@@ -1,6 +1,6 @@
 # Specification Writing Guide
 
-> [Doctrine](../../README.md) > [Documentation](README.md) > Specifications
+> [crefft](../../README.md) > [Documentation](README.md) > Specifications
 
 The Spec for Specs: Engineering Documentation in the AI Era.
 
@@ -129,7 +129,8 @@ Every engineering organization needs these document types. Each serves a distinc
 
 - Defines the "what" without the "how"
 - Owned by Product Management
-- Versioned with major releases
+- Versioned with the project's calendar releases; see the
+  [Versioning Guide](../process/versioning.md) for `YYYY.M.N` and the Go exception
 
 ### Tier 2: Tactical (What/How)
 

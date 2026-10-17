@@ -184,7 +184,7 @@ Checklist for review, testing, and documentation.
 
 - Chain with code-reviewer agent for security/quality check
 - Chain with test-writer agent if coverage gaps identified
-- Reference Doctrine language guides for modernization patterns
+- Reference crefft language guides for modernization patterns
 
 ## Confidence Scoring Guide
 

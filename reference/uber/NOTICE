@@ -1,4 +1,4 @@
-NOTICE — Uber Go Style Guide vendored in Doctrine
+NOTICE — Uber Go Style Guide vendored in crefft
 
 Upstream:      Uber Go Style Guide
 Upstream URL:  https://github.com/uber-go/guide
@@ -7,7 +7,7 @@ Licence:       Apache License, Version 2.0
 Licence URL:   https://www.apache.org/licenses/LICENSE-2.0
 Licence text:  ./LICENSE (verbatim copy of the upstream LICENSE)
 
-Modifications by Doctrine
+Modifications by crefft
 -------------------------
 reference/uber/go.md is NOT byte-identical to upstream style.md: prose has
 been reflowed to the repository's 100-column limit, an extra markdownlint
@@ -24,4 +24,4 @@ obligation.
 Required attribution
 --------------------
 "Uber Go Style Guide, Copyright (c) Uber Technologies, Inc., licensed under
-the Apache License, Version 2.0. Modified by Doctrine."
+the Apache License, Version 2.0. Modified by crefft."

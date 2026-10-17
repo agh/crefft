@@ -1,13 +1,13 @@
-# AGENTS.md - Doctrine Style Guide
+# AGENTS.md - crefft Style Guide
 
 This file is the canonical instruction file for every coding agent working on
-Doctrine. OpenAI Codex and GitHub Copilot read `AGENTS.md` natively; Claude Code
+crefft. OpenAI Codex and GitHub Copilot read `AGENTS.md` natively; Claude Code
 reaches it through `CLAUDE.md`, which contains an `@AGENTS.md` import, and
 Gemini CLI through `GEMINI.md`. Edit this file — never the importers.
 
 ## Overview
 
-Doctrine is a comprehensive style guide repository covering 13+ programming
+crefft is a comprehensive style guide repository covering 13+ programming
 languages, frameworks, and AI-assisted development practices. All guides use
 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119) language to clearly
 distinguish requirements from recommendations.
@@ -32,7 +32,7 @@ fails when a guide is missing from `README.md` or from its category
 ## Repository Structure
 
 ```text
-doctrine/
+crefft/
 ├── agents/            # 53 agent definitions, grouped by family
 │   ├── code/          # Review, performance, accessibility, API, tests
 │   ├── docs/          # Documentation planning, writing, review, publishing
@@ -78,7 +78,7 @@ third-party document.
 - **MUST NOT** run markdownlint, prettier or any other formatter or auto-fixer
   over `reference/`; the root `.markdownlint-cli2.jsonc` ignores it and CI lints
   with `#reference/**`
-- **MUST NOT** apply Doctrine house style (breadcrumbs, RFC 2119 boilerplate,
+- **MUST NOT** apply crefft house style (breadcrumbs, RFC 2119 boilerplate,
   `Why` sections) to a payload
 - **MUST** record any deliberate correction to upstream text in
   [`reference/ERRATA.md`](reference/ERRATA.md), with the command that
@@ -130,7 +130,7 @@ separately rather than piecemeal.
 ```markdown
 # {Language/Topic} Style Guide
 
-> [Doctrine](../../README.md) > [{Category}](../README.md) > {Topic}
+> [crefft](../../README.md) > [{Category}](../README.md) > {Topic}
 
 The key words "MUST", "MUST NOT"... [RFC 2119 boilerplate]
 
@@ -187,7 +187,7 @@ pipx run grip==4.6.2
 | `README.md` | Landing page, full navigation |
 | `SUMMARY.md` | Generated navigation index (`scripts/gen_nav.py`) |
 | `CHANGELOG.md` | Version history |
-| `VERSION` | Current version (SemVer) |
+| `VERSION` | Current calendar version (`YYYY.M.N`) |
 | `agents/`, `commands/` | Agent and slash-command definitions |
 | `configs/` | Copy-paste config files |
 | `reference/google/` | Upstream Google guides |
@@ -198,10 +198,19 @@ pipx run grip==4.6.2
 
 ### Versioning
 
-- Follow [Semantic Versioning 2.0.0](https://semver.org/)
-- MAJOR: Breaking changes to guide structure
-- MINOR: New guides or significant additions
-- PATCH: Fixes, clarifications, tool updates
+- Releases **MUST** follow [calendar versioning](guides/process/versioning.md)
+  (`YYYY.M.N`).
+- Use the four-digit release year, month without a leading zero and a
+  monthly counter starting at 0; increment the counter for each further
+  release that month, regardless of commit type.
+- Breaking changes **MUST** appear under `### Breaking`, first in the
+  release section, and retain `!` or `BREAKING CHANGE:` in commits.
+- Imported Go modules remain on Semantic Versioning (`v0.x.y` or `v1.x.y`);
+  the guide defines this exception and the command-only distribution rules.
+
+**Why**: the version identifies release order, not compatibility. Separate
+breaking-change notes preserve migration information without changing the
+calendar calculation.
 
 ### Commit Messages
 

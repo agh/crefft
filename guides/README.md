@@ -1,8 +1,8 @@
 # Guides
 
-> [Doctrine](../README.md) > Guides
+> [crefft](../README.md) > Guides
 
-Doctrine's guides are grouped by subject. Each category has its own index.
+crefft's guides are grouped by subject. Each category has its own index.
 
 | Category | Index | Covers |
 | -------- | ----- | ------ |

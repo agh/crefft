@@ -6,9 +6,9 @@
     "parallel, a throttling host must cost seconds, not minutes.",
     "ignorePatterns cover URLs that are placeholders or unreachable by design.",
     "aliveStatusCodes treats 403 and 429 as alive: they prove the host answered,",
-    "and several sites Doctrine cites (HHS, OpenAI, Stack Overflow, MySQL docs,",
+    "and several sites crefft cites (HHS, OpenAI, Stack Overflow, MySQL docs,",
     "lib.rs, docs.ansible.com) refuse or throttle CI user agents. Failing on them",
-    "would make the gate a coin toss rather than a signal about Doctrine."
+    "would make the gate a coin toss rather than a signal about crefft."
   ],
   "ignorePatterns": [
     { "pattern": "^https?://localhost" },
@@ -29,7 +29,7 @@
       "urls": ["https://"],
       "headers": {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "User-Agent": "Mozilla/5.0 (compatible; doctrine-link-check/1.0; +https://github.com/agh/doctrine)"
+        "User-Agent": "Mozilla/5.0 (compatible; crefft-link-check/1.0; +https://github.com/agh/crefft)"
       }
     }
   ],

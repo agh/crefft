@@ -1,4 +1,4 @@
-# Dependabot configuration for Doctrine
+# Dependabot configuration for crefft
 #
 # Two ecosystems are live here:
 #   github-actions  the action pins in .github/workflows/

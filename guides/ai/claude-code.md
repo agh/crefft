@@ -1,6 +1,6 @@
 # Claude Code CLI Configuration
 
-> [Doctrine](../../README.md) > [AI](README.md) > Claude Code CLI
+> [crefft](../../README.md) > [AI](README.md) > Claude Code CLI
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -38,7 +38,7 @@ Visual Iteration), see [AI Workflows](ai-workflows.md).
 5. [Custom Commands](#custom-commands)
 6. [MCP Integration](#mcp-integration)
 7. [Long-Running Sessions](#long-running-sessions)
-8. [Syncing from Doctrine](#syncing-from-doctrine)
+8. [Syncing from crefft](#syncing-from-crefft)
 
 ---
 
@@ -94,7 +94,7 @@ project/
 }
 ```
 
-See [configs/claude/settings.json](../../configs/claude/settings.json) for Doctrine's standard configuration.
+See [configs/claude/settings.json](../../configs/claude/settings.json) for crefft's standard configuration.
 
 ---
 
@@ -349,7 +349,7 @@ Rules are evaluated deny, then ask, then allow, and the first match wins. A
 deny rule therefore cannot carry allowlist exceptions, and an ask rule prompts
 even when a narrower allow rule also matches.[^4]
 
-### Doctrine's Standard Allowlist
+### crefft's Standard Allowlist
 
 Allow rules **MUST** name reviewed commands. They **MUST NOT** pre-approve a
 package runner or environment runner, because those execute whatever argument
@@ -430,7 +430,7 @@ misses `curl -X GET`, a redirect, or `URL=… && curl $URL` — so gate the tool
 and use `WebFetch(domain:example.com)` for reviewed domains instead of trying
 to constrain URLs inside a shell rule.[^4]
 
-### Doctrine's Standard Denylist
+### crefft's Standard Denylist
 
 Secret material **MUST** be denied for reads as well as edits:
 
@@ -507,7 +507,7 @@ family has an Opus coordinator and Sonnet specialists.
 
 ### Agent Families
 
-Doctrine provides three agent families:
+crefft provides three agent families:
 
 | Family | Command | Coordinator | Purpose |
 |--------|---------|-------------|---------|
@@ -546,13 +546,13 @@ See the family guides for full details:
 
 ### Unique Differentiators
 
-Doctrine's agents are the **most comprehensive open-source option**:
+crefft's agents are the **most comprehensive open-source option**:
 
 1. **Tiered architecture** — Opus coordinators, Sonnet specialists, cost optimized
 2. **Accessibility reviews** — No competitor offers WCAG/A11y analysis
 3. **API design reviews** — REST and GraphQL specialists
 4. **Infrastructure reviews** — Docker, Ansible, Linux specialists
-5. **Doctrine integration** — References our style guides
+5. **crefft integration** — References our style guides
 6. **Multi-LLM compatible** — Works with Claude, GPT, Gemini
 7. **Auto-fix suggestions** — Every issue includes fix, not just complaint
 
@@ -612,7 +612,7 @@ Based on subcommand, route to appropriate agent:
 # Performance-focused review
 ```
 
-### Doctrine's Standard Commands
+### crefft's Standard Commands
 
 | Command | Purpose | Subcommands |
 |---------|---------|-------------|
@@ -830,22 +830,22 @@ claude plugins install ralph-wiggum
 
 ---
 
-## Syncing from Doctrine
+## Syncing from crefft
 
-Doctrine provides standard Claude Code configurations. Both sync paths
+crefft provides standard Claude Code configurations. Both sync paths
 **MUST** use `scripts/sync-claude-config.sh`, the one implementation this
 guide tests.
 
 ### Manual Sync
 
 ```bash
-# Clone Doctrine once
-git clone https://github.com/agh/doctrine.git ~/.doctrine
+# Clone crefft once
+git clone https://github.com/agh/crefft.git ~/.crefft
 
 # Copy the contents of configs/claude into .claude, following the
 # agents and commands symlinks
 mkdir -p ./.claude
-cp -rL ~/.doctrine/configs/claude/. ./.claude/
+cp -rL ~/.crefft/configs/claude/. ./.claude/
 ```
 
 #### Why
@@ -860,7 +860,7 @@ Two details make this recipe work on GNU coreutils, which is what
   directory's *contents* and behaves identically whether `.claude` already
   exists or not.
 - **`-L`** — `configs/claude/agents` and `configs/claude/commands` are
-  relative symlinks into the Doctrine repository root. GNU `cp -r` copies them
+  relative symlinks into the crefft repository root. GNU `cp -r` copies them
   as symlinks, and they dangle at the destination, so no agent or command file
   is installed. `-L` dereferences them and materialises the real trees.
 
@@ -873,22 +873,22 @@ test -f .claude/commands/code.md
 ```
 
 The script replaces `.claude/agents`, `.claude/commands`, `.claude/skills`,
-and `.claude/infrastructure` from Doctrine, installs `.claude/settings.json`
+and `.claude/infrastructure` from crefft, installs `.claude/settings.json`
 only when the project has none, and then verifies representative installed
-files. Pass `--overwrite-settings` to adopt Doctrine's settings over a
+files. Pass `--overwrite-settings` to adopt crefft's settings over a
 project's own.
 
-Doctrine owns those four directories: the sync deletes each one before
+crefft owns those four directories: the sync deletes each one before
 reinstalling it, so anything a project keeps there is removed. Claude Code
 loads project subagents from `.claude/agents/` and personal ones from
 `~/.claude/agents/`,[^9] so keep project-specific agents and commands in the
-user directory, contribute them to Doctrine, or install them from your own
+user directory, contribute them to crefft, or install them from your own
 source directory in a step that runs after the sync.
 
 #### Why a plain copy fails
 
 **`cp -r configs/claude/ ./.claude/` does not install a usable configuration.**
-In the Doctrine checkout, `configs/claude/agents` and
+In the crefft checkout, `configs/claude/agents` and
 `configs/claude/commands` are symlinks to `../../agents` and `../../commands`.
 GNU `cp -r` copies the links verbatim, so the target project gets
 `.claude/agents -> ../../agents`, which resolves outside the project and does
@@ -912,13 +912,13 @@ files at the paths Claude Code loads.[^9]
 ### GitHub Action for Auto-Sync
 
 Use the maintained template at
-[`.github/workflows/sync-doctrine.yml`](../../configs/github/workflows/sync-doctrine.yml)
+[`.github/workflows/sync-crefft.yml`](../../configs/github/workflows/sync-crefft.yml)
 rather than hand-rolling a workflow. Copy it into your project's
 `.github/workflows/`, then customise `SYNC_PATHS`:
 
 ```yaml
-# .github/workflows/sync-doctrine.yml
-name: Sync Doctrine Configs
+# .github/workflows/sync-crefft.yml
+name: Sync crefft Configs
 
 on:
   schedule:
@@ -931,24 +931,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch Doctrine configs
+      - name: Fetch crefft configs
         run: |
-          curl -sL https://github.com/agh/doctrine/archive/main.tar.gz | tar xz
+          curl -sL https://github.com/agh/crefft/archive/main.tar.gz | tar xz
           mkdir -p ./.claude
-          cp -rL doctrine-main/configs/claude/. ./.claude/
+          cp -rL crefft-main/configs/claude/. ./.claude/
           test -f .claude/settings.json
           test -f .claude/agents/code/architect.md
           test -f .claude/commands/code.md
-          rm -rf doctrine-main
+          rm -rf crefft-main
 
       - name: Create PR if changes
         uses: peter-evans/create-pull-request@v5
         with:
-          title: "chore: sync Claude configs from Doctrine"
-          commit-message: "chore: sync Claude configs from Doctrine"
-          branch: sync-doctrine-configs
+          title: "chore: sync Claude configs from crefft"
+          commit-message: "chore: sync Claude configs from crefft"
+          branch: sync-crefft-configs
           body: |
-            Automated sync of Claude Code configs from [Doctrine](https://github.com/agh/doctrine).
+            Automated sync of Claude Code configs from [crefft](https://github.com/agh/crefft).
 ```
 
 ### Version Pinning
@@ -960,24 +960,26 @@ earlier they live under `configs/claude/`. Match `SYNC_PATHS` to the release
 you pin, or the sync step reports `Source not found` and copies nothing:
 
 ```yaml
-- name: Fetch Doctrine configs (pinned to v2.11.0)
+- name: Fetch crefft configs (pinned to v2026.10.0)
   run: |
-    curl -sL https://github.com/agh/doctrine/archive/refs/tags/v2.11.0.tar.gz | tar xz
-    mkdir -p ./.claude
-    cp -rL doctrine-2.11.0/configs/claude/. ./.claude/
+    curl -sL https://github.com/agh/crefft/archive/refs/tags/v2026.10.0.tar.gz | tar xz
+    mkdir -p ./.claude/agents ./.claude/commands
+    cp -rL crefft-2026.10.0/configs/claude/. ./.claude/
+    cp -rL crefft-2026.10.0/agents/. ./.claude/agents/
+    cp -rL crefft-2026.10.0/commands/. ./.claude/commands/
 ```
 
-For a manual install from a pinned tarball (paths shown for v2.11.0):
+For a manual install from a pinned tarball (paths shown for v2026.10.0):
 
 ```bash
-DOCTRINE_VERSION=2.11.0
-curl -sL "https://github.com/agh/doctrine/archive/refs/tags/v${DOCTRINE_VERSION}.tar.gz" | tar xz
+CREFFT_VERSION=2026.10.0
+curl -sL "https://github.com/agh/crefft/archive/refs/tags/v${CREFFT_VERSION}.tar.gz" | tar xz
 mkdir -p .claude
-rsync -aL --delete "doctrine-${DOCTRINE_VERSION}/configs/claude/agents/"   .claude/agents/
-rsync -aL --delete "doctrine-${DOCTRINE_VERSION}/configs/claude/commands/" .claude/commands/
-rsync -aL "doctrine-${DOCTRINE_VERSION}/configs/claude/skills/" .claude/skills/
-cp "doctrine-${DOCTRINE_VERSION}/configs/claude/settings.json" .claude/settings.json
-rm -rf "doctrine-${DOCTRINE_VERSION}"
+rsync -aL --delete "crefft-${CREFFT_VERSION}/agents/"   .claude/agents/
+rsync -aL --delete "crefft-${CREFFT_VERSION}/commands/" .claude/commands/
+rsync -aL "crefft-${CREFFT_VERSION}/configs/claude/skills/" .claude/skills/
+cp "crefft-${CREFFT_VERSION}/configs/claude/settings.json" .claude/settings.json
+rm -rf "crefft-${CREFFT_VERSION}"
 ```
 
 GitHub's tag archives preserve symlinks, so `-L` matters here: it turns any

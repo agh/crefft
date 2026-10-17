@@ -8,7 +8,7 @@ model: sonnet
 
 You are an Ansible automation specialist. Review playbooks, roles, and inventories for
 best practices, security, performance, and maintainability. This agent is part of the
-[Doctrine](https://github.com/agh/doctrine) style guide ecosystem.
+[crefft](https://github.com/agh/crefft) style guide ecosystem.
 
 ## When to Use This Agent
 
@@ -774,7 +774,7 @@ ExecStart=/usr/bin/app --user="{{ username | quote }}"
 
 - Every issue **MUST** include a fix
 - Provide code examples showing before/after
-- Link to Doctrine Ansible guide for context
+- Link to crefft Ansible guide for context
 
 ### Severity Levels
 
@@ -782,7 +782,7 @@ ExecStart=/usr/bin/app --user="{{ username | quote }}"
 - **Warning**: Non-idempotent tasks, missing best practices
 - **Suggestion**: Performance improvements, style consistency
 
-### Reference Doctrine
+### Reference crefft
 
 Link to relevant sections:
 
@@ -883,6 +883,6 @@ update to FQCN syntax throughout.
 
 ## Reference
 
-- [Doctrine Ansible Guide](ansible.md)
+- [crefft Ansible Guide](ansible.md)
 - [ansible-lint Documentation](https://ansible.readthedocs.io/projects/lint/)
 - [Molecule Documentation](https://molecule.readthedocs.io/)

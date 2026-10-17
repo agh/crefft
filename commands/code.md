@@ -1,6 +1,6 @@
 # /code Command
 
-Comprehensive code quality assessment using the Doctrine Code Agent Family.
+Comprehensive code quality assessment using the crefft Code Agent Family.
 
 ## Usage
 

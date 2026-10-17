@@ -1,6 +1,6 @@
 # Testing Guide
 
-> [Doctrine](../../README.md) > [Process](../README.md) > Testing
+> [crefft](../../README.md) > [Process](../README.md) > Testing
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -344,7 +344,7 @@ fixtures for complex scenarios that need exact reproduction.
 ## See Also
 
 - [CI/CD Guide](ci.md) - CI workflow configuration and best practices
-- [Versioning Guide](versioning.md) - Semantic versioning and changelog management
+- [Versioning Guide](versioning.md) - CalVer, Go exception and changelog management
 - [GitHub Templates](github-templates.md) - Issue and PR templates
 
 ## References

@@ -1,12 +1,12 @@
 # Third-Party Notices
 
-> [Doctrine](README.md) > Third-Party Notices
+> [crefft](README.md) > Third-Party Notices
 
-Doctrine's own guides, configurations and agents are licensed under the MIT
+crefft's own guides, configurations and agents are licensed under the MIT
 Licence (see [LICENSE](LICENSE)). Everything under `reference/` is third-party
 material and is **NOT** covered by that grant. This file records, for every
 vendored source: the upstream project, its URL, the exact licence and licence
-URL, what Doctrine changed, and the attribution that **MUST** travel with the
+URL, what crefft changed, and the attribution that **MUST** travel with the
 material.
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -47,7 +47,7 @@ texts that **MUST** be distributed with the material are stored next to it:
 | EPSS (FIRST) | `reference/security/epss/` | Free to use, attribution requested | Yes | Yes |
 
 Two sources restrict commercial use: **CIS** and the **JA4+ variants**. Anyone
-redistributing Doctrine commercially **MUST** exclude `reference/security/cis/`
+redistributing crefft commercially **MUST** exclude `reference/security/cis/`
 and any JA4+ variant material, or obtain permission from the rights holders.
 
 ## Vendored style guides
@@ -66,14 +66,14 @@ and any JA4+ variant material, or obtain permission from the rights holders.
   [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0), not CC BY 3.0.
   The README's blanket "Google style guides are licensed under CC-BY 3.0" is
   therefore incomplete for that file.
-- **Doctrine's modifications**: prose reflowed to 100 columns, markdownlint
+- **crefft's modifications**: prose reflowed to 100 columns, markdownlint
   directives added, files renamed (upstream `pyguide.md` is vendored as
   `python.md`). The vendoring revision was not recorded, so local changes
   cannot be separated from upstream drift. These are adaptations under CC BY
   3.0 section 3(b).
 - **Required attribution**: "Google Style Guides, Copyright (c) Google Inc.,
   licensed under CC BY 3.0 (<https://creativecommons.org/licenses/by/3.0/>).
-  Modified by Doctrine."
+  Modified by crefft."
 
 ### Airbnb style guides
 
@@ -89,7 +89,7 @@ and any JA4+ variant material, or obtain permission from the rights holders.
 - **Licence text**: `reference/airbnb/LICENSE`. Both upstream repositories
   carry the same MIT text with the same copyright holder and year, differing
   only in line wrapping.
-- **Doctrine's modifications**: renamed from upstream `README.md`, reflowed,
+- **crefft's modifications**: renamed from upstream `README.md`, reflowed,
   and a small number of code samples requoted. MIT imposes no
   modification-marking duty.
 - **Required attribution**: retain the MIT copyright and permission notice in
@@ -107,16 +107,16 @@ and any JA4+ variant material, or obtain permission from the rights holders.
 - **Licence text**: `reference/holywell/LICENCE` (verbatim copy of the
   upstream `LICENCE`); full legal code at
   `reference/security/LICENSES/CC-BY-SA-4.0.txt`
-- **Doctrine's modifications**: prose and lists reflowed to 100 columns, some
+- **crefft's modifications**: prose and lists reflowed to 100 columns, some
   headings altered.
 - **ShareAlike**: because it is modified, `reference/holywell/sql.md` is
   Adapted Material and **MUST** stay under CC BY-SA 4.0 or a BY-SA compatible
-  licence. Doctrine's MIT licence does **NOT** apply to it.
+  licence. crefft's MIT licence does **NOT** apply to it.
 - **Required attribution**: "SQL style guide by Simon Holywell
   (<https://www.simonholywell.com/>) is licensed under a Creative Commons
   Attribution-ShareAlike 4.0 International License
   (<https://creativecommons.org/licenses/by-sa/4.0/>). Based on a work at
-  <https://www.sqlstyle.guide/>. Modified by Doctrine."
+  <https://www.sqlstyle.guide/>. Modified by crefft."
 
 ### IETF RFC 2119
 
@@ -131,7 +131,7 @@ and any JA4+ variant material, or obtain permission from the rights holders.
   to the IETF copyright policy in force at publication.
 - **Licence URL**:
   <https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/>
-- **Doctrine's modifications**: none of substance. Verified on 2026-09-08 by
+- **crefft's modifications**: none of substance. Verified on 2026-09-08 by
   diffing `reference/ietf/rfc2119.txt` against the RFC Editor text: only
   form-feed and trailing-whitespace differences. RFC text **MUST NOT** be
   altered in substance.
@@ -153,10 +153,10 @@ and any JA4+ variant material, or obtain permission from the rights holders.
 - **Licence URL**: <https://creativecommons.org/licenses/by/3.0/>
 - **Licence text**: `reference/rubocop/LICENSE` (CC BY 3.0 Unported legal
   code, included because upstream ships none)
-- **Doctrine's modifications**: renamed from `README.adoc` and reflowed.
+- **crefft's modifications**: renamed from `README.adoc` and reflowed.
 - **Required attribution**: "Ruby Style Guide / Rails Style Guide by Bozhidar
   Batsov and contributors, licensed under CC BY 3.0
-  (<https://creativecommons.org/licenses/by/3.0/>). Modified by Doctrine."
+  (<https://creativecommons.org/licenses/by/3.0/>). Modified by crefft."
 
 ### Rust API Guidelines
 
@@ -165,12 +165,12 @@ and any JA4+ variant material, or obtain permission from the rights holders.
   <https://rust-lang.github.io/api-guidelines/>
 - **Copyright**: Copyright (c) 2017 The Rust Project Developers
 - **Licence**: dual licensed, at the recipient's option, under Apache-2.0 or
-  MIT. Doctrine redistributes under the MIT option.
+  MIT. crefft redistributes under the MIT option.
 - **Licence URL**: <https://www.apache.org/licenses/LICENSE-2.0>,
   <https://opensource.org/license/mit>
 - **Licence text**: `reference/rust/LICENSE-APACHE`,
   `reference/rust/LICENSE-MIT` (verbatim copies of the upstream files)
-- **Doctrine's modifications**: the upstream `src/` book sources are vendored
+- **crefft's modifications**: the upstream `src/` book sources are vendored
   under their upstream file names, taken from branch `master` on 2026-09-08
   when its HEAD was `97a0969` (2025-07-08). Two deterministic,
   machine-applied transforms are declared per file in
@@ -193,7 +193,7 @@ and any JA4+ variant material, or obtain permission from the rights holders.
 - **Licence URL**:
   <https://github.com/Shopify/ruby-style-guide/blob/main/LICENSE.md>
 - **Licence text**: `reference/shopify/LICENSE`
-- **Doctrine's modifications**: renamed from `README.md` and reflowed.
+- **crefft's modifications**: renamed from `README.md` and reflowed.
 - **Required attribution**: retain the MIT copyright and permission notice.
 
 ### Uber Go Style Guide
@@ -203,7 +203,7 @@ and any JA4+ variant material, or obtain permission from the rights holders.
 - **Licence**: Apache License, Version 2.0
 - **Licence URL**: <https://www.apache.org/licenses/LICENSE-2.0>
 - **Licence text**: `reference/uber/LICENSE`
-- **Doctrine's modifications**: `reference/uber/go.md` is upstream `style.md`
+- **crefft's modifications**: `reference/uber/go.md` is upstream `style.md`
   with prose reflowed, an extra `markdownlint-disable MD013` directive, and
   bare URLs wrapped in angle brackets. `reference/uber/NOTICE` is the
   "prominent notice stating that You changed the files" required by
@@ -211,11 +211,11 @@ and any JA4+ variant material, or obtain permission from the rights holders.
   API returns 404), so section 4(d) adds nothing.
 - **Required attribution**: "Uber Go Style Guide, Copyright (c) Uber
   Technologies, Inc., licensed under the Apache License, Version 2.0.
-  Modified by Doctrine."
+  Modified by crefft."
 
 ## Security references
 
-Every file under `reference/security/` is a Doctrine-authored summary, index
+Every file under `reference/security/` is a crefft-authored summary, index
 or cross-mapping rather than a verbatim upstream dump. That does not remove
 the upstream terms: the summaries are derived from the sources below and
 **MUST** carry their attribution. Machine-readable `license` and `license_url`
@@ -232,8 +232,8 @@ fields for each source are in `reference/security/manifest.json`.
 - **Licence URL**:
   <https://attack.mitre.org/resources/legal-and-branding/terms-of-use/>
 - **Licence text**: `reference/security/LICENSES/MITRE-ATTACK-Terms-of-Use.txt`
-- **Doctrine's modifications**: `mitre/attack/techniques-summary.json` is a
-  curated subset of techniques with Doctrine-written prioritisation notes.
+- **crefft's modifications**: `mitre/attack/techniques-summary.json` is a
+  curated subset of techniques with crefft-written prioritisation notes.
 - **Required attribution**: "(c) 2026 The MITRE Corporation. This work is
   reproduced and distributed with the permission of The MITRE Corporation."
 - **Previous label**: the manifest said CC-BY-4.0. That was wrong; ATT&CK has
@@ -248,8 +248,8 @@ fields for each source are in `reference/security/manifest.json`.
 - **Licence URL**:
   <https://github.com/mitre-atlas/atlas-data/blob/main/LICENSE>
 - **Licence text**: `reference/security/LICENSES/Apache-2.0.txt`
-- **Doctrine's modifications**: `mitre/atlas/atlas-summary.json` is a
-  Doctrine-written summary of ATLAS tactics and techniques; this entry is the
+- **crefft's modifications**: `mitre/atlas/atlas-summary.json` is a
+  crefft-written summary of ATLAS tactics and techniques; this entry is the
   change notice required by Apache-2.0 section 4(b). Upstream ships no
   `NOTICE` file (verified: contents API returns 404).
 - **Previous label**: the manifest said CC-BY-4.0. That was wrong.
@@ -263,8 +263,8 @@ fields for each source are in `reference/security/manifest.json`.
 - **Licence URL**:
   <https://github.com/d3fend/d3fend-ontology/blob/develop/LICENSE.md>
 - **Licence text**: `reference/security/LICENSES/MIT-D3FEND.md`
-- **Doctrine's modifications**: `mitre/d3fend/d3fend-summary.json` is a
-  Doctrine-written summary of the defensive technique taxonomy.
+- **crefft's modifications**: `mitre/d3fend/d3fend-summary.json` is a
+  crefft-written summary of the defensive technique taxonomy.
 - **Previous label**: the manifest said Apache-2.0. That was wrong.
 
 ### MITRE CAPEC
@@ -276,8 +276,8 @@ fields for each source are in `reference/security/manifest.json`.
   MITRE's copyright designation and the licence.
 - **Licence URL**: <https://capec.mitre.org/about/termsofuse.html>
 - **Licence text**: `reference/security/LICENSES/MITRE-CAPEC-Terms-of-Use.txt`
-- **Doctrine's modifications**: `mitre/capec/capec-summary.json` is a
-  Doctrine-written summary of attack patterns.
+- **crefft's modifications**: `mitre/capec/capec-summary.json` is a
+  crefft-written summary of attack patterns.
 - **Required attribution**: "Copyright (c) 2007-2026, The MITRE Corporation.
   CAPEC and the CAPEC logo are trademarks of The MITRE Corporation."
 
@@ -288,8 +288,8 @@ fields for each source are in `reference/security/manifest.json`.
 - **Licence**: CWE Terms of Use — same structure as CAPEC.
 - **Licence URL**: <https://cwe.mitre.org/about/termsofuse.html>
 - **Licence text**: `reference/security/LICENSES/MITRE-CWE-Terms-of-Use.txt`
-- **Doctrine's modifications**: `cwe/cwe-top-25-2025.json` and
-  `cwe/cwe-common.json` are Doctrine-written summaries of CWE entries.
+- **crefft's modifications**: `cwe/cwe-top-25-2025.json` and
+  `cwe/cwe-common.json` are crefft-written summaries of CWE entries.
 - **Required attribution**: "Copyright (c) 2006-2026, The MITRE Corporation.
   CWE, CWSS, CWRAF, and the CWE logo are trademarks of The MITRE Corporation."
 
@@ -305,14 +305,14 @@ fields for each source are in `reference/security/manifest.json`.
 - **Licence URL**: <https://github.com/OWASP/Top10/blob/master/LICENSE>,
   <https://github.com/OWASP/ASVS/blob/master/LICENSE.md>
 - **Licence text**: `reference/security/LICENSES/CC-BY-SA-4.0.txt`
-- **Doctrine's modifications**: the `owasp/*.json` files are Doctrine-written
+- **crefft's modifications**: the `owasp/*.json` files are crefft-written
   condensations of the risk and requirement lists.
 - **ShareAlike**: to the extent those files are Adapted Material, they
   **MUST** be redistributed under CC BY-SA 4.0 or a BY-SA compatible licence,
-  not under Doctrine's MIT licence.
+  not under crefft's MIT licence.
 - **Required attribution**: "Based on the OWASP Top 10 / OWASP ASVS (c) the
   OWASP Foundation, licensed under CC BY-SA 4.0
-  (<https://creativecommons.org/licenses/by-sa/4.0/>). Modified by Doctrine."
+  (<https://creativecommons.org/licenses/by-sa/4.0/>). Modified by crefft."
 
 ### SigmaHQ
 
@@ -324,7 +324,7 @@ fields for each source are in `reference/security/manifest.json`.
 - **Licence URL**: <https://github.com/SigmaHQ/sigma/blob/master/LICENSE>,
   <https://github.com/SigmaHQ/Detection-Rule-License>
 - **Licence text**: `reference/security/LICENSES/DRL-1.1.md`
-- **Doctrine's modifications**: `sigma/rules-summary.json` documents the rule
+- **crefft's modifications**: `sigma/rules-summary.json` documents the rule
   format (public-domain specification material) and indexes rule categories.
 - **Required attribution**: where rule content is reproduced, DRL 1.1 requires
   retaining the rule author, a link to the rule set, and a statement that the
@@ -346,10 +346,10 @@ fields for each source are in `reference/security/manifest.json`.
     <https://github.com/FoxIO-LLC/ja4/blob/main/LICENSE>
 - **Licence text**: `reference/security/LICENSES/BSD-3-Clause-JA4.txt`,
   `reference/security/LICENSES/FoxIO-License-1.1.txt`
-- **Doctrine's modifications**: `fingerprints/ja4/malware-signatures.json`
+- **crefft's modifications**: `fingerprints/ja4/malware-signatures.json`
   documents the fingerprint formats and lists signature examples.
 - **Restriction**: commercial redistribution of the JA4+ variant material
-  requires a licence from FoxIO. Doctrine's MIT licence does **NOT** grant it.
+  requires a licence from FoxIO. crefft's MIT licence does **NOT** grant it.
 - **Previous label**: the manifest said BSD-3-Clause for all JA4+ content.
   That was wrong and understated the restriction.
 
@@ -361,7 +361,7 @@ fields for each source are in `reference/security/manifest.json`.
   <https://github.com/slsa-framework/slsa/blob/main/LICENSE.md>
 - **Licence text**:
   `reference/security/LICENSES/Community-Specification-1.0.md`
-- **Doctrine's modifications**: `slsa/slsa-levels.json` summarises the build
+- **crefft's modifications**: `slsa/slsa-levels.json` summarises the build
   and source track levels.
 - **Required attribution**: section 1.2 requires attribution to the Working
   Group including the material's name, version number and source. Cite
@@ -375,7 +375,7 @@ fields for each source are in `reference/security/manifest.json`.
 - **Licence**: Apache License, Version 2.0
 - **Licence URL**: <https://github.com/ossf/scorecard/blob/main/LICENSE>
 - **Licence text**: `reference/security/LICENSES/Apache-2.0.txt`
-- **Doctrine's modifications**: `openssf/scorecard.json` summarises the
+- **crefft's modifications**: `openssf/scorecard.json` summarises the
   checks. Upstream ships no `NOTICE` file (verified: contents API returns
   404).
 
@@ -391,8 +391,8 @@ fields for each source are in `reference/security/manifest.json`.
   <https://github.com/spdx/spdx-spec/blob/development/v3.0.1/LICENSE>
 - **Licence text**: `reference/security/LICENSES/Apache-2.0.txt`,
   `reference/security/LICENSES/Community-Specification-1.0.md`
-- **Doctrine's modifications**: `sbom/sbom-formats.json` is a
-  Doctrine-written comparison of the formats.
+- **crefft's modifications**: `sbom/sbom-formats.json` is a
+  crefft-written comparison of the formats.
 
 ### CIS Critical Security Controls
 
@@ -408,7 +408,7 @@ fields for each source are in `reference/security/manifest.json`.
   redistributing the Controls as a framework for non-commercial purposes with
   credit and a licence link, forbids distributing modified materials, and
   makes commercial use subject to prior CIS approval.
-- **Doctrine's position**: `cis/controls-v8.json` is kept under the owner's
+- **crefft's position**: `cis/controls-v8.json` is kept under the owner's
   decision to retain and cite vendored material. It **MUST NOT** be edited,
   reformatted or extended. See the caveat below.
 - **Required attribution**: "CIS Critical Security Controls v8.1, Copyright
@@ -432,8 +432,8 @@ titles plus links to the CIS publication.
   domestic copyright protection (17 U.S.C. 105). NIST asks for appropriate
   credit.
 - **Licence URL**: <https://www.nist.gov/copyrights-disclaimers>
-- **Doctrine's modifications**: `nist/*.json` and
-  `crypto/cryptographic-standards.json` are Doctrine-written summaries.
+- **crefft's modifications**: `nist/*.json` and
+  `crypto/cryptographic-standards.json` are crefft-written summaries.
 - **Required attribution**: credit NIST as the source of the underlying
   publications.
 
@@ -443,7 +443,7 @@ titles plus links to the CIS publication.
   <https://www.cisa.gov/known-exploited-vulnerabilities-catalog>
 - **Licence**: US Government work, not subject to domestic copyright
   protection (17 U.S.C. 105). CISA publishes no separate licence file.
-- **Doctrine's modifications**: `kev/known-exploited-vulnerabilities.json` is
+- **crefft's modifications**: `kev/known-exploited-vulnerabilities.json` is
   a filtered snapshot of the catalog.
 - **Required attribution**: credit CISA as the source.
 
@@ -454,20 +454,20 @@ titles plus links to the CIS publication.
   requests attribution when EPSS data is used in publications or products.
   There is no Creative Commons grant.
 - **Licence URL**: <https://www.first.org/epss/faq>
-- **Doctrine's modifications**: `epss/exploit-prediction.json` describes the
+- **crefft's modifications**: `epss/exploit-prediction.json` describes the
   model and scoring bands.
 - **Required attribution**: credit the EPSS SIG at FIRST.
 - **Previous label**: the manifest said CC-BY-SA-4.0. That was wrong.
 
-### Doctrine-authored security summaries
+### crefft-authored security summaries
 
 `compliance/*.json`, `containers/container-security.json` and
-`exploits/exploit-availability.json` are Doctrine's own writing. They name
+`exploits/exploit-availability.json` are crefft's own writing. They name
 third-party frameworks and tools — ISO 27001, PCI DSS, SOC 2, the CIS Docker
 and Kubernetes Benchmarks, the NSA/CISA Kubernetes Hardening Guidance,
 Exploit-DB, Metasploit, Nuclei — but do not reproduce their text. Those
-standards remain under their publishers' own terms. Doctrine's MIT licence
-covers only Doctrine's expression in these files.
+standards remain under their publishers' own terms. crefft's MIT licence
+covers only crefft's expression in these files.
 
 ## Other third-party material outside `reference/`
 
@@ -480,12 +480,12 @@ covers only Doctrine's expression in these files.
   (CC BY-SA 4.0)
 - **Licence URL**: <https://creativecommons.org/licenses/by-sa/4.0/>
 - **Location**: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
-- **Doctrine's modifications**: the two `[NOTE: ...]` placeholders in the
-  upstream template were replaced with Doctrine's actual reporting route and
+- **crefft's modifications**: the two `[NOTE: ...]` placeholders in the
+  upstream template were replaced with crefft's actual reporting route and
   enforcement statement, and a markdownlint directive was added at the top of
   the file. The rest is verbatim.
 - **ShareAlike**: `CODE_OF_CONDUCT.md` is Adapted Material and is offered
-  under CC BY-SA 4.0, not under Doctrine's MIT licence. The Attribution
+  under CC BY-SA 4.0, not under crefft's MIT licence. The Attribution
   section at the end of the file carries the required credit.
 
 ## Corrections applied
@@ -506,7 +506,7 @@ this change and have been corrected:
 
 ## See Also
 
-- [LICENSE](LICENSE) — MIT licence for Doctrine-authored content
+- [LICENSE](LICENSE) — MIT licence for crefft-authored content
 - [README](README.md#licence) — licence summary
 - [reference/security/NOTICE](reference/security/NOTICE) — security tree notice
 - [reference/security/cis/NOTICE](reference/security/cis/NOTICE) — CIS

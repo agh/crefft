@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate SUMMARY.md and validate Doctrine's navigation.
+"""Generate SUMMARY.md and validate crefft's navigation.
 
 Two modes:
 
@@ -134,7 +134,7 @@ def build_summary() -> str:
     lines: List[str] = ["# Summary", "", GENERATED_BANNER, ""]
 
     lines += [
-        f"- [Doctrine]({relative(ROOT_README)})",
+        f"- [crefft]({relative(ROOT_README)})",
         f"- [Agent Instructions]({relative(PROJECT_ROOT / 'AGENTS.md')})",
         f"- [Changelog]({relative(PROJECT_ROOT / 'CHANGELOG.md')})",
         "",

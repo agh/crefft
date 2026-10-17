@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Syntax-check fenced code blocks in Doctrine's Markdown guides.
+"""Syntax-check fenced code blocks in crefft's Markdown guides.
 
 Extracts fenced blocks by their info string and hands each to the natural
 syntax checker for that language:
@@ -42,7 +42,7 @@ from typing import Callable, Iterable, Iterator, Sequence
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-# Vendored or generated trees are never Doctrine's to fix.
+# Vendored or generated trees are never crefft's to fix.
 EXCLUDED_DIRS = {".git", "node_modules", "reference", ".venv", "venv", "dist", "build"}
 
 # Info strings mapped onto a single canonical checker name.

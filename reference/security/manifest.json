@@ -1,5 +1,5 @@
 {
-  "name": "Doctrine Security References",
+  "name": "crefft Security References",
   "description": "Vendored security reference data for offline agent operation",
   "version": "3.1.0",
   "last_updated": "2026-09-08",
@@ -207,8 +207,8 @@
       "files": [
         "exploits/exploit-availability.json"
       ],
-      "license": "MIT (Doctrine-authored summary)",
-      "license_url": "https://github.com/agh/doctrine/blob/main/LICENSE",
+      "license": "MIT (crefft-authored summary)",
+      "license_url": "https://github.com/agh/crefft/blob/main/LICENSE",
       "license_note": "Names Exploit-DB, GitHub PoCs, Metasploit and Nuclei as sources; no content from those projects is reproduced here."
     },
     "cryptographic_standards": {
@@ -236,8 +236,8 @@
       "files": [
         "containers/container-security.json"
       ],
-      "license": "MIT (Doctrine-authored summary)",
-      "license_url": "https://github.com/agh/doctrine/blob/main/LICENSE",
+      "license": "MIT (crefft-authored summary)",
+      "license_url": "https://github.com/agh/crefft/blob/main/LICENSE",
       "license_note": "Summarises CIS Docker/Kubernetes Benchmarks and the NSA/CISA Kubernetes Hardening Guidance. CIS Benchmark text is published under its own terms and is not reproduced here."
     },
     "compliance": {
@@ -271,9 +271,9 @@
         "compliance/technical-requirements.json"
       ],
       "note": "Consolidated compliance reference with cross-framework mappings and actionable technical checks",
-      "license": "MIT (Doctrine-authored summary)",
-      "license_url": "https://github.com/agh/doctrine/blob/main/LICENSE",
-      "license_note": "Cross-framework mappings authored by Doctrine. The underlying standards (ISO 27001, PCI DSS, SOC 2 and others) remain under their publishers own terms and are not reproduced here."
+      "license": "MIT (crefft-authored summary)",
+      "license_url": "https://github.com/agh/crefft/blob/main/LICENSE",
+      "license_note": "Cross-framework mappings authored by crefft. The underlying standards (ISO 27001, PCI DSS, SOC 2 and others) remain under their publishers own terms and are not reproduced here."
     }
   },
   "update_automation": {

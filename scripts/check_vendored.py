@@ -117,7 +117,7 @@ def sha256_of(path: Path) -> str:
 
 def fetch(url: str) -> bytes:
     """Fetch a URL, returning raw bytes."""
-    request = urllib.request.Request(url, headers={"User-Agent": "doctrine-check-vendored"})
+    request = urllib.request.Request(url, headers={"User-Agent": "crefft-check-vendored"})
     with urllib.request.urlopen(request, timeout=NETWORK_TIMEOUT) as response:
         return response.read()
 

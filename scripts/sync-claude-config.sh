@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Install Doctrine's Claude Code configuration into a project's .claude directory.
+# Install crefft's Claude Code configuration into a project's .claude directory.
 #
-# Ownership: Doctrine owns the component directories (agents, commands, skills,
+# Ownership: crefft owns the component directories (agents, commands, skills,
 # infrastructure) and replaces each one on every sync. The project owns
 # .claude/settings.json, which is installed only when it is missing unless
 # --overwrite-settings is passed.
@@ -41,7 +41,7 @@ mkdir -p "$dest"
 
 for component in "${components[@]}"; do
   # -L dereferences configs/claude/agents and configs/claude/commands, which are
-  # symlinks inside the Doctrine checkout; copying them verbatim installs links
+  # symlinks inside the crefft checkout; copying them verbatim installs links
   # that dangle in the target project.
   rm -rf "${dest:?}/$component"
   mkdir -p "$dest/$component"

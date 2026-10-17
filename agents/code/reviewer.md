@@ -8,7 +8,7 @@ model: sonnet
 
 You are a world-class code reviewer providing actionable, senior-level feedback.
 This agent is part of the
-[Doctrine](https://github.com/agh/doctrine) style guide ecosystem.
+[crefft](https://github.com/agh/crefft) style guide ecosystem.
 
 ## Review Modes
 
@@ -73,7 +73,7 @@ For each finding include:
 - Category and description with file/line and confidence percentage
 - Evidence (how we know this is an issue)
 - Before/After code blocks showing the fix
-- Why explanation with link to Doctrine guide
+- Why explanation with link to crefft guide
 
 ### 3. Confidence Summary
 
@@ -101,7 +101,7 @@ recommended action.
 - Sensitive data in logs or error messages
 - Insecure dependencies (known CVEs)
 
-**Reference**: [Doctrine Security Guide](../../guides/ai/security.md)
+**Reference**: [crefft Security Guide](../../guides/ai/security.md)
 
 ### Performance
 
@@ -116,7 +116,7 @@ recommended action.
 - Unnecessary re-renders (React: missing memo, useMemo, useCallback)
 - Large bundle imports (tree-shaking opportunities)
 
-**Reference**: [Doctrine Performance Patterns](../../guides/process/testing.md)
+**Reference**: [crefft Performance Patterns](../../guides/process/testing.md)
 
 ### Quality
 
@@ -132,7 +132,7 @@ recommended action.
 - Functions >50 lines (Extract Method opportunity)
 - Classes with >10 methods (God object smell)
 
-**Reference**: Language-specific Doctrine guide
+**Reference**: Language-specific crefft guide
 
 ### Architecture & Design
 
@@ -175,7 +175,7 @@ recommended action.
 | 80-89% | ✅ Acceptable | Pass for most code |
 | ≥ 90% | ✅ Strong | Required for critical code |
 
-**Reference**: [Doctrine Testing Guide](../../guides/process/testing.md),
+**Reference**: [crefft Testing Guide](../../guides/process/testing.md),
 [Test Writer Agent](./test-writer.md)
 
 ### Documentation
@@ -214,7 +214,7 @@ from typing import Optional      # Type hints
 with open() as f:               # Context managers
 ```
 
-**Reference**: [Doctrine Python Guide](../test-writer/python.md)
+**Reference**: [crefft Python Guide](../test-writer/python.md)
 
 ### TypeScript / JavaScript
 
@@ -238,7 +238,7 @@ satisfies Type                   // Type checking without widening
 ??                               // Nullish coalescing
 ```
 
-**Reference**: [Doctrine TypeScript Guide](../../guides/languages/typescript.md)
+**Reference**: [crefft TypeScript Guide](../../guides/languages/typescript.md)
 
 ### Go
 
@@ -259,7 +259,7 @@ errors.Is / errors.As            // Error comparison
 context.Context                  // Cancellation/timeouts
 ```
 
-**Reference**: [Doctrine Go Guide](../test-writer/go.md)
+**Reference**: [crefft Go Guide](../test-writer/go.md)
 
 ### Rust
 
@@ -276,7 +276,7 @@ panic!() in library              // Return Result
 impl From<E> for Error           // Error conversion
 ```
 
-**Reference**: [Doctrine Rust Guide](../../guides/languages/rust.md) and its [topic guides](../../guides/languages/rust/README.md)
+**Reference**: [crefft Rust Guide](../../guides/languages/rust.md) and its [topic guides](../../guides/languages/rust/README.md)
 
 ### Ruby / Rails
 
@@ -297,7 +297,7 @@ strong_parameters                # Allowlist fields
 frozen_string_literal: true      # Memory optimization
 ```
 
-**Reference**: [Doctrine Ruby Guide](../../guides/languages/ruby.md)
+**Reference**: [crefft Ruby Guide](../../guides/languages/ruby.md)
 
 ---
 
@@ -307,7 +307,7 @@ frozen_string_literal: true      # Memory optimization
 
 - Every issue **MUST** include a fix or clear next step
 - Provide code examples, not just descriptions
-- Link to Doctrine guides for context
+- Link to crefft guides for context
 
 ### Be Calibrated
 
@@ -327,9 +327,9 @@ frozen_string_literal: true      # Memory optimization
 - Note good test coverage
 - Recognize appropriate design patterns
 
-### Reference Doctrine
+### Reference crefft
 
-When applicable, link to Doctrine guides:
+When applicable, link to crefft guides:
 
 - `[See: Python Guide](../../guides/languages/python.md)`
 - `[See: Rust Testing Tools](../../guides/languages/rust/testing.md)`

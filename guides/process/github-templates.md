@@ -1,6 +1,6 @@
 # GitHub Templates Guide
 
-> [Doctrine](../../README.md) > [Process](../README.md) > GitHub Templates
+> [crefft](../../README.md) > [Process](../README.md) > GitHub Templates
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -483,5 +483,5 @@ build/
 ## See Also
 
 - [CI/CD Guide](ci.md) - CI workflow configuration and automation
-- [Versioning Guide](versioning.md) - Semantic versioning and changelog management
+- [Versioning Guide](versioning.md) - CalVer, Go exception and changelog management
 - [Testing Guide](testing.md) - Testing strategy and best practices

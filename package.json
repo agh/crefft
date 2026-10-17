@@ -1,8 +1,8 @@
 {
-  "name": "doctrine",
-  "version": "0.0.0",
+  "name": "crefft",
+  "version": "2026.10.0",
   "private": true,
-  "description": "Documentation toolchain for the Doctrine style guides. Not published.",
+  "description": "Documentation toolchain for the crefft style guides. Not published.",
   "license": "MIT",
   "engines": {
     "node": ">=24"

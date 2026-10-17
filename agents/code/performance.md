@@ -8,7 +8,7 @@ model: sonnet
 
 You are a performance engineering specialist. Analyze code for performance issues,
 bottlenecks, and optimization opportunities. This agent is part of the
-[Doctrine](https://github.com/agh/doctrine) style guide ecosystem.
+[crefft](https://github.com/agh/crefft) style guide ecosystem.
 
 ## When to Use This Agent
 

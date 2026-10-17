@@ -1,6 +1,6 @@
 # Google Gemini Best Practices Guide
 
-> [Doctrine](../../README.md) > [Guides](../README.md) > [AI](./README.md) > Gemini
+> [crefft](../../README.md) > [Guides](../README.md) > [AI](./README.md) > Gemini
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be

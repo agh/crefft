@@ -1,6 +1,6 @@
-# Gitleaks configuration for Doctrine
+# Gitleaks configuration for crefft
 #
-# Doctrine is a style-guide repository: it deliberately contains "never do
+# crefft is a style-guide repository: it deliberately contains "never do
 # this" examples with secret-shaped placeholder strings. A naive scan flags
 # them, which is exactly what broke the previous grep-based check in
 # .github/workflows/doc-lint.yml.
@@ -13,7 +13,7 @@
 # Pinned tool: gitleaks 8.30.1 (see .github/workflows/doc-lint.yml and Makefile).
 # Schema reference: https://github.com/gitleaks/gitleaks#configuration
 
-title = "Doctrine"
+title = "crefft"
 
 [extend]
 # Inherit every upstream detection rule. Do not narrow this.
@@ -39,7 +39,7 @@ paths = [
 # still scanned with the unmodified upstream ruleset.
 # ---------------------------------------------------------------------------
 [[allowlists]]
-description = "Obvious placeholder idioms in Doctrine's own Markdown guides"
+description = "Obvious placeholder idioms in crefft's own Markdown guides"
 targets = ["secret"]
 condition = "AND"
 paths = [
@@ -66,7 +66,7 @@ regexes = [
 # example, not a credential.
 # ---------------------------------------------------------------------------
 [[allowlists]]
-description = "Reviewed literal examples in Doctrine guides"
+description = "Reviewed literal examples in crefft guides"
 targets = ["secret"]
 regexes = [
   # guides/ai/security.md — fabricated "leaked .env" example. Keyboard walk.

@@ -3282,7 +3282,7 @@ Please:
 
 ## Documentation Agent Suite
 
-Doctrine includes a comprehensive multi-agent documentation system - the most
+crefft includes a comprehensive multi-agent documentation system - the most
 advanced open-source AI documentation suite available.
 
 ### Agent Architecture
@@ -3352,7 +3352,7 @@ Agents live in `agents/` and slash commands in `commands/` at the repository
 root; `configs/claude/` holds Claude Code settings and skills:
 
 ```text
-doctrine/
+crefft/
 ├── agents/
 │   └── docs/
 │       ├── architect.md       # Documentation planning
@@ -3372,7 +3372,7 @@ doctrine/
         └── settings.json      # Claude Code configuration
 ```
 
-See [Syncing from Doctrine](./claude-code.md#syncing-from-doctrine) for
+See [Syncing from crefft](./claude-code.md#syncing-from-crefft) for
 installing these into a project's `.claude/` directory.
 
 ## See Also

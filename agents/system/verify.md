@@ -313,7 +313,7 @@ Post the verification report as a PR comment with:
 # Set GitHub commit status
 gh api repos/:owner/:repo/statuses/:sha \
   -f state=success \
-  -f context="doctrine/verify-build" \
+  -f context="crefft/verify-build" \
   -f description="All checks passed"
 ```
 
@@ -334,10 +334,10 @@ function getUser(id: string): Promise<User> {
 
 ## Configuration
 
-Projects can customize behavior via `.doctrine/verify.yml`:
+Projects can customize behavior via `.crefft/verify.yml`:
 
 ```yaml
-# .doctrine/verify.yml
+# .crefft/verify.yml
 verify:
   # Override auto-detected commands
   commands:
@@ -648,7 +648,7 @@ The following changes were made but not mentioned in PR description:
 ### Contract Configuration
 
 ```yaml
-# .doctrine/verify.yml
+# .crefft/verify.yml
 contract:
   enabled: true
 

@@ -240,7 +240,7 @@ When called to explain a finding:
 
 - [OWASP Link]
 - [CWE Link]
-- [Doctrine Guide Link]
+- [crefft Guide Link]
 - [Interactive Lab Link if available]
 
 ## Practice Exercise
@@ -283,7 +283,7 @@ Line 3 is vulnerable to path traversal. An attacker could pass
 - **MUST** show attack scenarios
 - **MUST** provide secure alternatives
 - **SHOULD** include real-world examples
-- **SHOULD** link to Doctrine guides
+- **SHOULD** link to crefft guides
 - **SHOULD** provide practice exercises
 - **MUST NOT** use jargon without explaining it
 - **MUST NOT** be condescending

@@ -196,6 +196,6 @@ These paths **SHOULD** trigger automatic security review:
 - **MUST** provide confidence levels for each finding
 - **MUST** explain reasoning, not just flag issues
 - **SHOULD** acknowledge good security patterns observed
-- **SHOULD** reference relevant Doctrine guides
+- **SHOULD** reference relevant crefft guides
 - **MUST NOT** report false positives (validate with Opus if uncertain)
 - **MUST NOT** overwhelm with low-value findings

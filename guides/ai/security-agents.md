@@ -1,6 +1,6 @@
 # Security Agent Family Guide
 
-> [Doctrine](../../README.md) > [AI](./README.md) > Security Agents
+> [crefft](../../README.md) > [AI](./README.md) > Security Agents
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
@@ -28,7 +28,7 @@ interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc
 
 ## Overview
 
-The Doctrine Security Agent Family is a coordinated set of specialized AI
+The crefft Security Agent Family is a coordinated set of specialized AI
 agents for comprehensive security analysis. Unlike monolithic security tools,
 this family provides:
 
@@ -42,7 +42,7 @@ this family provides:
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     DOCTRINE SECURITY AGENT FAMILY                          │
+│                      CREFFT  SECURITY AGENT FAMILY                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │                      ┌────────────────────────────┐                         │
@@ -804,18 +804,18 @@ keys. Everything below uses only settings that exist.
 
 ### Install the Agents and Commands
 
-Copy or symlink the Doctrine definitions into the project scope:
+Copy or symlink the crefft definitions into the project scope:
 
 ```bash
 # Run from the root of the project you are protecting.
-DOCTRINE=../doctrine                      # path to your Doctrine checkout
+CREFFT=../crefft                      # path to your crefft checkout
 mkdir -p .claude/agents/security .claude/commands
 
-cp "$DOCTRINE"/agents/security/*.md .claude/agents/security/
-cp "$DOCTRINE"/commands/security.md .claude/commands/
-cp "$DOCTRINE"/commands/security-fix.md .claude/commands/
-cp "$DOCTRINE"/commands/threat-model.md .claude/commands/
-cp "$DOCTRINE"/commands/incident.md .claude/commands/
+cp "$CREFFT"/agents/security/*.md .claude/agents/security/
+cp "$CREFFT"/commands/security.md .claude/commands/
+cp "$CREFFT"/commands/security-fix.md .claude/commands/
+cp "$CREFFT"/commands/threat-model.md .claude/commands/
+cp "$CREFFT"/commands/incident.md .claude/commands/
 ```
 
 Teams **MUST** commit `.claude/agents/` and `.claude/commands/` so every
@@ -1170,7 +1170,7 @@ drift under contributors.
 
 ### Custom Rules
 
-Claude Code does not read a `.claude/security-rules.yaml`, and Doctrine ships
+Claude Code does not read a `.claude/security-rules.yaml`, and crefft ships
 no parser for one. Project-specific rules go in `.claude/rules/`, where every
 `.md` file is loaded and a `paths` frontmatter list scopes a rule so it enters
 context only when Claude touches matching files:

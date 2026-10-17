@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Guard the verbatim third-party payloads under reference/.
 
-Vendored payloads are upstream documents. They are not Doctrine prose and MUST
+Vendored payloads are upstream documents. They are not crefft prose and MUST
 NOT be reformatted by markdownlint, prettier or any other auto-fixer: commit
 b6f870a stripped the whitespace after 474 list markers in the Google guides,
 which stopped them rendering as lists at all.
@@ -31,7 +31,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 REFERENCE_DIR = PROJECT_ROOT / "reference"
 CHECKSUM_FILE = REFERENCE_DIR / "CHECKSUMS.sha256"
 
-# Upstream families vendored verbatim. reference/security holds Doctrine-built
+# Upstream families vendored verbatim. reference/security holds crefft-built
 # data files and is checked by .github/workflows/check-security-refs.yml.
 VENDOR_DIRS = (
     "airbnb",
@@ -44,7 +44,7 @@ VENDOR_DIRS = (
     "uber",
 )
 
-# Doctrine-owned files that live beside the payloads.
+# crefft-owned files that live beside the payloads.
 EXCLUDED_NAMES = {".markdownlint.json"}
 
 BROKEN_ORDERED_MARKER = re.compile(r"^ {0,3}\d+[.)][^\s\d]")

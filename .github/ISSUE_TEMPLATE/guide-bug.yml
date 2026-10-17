@@ -1,5 +1,5 @@
 name: Bug in a guide
-description: A rule, example, command or link in a Doctrine guide is wrong.
+description: A rule, example, command or link in a crefft guide is wrong.
 title: "fix(<guide>): "
 labels: ["bug"]
 body:
@@ -11,7 +11,7 @@ body:
         broken link, or a claim that is not true.
 
         Do not use this for a security vulnerability. See
-        [SECURITY.md](https://github.com/agh/doctrine/blob/main/SECURITY.md).
+        [SECURITY.md](https://github.com/agh/crefft/blob/main/SECURITY.md).
 
   - type: input
     id: file
