@@ -6,6 +6,8 @@
   "release": "https://github.com/OWASP/ASVS/releases/tag/v5.0.0_release",
   "data_source": "https://github.com/OWASP/ASVS/blob/master/5.0/docs_en/OWASP_Application_Security_Verification_Standard_5.0.0_en.json",
   "license": "CC-BY-SA-4.0",
+  "license_url": "reference/security/LICENSES/CC-BY-SA-4.0.txt",
+  "restrictions": ["share-alike"],
   "description": "Framework of security requirements for designing, developing and testing secure web applications",
   "total_requirements": 345,
   "total_chapters": 17,

@@ -50,9 +50,62 @@ Two sources restrict commercial use: **CIS** and the **JA4+ variants**. Anyone
 redistributing crefft commercially **MUST** exclude `reference/security/cis/`
 and any JA4+ variant material, or obtain permission from the rights holders.
 
+## Machine-readable reviews
+
+The `license-review` comments below are the reviewed comparison anchors for
+`python3 scripts/check_licenses.py`. Registry entries **MUST** match these
+anchors, including their `restrictions` and any separately licensed
+`license_parts`. **Why**: a checksum proves integrity, not redistribution rights.
+
+`license_url` values are repository-root-relative paths, optionally with a
+Markdown heading fragment. `LicenseRef-` names identify the recorded terms,
+not an SPDX-approved license or an additional permission grant. For government
+works and EPSS, the linked notice records the rights statement; there is no
+separate license text in this repository.
+
+`reference/UPSTREAM.json` records style-guide labels and immutable-payload
+overrides; `reference/security/manifest.json` records security-source labels.
+Consumers **MUST** use these registries and apply `license_overrides`, rather
+than exporting an immutable payload's stale embedded label. **Why**: correcting
+metadata must not rewrite evidence or material whose notice forbids edits.
+
+`restrictions` uses `noncommercial`, `share-alike`, and `no-derivatives`.
+An empty list is not a waiver of attribution, notice, or other license duties.
+A pack builder **SHOULD** exclude sources with any of these flags by default.
+**Why**: unrestricted inclusion can impose conditions on a downstream pack.
+
+For example, do export `LicenseRef-MITRE-ATTACK` with its local terms link;
+do not export the superseded `CC-BY-4.0` label. For JA4+, the aggregate `AND`
+expression covers the combined file, while `license_parts` identifies BSD's
+JA4-only scope and FoxIO's scope for all other variants. For SBOM formats, the
+aggregate also retains the SPDX specification's pre-existing CC BY 3.0 portions;
+SWID text is not reproduced.
+
+The checker accepts JSON reference metadata. It fails closed on YAML metadata
+until a safe YAML parser is part of the check toolchain, rather than silently
+ignoring fields it cannot parse. `spdxId` example document identifiers and
+license-tracking capability booleans are not license declarations.
+
 ## Vendored style guides
 
 ### Google Style Guides
+
+<!-- license-review
+{
+  "sources": ["google"],
+  "paths": ["reference/google/"],
+  "license": "CC-BY-3.0",
+  "license_url": "reference/google/LICENSE",
+  "restrictions": [],
+  "license_parts": {
+    "code_samples": {
+      "license": "Apache-2.0",
+      "license_url": "reference/security/LICENSES/Apache-2.0.txt",
+      "restrictions": []
+    }
+  }
+}
+-->
 
 - **Upstream**: Google Style Guides — <https://github.com/google/styleguide>,
   <https://google.github.io/styleguide/>
@@ -77,6 +130,16 @@ and any JA4+ variant material, or obtain permission from the rights holders.
 
 ### Airbnb style guides
 
+<!-- license-review
+{
+  "sources": ["airbnb"],
+  "paths": ["reference/airbnb/"],
+  "license": "MIT",
+  "license_url": "reference/airbnb/LICENSE",
+  "restrictions": []
+}
+-->
+
 - **Upstream**: Airbnb JavaScript Style Guide —
   <https://github.com/airbnb/javascript> (`javascript.md`, `react.md`,
   `css-in-javascript.md`); Airbnb Ruby Style Guide —
@@ -96,6 +159,16 @@ and any JA4+ variant material, or obtain permission from the rights holders.
   all copies or substantial portions.
 
 ### SQL style guide (Simon Holywell)
+
+<!-- license-review
+{
+  "sources": ["holywell"],
+  "paths": ["reference/holywell/"],
+  "license": "CC-BY-SA-4.0",
+  "license_url": "reference/security/LICENSES/CC-BY-SA-4.0.txt",
+  "restrictions": ["share-alike"]
+}
+-->
 
 - **Upstream**: SQL style guide — <https://www.sqlstyle.guide/>,
   <https://github.com/treffynnon/sqlstyle.guide>
@@ -120,6 +193,16 @@ and any JA4+ variant material, or obtain permission from the rights holders.
 
 ### IETF RFC 2119
 
+<!-- license-review
+{
+  "sources": ["ietf"],
+  "paths": ["reference/ietf/"],
+  "license": "LicenseRef-IETF-RFC2119",
+  "license_url": "reference/ietf/NOTICE",
+  "restrictions": ["no-derivatives"]
+}
+-->
+
 - **Upstream**: S. Bradner, "Key words for use in RFCs to Indicate Requirement
   Levels", BCP 14, RFC 2119, March 1997 —
   <https://www.rfc-editor.org/rfc/rfc2119.txt>
@@ -141,6 +224,16 @@ and any JA4+ variant material, or obtain permission from the rights holders.
 
 ### RuboCop community style guides
 
+<!-- license-review
+{
+  "sources": ["rubocop"],
+  "paths": ["reference/rubocop/"],
+  "license": "CC-BY-3.0",
+  "license_url": "reference/rubocop/LICENSE",
+  "restrictions": []
+}
+-->
+
 - **Upstream**: Ruby Style Guide —
   <https://github.com/rubocop/ruby-style-guide>, <https://rubystyle.guide>;
   Rails Style Guide — <https://github.com/rubocop/rails-style-guide>,
@@ -159,6 +252,16 @@ and any JA4+ variant material, or obtain permission from the rights holders.
   (<https://creativecommons.org/licenses/by/3.0/>). Modified by crefft."
 
 ### Rust API Guidelines
+
+<!-- license-review
+{
+  "sources": ["rust"],
+  "paths": ["reference/rust/"],
+  "license": "MIT OR Apache-2.0",
+  "license_url": "reference/rust/LICENSE-MIT",
+  "restrictions": []
+}
+-->
 
 - **Upstream**: Rust API Guidelines —
   <https://github.com/rust-lang/api-guidelines>,
@@ -186,6 +289,16 @@ and any JA4+ variant material, or obtain permission from the rights holders.
 
 ### Shopify Ruby Style Guide
 
+<!-- license-review
+{
+  "sources": ["shopify"],
+  "paths": ["reference/shopify/"],
+  "license": "MIT",
+  "license_url": "reference/shopify/LICENSE",
+  "restrictions": []
+}
+-->
+
 - **Upstream**: <https://github.com/Shopify/ruby-style-guide>,
   <https://ruby-style-guide.shopify.dev/>
 - **Copyright**: Copyright (c) 2015-2022 Shopify Inc.
@@ -197,6 +310,16 @@ and any JA4+ variant material, or obtain permission from the rights holders.
 - **Required attribution**: retain the MIT copyright and permission notice.
 
 ### Uber Go Style Guide
+
+<!-- license-review
+{
+  "sources": ["uber"],
+  "paths": ["reference/uber/"],
+  "license": "Apache-2.0",
+  "license_url": "reference/uber/LICENSE",
+  "restrictions": []
+}
+-->
 
 - **Upstream**: <https://github.com/uber-go/guide>
 - **Copyright**: Copyright (c) Uber Technologies, Inc.
@@ -223,6 +346,16 @@ fields for each source are in `reference/security/manifest.json`.
 
 ### MITRE ATT&CK
 
+<!-- license-review
+{
+  "sources": ["mitre_attack"],
+  "paths": ["reference/security/mitre/attack/"],
+  "license": "LicenseRef-MITRE-ATTACK",
+  "license_url": "reference/security/LICENSES/MITRE-ATTACK-Terms-of-Use.txt",
+  "restrictions": []
+}
+-->
+
 - **Upstream**: MITRE ATT&CK — <https://attack.mitre.org/>,
   <https://github.com/mitre/cti>
 - **License**: MITRE ATT&CK Terms of Use. MITRE grants a non-exclusive,
@@ -241,6 +374,16 @@ fields for each source are in `reference/security/manifest.json`.
 
 ### MITRE ATLAS
 
+<!-- license-review
+{
+  "sources": ["mitre_atlas"],
+  "paths": ["reference/security/mitre/atlas/"],
+  "license": "Apache-2.0",
+  "license_url": "reference/security/LICENSES/Apache-2.0.txt",
+  "restrictions": []
+}
+-->
+
 - **Upstream**: <https://atlas.mitre.org/>,
   <https://github.com/mitre-atlas/atlas-data>
 - **Copyright**: Copyright 2021-2026 MITRE
@@ -256,6 +399,16 @@ fields for each source are in `reference/security/manifest.json`.
 
 ### MITRE D3FEND
 
+<!-- license-review
+{
+  "sources": ["mitre_d3fend"],
+  "paths": ["reference/security/mitre/d3fend/"],
+  "license": "MIT",
+  "license_url": "reference/security/LICENSES/MIT-D3FEND.md",
+  "restrictions": []
+}
+-->
+
 - **Upstream**: <https://d3fend.mitre.org/>,
   <https://github.com/d3fend/d3fend-ontology>
 - **Copyright**: Copyright (c) 2022 The MITRE Corporation
@@ -268,6 +421,16 @@ fields for each source are in `reference/security/manifest.json`.
 - **Previous label**: the manifest said Apache-2.0. That was wrong.
 
 ### MITRE CAPEC
+
+<!-- license-review
+{
+  "sources": ["mitre_capec"],
+  "paths": ["reference/security/mitre/capec/"],
+  "license": "LicenseRef-MITRE-CAPEC",
+  "license_url": "reference/security/LICENSES/MITRE-CAPEC-Terms-of-Use.txt",
+  "restrictions": []
+}
+-->
 
 - **Upstream**: <https://capec.mitre.org/>
 - **Copyright**: Copyright (c) 2007-2026, The MITRE Corporation
@@ -283,6 +446,16 @@ fields for each source are in `reference/security/manifest.json`.
 
 ### MITRE CWE
 
+<!-- license-review
+{
+  "sources": ["cwe"],
+  "paths": ["reference/security/cwe/"],
+  "license": "LicenseRef-MITRE-CWE",
+  "license_url": "reference/security/LICENSES/MITRE-CWE-Terms-of-Use.txt",
+  "restrictions": []
+}
+-->
+
 - **Upstream**: <https://cwe.mitre.org/>
 - **Copyright**: Copyright (c) 2006-2026, The MITRE Corporation
 - **License**: CWE Terms of Use — same structure as CAPEC.
@@ -294,6 +467,16 @@ fields for each source are in `reference/security/manifest.json`.
   CWE, CWSS, CWRAF, and the CWE logo are trademarks of The MITRE Corporation."
 
 ### OWASP (Top 10 families and ASVS)
+
+<!-- license-review
+{
+  "sources": ["owasp_top10", "owasp_asvs"],
+  "paths": ["reference/security/owasp/"],
+  "license": "CC-BY-SA-4.0",
+  "license_url": "reference/security/LICENSES/CC-BY-SA-4.0.txt",
+  "restrictions": ["share-alike"]
+}
+-->
 
 - **Upstream**: <https://owasp.org/Top10/>,
   <https://github.com/OWASP/Top10>, <https://github.com/OWASP/API-Security>,
@@ -316,6 +499,16 @@ fields for each source are in `reference/security/manifest.json`.
 
 ### SigmaHQ
 
+<!-- license-review
+{
+  "sources": ["sigma_rules"],
+  "paths": ["reference/security/sigma/"],
+  "license": "DRL-1.1",
+  "license_url": "reference/security/LICENSES/DRL-1.1.md",
+  "restrictions": []
+}
+-->
+
 - **Upstream**: <https://github.com/SigmaHQ/sigma>
 - **License**: split. The Sigma specification
   (<https://github.com/SigmaHQ/sigma-specification>) and the Sigma logo are
@@ -333,6 +526,28 @@ fields for each source are in `reference/security/manifest.json`.
   not used LGPL for the rules.
 
 ### JA4 and JA4+ (FoxIO)
+
+<!-- license-review
+{
+  "sources": ["ja4_signatures"],
+  "paths": ["reference/security/fingerprints/ja4/"],
+  "license": "BSD-3-Clause AND LicenseRef-FoxIO-1.1",
+  "license_url": "THIRD_PARTY_NOTICES.md#ja4-and-ja4-foxio",
+  "restrictions": ["noncommercial"],
+  "license_parts": {
+    "ja4": {
+      "license": "BSD-3-Clause",
+      "license_url": "reference/security/LICENSES/BSD-3-Clause-JA4.txt",
+      "restrictions": []
+    },
+    "ja4plus": {
+      "license": "LicenseRef-FoxIO-1.1",
+      "license_url": "reference/security/LICENSES/FoxIO-License-1.1.txt",
+      "restrictions": ["noncommercial"]
+    }
+  }
+}
+-->
 
 - **Upstream**: <https://github.com/FoxIO-LLC/ja4>
 - **Copyright**: Copyright (c) 2026 FoxIO, LLC
@@ -355,6 +570,16 @@ fields for each source are in `reference/security/manifest.json`.
 
 ### SLSA
 
+<!-- license-review
+{
+  "sources": ["slsa"],
+  "paths": ["reference/security/slsa/"],
+  "license": "Community-Spec-1.0",
+  "license_url": "reference/security/LICENSES/Community-Specification-1.0.md",
+  "restrictions": []
+}
+-->
+
 - **Upstream**: <https://slsa.dev/>, <https://github.com/slsa-framework/slsa>
 - **License**: **Community Specification License 1.0**
 - **License URL**:
@@ -370,6 +595,16 @@ fields for each source are in `reference/security/manifest.json`.
 
 ### OpenSSF Scorecard
 
+<!-- license-review
+{
+  "sources": ["openssf_scorecard"],
+  "paths": ["reference/security/openssf/"],
+  "license": "Apache-2.0",
+  "license_url": "reference/security/LICENSES/Apache-2.0.txt",
+  "restrictions": []
+}
+-->
+
 - **Upstream**: <https://securityscorecards.dev/>,
   <https://github.com/ossf/scorecard>
 - **License**: Apache License, Version 2.0
@@ -380,6 +615,28 @@ fields for each source are in `reference/security/manifest.json`.
   404).
 
 ### SBOM formats
+
+<!-- license-review
+{
+  "sources": ["sbom"],
+  "paths": ["reference/security/sbom/"],
+  "license": "Apache-2.0 AND Community-Spec-1.0 AND CC-BY-3.0",
+  "license_url": "THIRD_PARTY_NOTICES.md#sbom-formats",
+  "restrictions": [],
+  "license_parts": {
+    "cyclonedx": {
+      "license": "Apache-2.0",
+      "license_url": "reference/security/LICENSES/Apache-2.0.txt",
+      "restrictions": []
+    },
+    "spdx": {
+      "license": "Community-Spec-1.0 AND CC-BY-3.0",
+      "license_url": "THIRD_PARTY_NOTICES.md#sbom-formats",
+      "restrictions": []
+    }
+  }
+}
+-->
 
 - **Upstream**: CycloneDX — <https://github.com/CycloneDX/specification>;
   SPDX — <https://github.com/spdx/spdx-spec>; SWID — ISO/IEC 19770-2
@@ -395,6 +652,17 @@ fields for each source are in `reference/security/manifest.json`.
   crefft-written comparison of the formats.
 
 ### CIS Critical Security Controls
+
+<!-- license-review
+{
+  "sources": ["cis_controls"],
+  "paths": ["reference/security/cis/"],
+  "license": "CC-BY-NC-ND-4.0",
+  "license_url": "reference/security/LICENSES/CC-BY-NC-ND-4.0.txt",
+  "restrictions": ["noncommercial", "no-derivatives"],
+  "immutable": ["reference/security/cis/controls-v8.json"]
+}
+-->
 
 - **Upstream**: <https://www.cisecurity.org/controls/v8-1>
 - **Copyright**: Copyright (c) Center for Internet Security, Inc. (CIS)
@@ -426,6 +694,16 @@ titles plus links to the CIS publication.
 
 ### NIST
 
+<!-- license-review
+{
+  "sources": ["nist", "cryptographic_standards"],
+  "paths": ["reference/security/nist/", "reference/security/crypto/"],
+  "license": "LicenseRef-US-Government-Work",
+  "license_url": "THIRD_PARTY_NOTICES.md#nist",
+  "restrictions": []
+}
+-->
+
 - **Upstream**: <https://csrc.nist.gov/> (CSF 2.0, SP 800-53 r5, SP 800-207,
   SP 800-131A, SP 800-57, PQC)
 - **License**: works of the United States Government are not subject to
@@ -439,6 +717,16 @@ titles plus links to the CIS publication.
 
 ### CISA Known Exploited Vulnerabilities catalog
 
+<!-- license-review
+{
+  "sources": ["cisa_kev"],
+  "paths": ["reference/security/kev/"],
+  "license": "LicenseRef-US-Government-Work",
+  "license_url": "THIRD_PARTY_NOTICES.md#cisa-known-exploited-vulnerabilities-catalog",
+  "restrictions": []
+}
+-->
+
 - **Upstream**:
   <https://www.cisa.gov/known-exploited-vulnerabilities-catalog>
 - **License**: US Government work, not subject to domestic copyright
@@ -448,6 +736,16 @@ titles plus links to the CIS publication.
 - **Required attribution**: credit CISA as the source.
 
 ### EPSS (FIRST)
+
+<!-- license-review
+{
+  "sources": ["epss"],
+  "paths": ["reference/security/epss/"],
+  "license": "LicenseRef-FIRST-EPSS",
+  "license_url": "THIRD_PARTY_NOTICES.md#epss-first",
+  "restrictions": []
+}
+-->
 
 - **Upstream**: <https://www.first.org/epss/>
 - **License**: EPSS scores are published freely with no registration; FIRST
@@ -460,6 +758,20 @@ titles plus links to the CIS publication.
 - **Previous label**: the manifest said CC-BY-SA-4.0. That was wrong.
 
 ### crefft-authored security summaries
+
+<!-- license-review
+{
+  "sources": ["compliance", "container_security", "exploit_availability"],
+  "paths": [
+    "reference/security/compliance/",
+    "reference/security/containers/",
+    "reference/security/exploits/"
+  ],
+  "license": "MIT",
+  "license_url": "LICENSE",
+  "restrictions": []
+}
+-->
 
 `compliance/*.json`, `containers/container-security.json`, and
 `exploits/exploit-availability.json` are crefft's own writing. They name

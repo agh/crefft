@@ -3,6 +3,9 @@
   "version": "2025",
   "cwe_list_version": "4.19",
   "source": "https://cwe.mitre.org/top25/archive/2025/2025_cwe_top25.html",
+  "license": "LicenseRef-MITRE-CWE",
+  "license_url": "reference/security/LICENSES/MITRE-CWE-Terms-of-Use.txt",
+  "restrictions": [],
   "description": "Prioritized list of software weaknesses for code review",
   "methodology": "Based on CVE data analysis by CISA and HSSEDI/MITRE",
   "changelog_4_19": {

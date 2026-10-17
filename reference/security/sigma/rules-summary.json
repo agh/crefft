@@ -2,7 +2,9 @@
   "name": "Sigma Rules Index",
   "version": "r2024-12-15",
   "source": "https://github.com/SigmaHQ/sigma",
-  "license": "LGPL-2.1",
+  "license": "DRL-1.1",
+  "license_url": "reference/security/LICENSES/DRL-1.1.md",
+  "restrictions": [],
   "description": "Portable detection format for SIEM systems",
   "rule_format": {
     "title": "Human-readable rule name",

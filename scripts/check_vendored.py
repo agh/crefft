@@ -5,7 +5,9 @@ Vendored material under reference/ is stored byte-for-byte as published
 upstream. A formatter run (commit b6f870a) once rewrote list markers inside the
 Google style guides and silently corrupted them. This script guards against a
 repeat by checking every file listed in reference/UPSTREAM.json against its
-recorded sha256.
+recorded sha256. Normal verification also runs check_licenses.py against the
+reviewed third-party notices, making rights consistency blocking in the
+existing Make and CI vendored checks.
 
 An entry MAY declare one or more `transform`s, in which case the recorded
 `sha256` covers the transformed file and `upstream_sha256` covers the
@@ -33,6 +35,8 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+
+from check_licenses import main as check_licenses
 
 PROJECT_ROOT = Path(__file__).parent.parent
 MANIFEST_FILE = PROJECT_ROOT / "reference/UPSTREAM.json"
@@ -250,7 +254,7 @@ def main() -> int:
         print("If this is a deliberate vendor update, run: python3 scripts/check_vendored.py --refresh")
         return 1
     print(f"All {len(entries)} vendored file(s) match their recorded checksums.")
-    return 0
+    return check_licenses([])
 
 
 if __name__ == "__main__":

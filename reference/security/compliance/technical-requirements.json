@@ -1,4 +1,7 @@
 {
+  "license": "MIT",
+  "license_url": "LICENSE",
+  "restrictions": [],
   "name": "Technical Compliance Requirements",
   "version": "1.0.0",
   "description": "Actionable technical checks for Compliance Assessor agents",

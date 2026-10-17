@@ -2,6 +2,9 @@
   "name": "CWE Common Weaknesses Quick Reference",
   "version": "4.14",
   "source": "https://cwe.mitre.org/",
+  "license": "LicenseRef-MITRE-CWE",
+  "license_url": "reference/security/LICENSES/MITRE-CWE-Terms-of-Use.txt",
+  "restrictions": [],
   "description": "Frequently referenced CWEs beyond Top 25, categorized by domain",
   "categories": {
     "authentication": [

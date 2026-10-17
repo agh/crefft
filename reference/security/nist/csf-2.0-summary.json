@@ -3,7 +3,9 @@
   "version": "2.0",
   "released": "2024-02-26",
   "source": "https://csrc.nist.gov/pubs/cswp/29/the-nist-cybersecurity-framework-20/final",
-  "license": "Public Domain",
+  "license": "LicenseRef-US-Government-Work",
+  "license_url": "THIRD_PARTY_NOTICES.md#nist",
+  "restrictions": [],
   "description": "Framework for improving critical infrastructure cybersecurity",
   "data_source": "https://github.com/usnistgov/oscal-content/blob/main/nist.gov/CSF/v2.0/json/NIST_CSF_v2.0_catalog.json",
   "generation": {

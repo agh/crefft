@@ -4,6 +4,8 @@
   "released": "2024-12-01",
   "source": "https://owasp.org/www-project-mobile-top-10/",
   "license": "CC-BY-SA-4.0",
+  "license_url": "reference/security/LICENSES/CC-BY-SA-4.0.txt",
+  "restrictions": ["share-alike"],
   "description": "Top 10 security risks for mobile applications (iOS and Android)",
   "changelog": {
     "v2024": {

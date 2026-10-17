@@ -3,6 +3,9 @@
   "version": "19.2",
   "released": "2026-08-05",
   "source": "https://attack.mitre.org/",
+  "license": "LicenseRef-MITRE-ATTACK",
+  "license_url": "reference/security/LICENSES/MITRE-ATTACK-Terms-of-Use.txt",
+  "restrictions": [],
   "description": "Curated high-priority techniques for security agent analysis",
   "data_source": "https://github.com/mitre-attack/attack-stix-data/blob/master/enterprise-attack/enterprise-attack-19.2.json",
   "generation": {

@@ -3,6 +3,8 @@
   "version": "2023",
   "source": "https://owasp.org/API-Security/",
   "license": "CC-BY-SA-4.0",
+  "license_url": "reference/security/LICENSES/CC-BY-SA-4.0.txt",
+  "restrictions": ["share-alike"],
   "risks": [
     {
       "id": "API1:2023",

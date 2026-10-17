@@ -1,4 +1,7 @@
 {
+  "license": "MIT",
+  "license_url": "LICENSE",
+  "restrictions": [],
   "name": "Cross-Framework Control Mappings",
   "version": "1.0.0",
   "description": "Control mappings across major compliance frameworks for efficient multi-framework compliance",

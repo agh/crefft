@@ -4,6 +4,8 @@
   "released": "2025-11-06",
   "source": "https://owasp.org/Top10/2025/",
   "license": "CC-BY-SA-4.0",
+  "license_url": "reference/security/LICENSES/CC-BY-SA-4.0.txt",
+  "restrictions": ["share-alike"],
   "changelog": {
     "new_categories": [
       "A03:2025 - Software Supply Chain Failures (NEW)",

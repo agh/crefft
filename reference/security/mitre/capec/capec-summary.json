@@ -3,7 +3,9 @@
   "version": "3.9",
   "released": "2024-04-04",
   "source": "https://capec.mitre.org/",
-  "license": "CAPEC Terms of Use",
+  "license": "LicenseRef-MITRE-CAPEC",
+  "license_url": "reference/security/LICENSES/MITRE-CAPEC-Terms-of-Use.txt",
+  "restrictions": [],
   "description": "Comprehensive dictionary of known attack patterns used by adversaries",
   "total_patterns": 559,
   "changelog": {

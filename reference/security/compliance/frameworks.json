@@ -1,4 +1,7 @@
 {
+  "license": "MIT",
+  "license_url": "LICENSE",
+  "restrictions": [],
   "name": "Compliance Frameworks Reference",
   "version": "2.0.0",
   "description": "Comprehensive compliance framework reference for security agents",

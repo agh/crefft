@@ -3,7 +3,9 @@
   "version": "1.0",
   "released": "2025-01-22",
   "source": "https://d3fend.mitre.org/",
-  "license": "Apache-2.0",
+  "license": "MIT",
+  "license_url": "reference/security/LICENSES/MIT-D3FEND.md",
+  "restrictions": [],
   "description": "Knowledge graph of cybersecurity countermeasures and defensive techniques",
   "changelog": {
     "v1_0": {
