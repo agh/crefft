@@ -830,160 +830,123 @@ claude plugins install ralph-wiggum
 
 ---
 
+<a id="syncing-from-doctrine"></a>
+
 ## Syncing from crefft
 
-crefft provides standard Claude Code configurations. Both sync paths
-**MUST** use `scripts/sync-claude-config.sh`, the one implementation this
-guide tests.
+Manual installs and automated syncs **MUST** call
+[`scripts/sync-claude-config.sh`](../../scripts/sync-claude-config.sh) from a
+checkout at a pinned release tag. The script requires Bash, Git, and Python 3.
+It reads `agents/` and `commands/` at the repository root, plus
+`configs/claude/skills/`, `configs/claude/infrastructure/`, and
+`configs/claude/settings.json`. A missing component is an error before any
+destination write.
+
+### Why
+
+One applier gives manual installs and workflows the same source layout,
+ownership checks, and settings policy. Copying directories independently
+can delete project files or silently omit part of a release.
 
 ### Manual Sync
 
-```bash
-# Clone crefft once
-git clone https://github.com/agh/crefft.git ~/.crefft
+Run from the consuming project's root:
 
-# Copy the contents of configs/claude into .claude, following the
-# agents and commands symlinks
-mkdir -p ./.claude
-cp -rL ~/.crefft/configs/claude/. ./.claude/
+```bash
+CREFFT_REF=v2026.10.0
+git clone --branch "${CREFFT_REF}" --depth 1 \
+  https://github.com/agh/crefft.git "${HOME}/.crefft"
+"${HOME}/.crefft/scripts/sync-claude-config.sh" --ref "${CREFFT_REF}" "${PWD}"
 ```
+
+For an existing clone, fetch the chosen release, check it out, and call the
+same script:
+
+```bash
+CREFFT_REF=v2026.10.0
+git -C "${HOME}/.crefft" fetch --depth 1 origin \
+  "refs/tags/${CREFFT_REF}:refs/tags/${CREFFT_REF}"
+git -C "${HOME}/.crefft" checkout --detach "${CREFFT_REF}"
+"${HOME}/.crefft/scripts/sync-claude-config.sh" --ref "${CREFFT_REF}" "${PWD}"
+```
+
+**Do:** keep the checkout at the selected release and invoke its script.
+**Don't:** copy or mirror `configs/claude/` into the project; agents and
+commands no longer live there, and whole-directory deletion has no ownership
+boundary.
+
+### Ownership and Settings
+
+The script writes `.claude/crefft-receipt.json`, recording the release tag,
+resolved commit SHA, and SHA-256 of every installed file. Consumers **MUST**
+commit the receipt alongside the installed files.
+
+Later syncs replace or remove only receipt-owned files. Project-specific
+agents, commands, and skills beside those files survive. A conflicting
+unowned path, a symlink, or a locally modified owned file stops the entire
+sync with a conflict list before any write. The script never deletes whole
+component directories. Repeating the same release changes neither the files
+nor the receipt.
+
+For an earlier manual installation without a receipt, consumers **MAY** pass
+`--adopt` to claim existing files whose contents are identical to the release.
+Different contents still conflict; file modes and timestamps do not establish
+identity. Review and relocate conflicting files rather than deleting them
+blindly.
+
+Existing `.claude/settings.json` is kept, even on upgrades. It is installed
+only when absent unless `--overwrite-settings` explicitly permits replacing
+it. An existing unowned settings file is not claimed by default.
 
 #### Why
 
-Two details make this recipe work on GNU coreutils, which is what
-`ubuntu-latest` runners use:
-
-- **`configs/claude/.` rather than `configs/claude/`** — with GNU `cp -r`, a
-  source directory copied into an existing destination is nested inside it, so
-  `cp -r configs/claude/ ./.claude/` puts `settings.json` at
-  `.claude/claude/settings.json` on the second run. The `/.` form copies the
-  directory's *contents* and behaves identically whether `.claude` already
-  exists or not.
-- **`-L`** — `configs/claude/agents` and `configs/claude/commands` are
-  relative symlinks into the crefft repository root. GNU `cp -r` copies them
-  as symlinks, and they dangle at the destination, so no agent or command file
-  is installed. `-L` dereferences them and materializes the real trees.
-
-Verify a sync with the files the links are supposed to provide:
-
-```bash
-test -f .claude/settings.json
-test -f .claude/agents/code/architect.md
-test -f .claude/commands/code.md
-```
-
-The script replaces `.claude/agents`, `.claude/commands`, `.claude/skills`,
-and `.claude/infrastructure` from crefft, installs `.claude/settings.json`
-only when the project has none, and then verifies representative installed
-files. Pass `--overwrite-settings` to adopt crefft's settings over a
-project's own.
-
-crefft owns those four directories: the sync deletes each one before
-reinstalling it, so anything a project keeps there is removed. Claude Code
-loads project subagents from `.claude/agents/` and personal ones from
-`~/.claude/agents/`,[^9] so keep project-specific agents and commands in the
-user directory, contribute them to crefft, or install them from your own
-source directory in a step that runs after the sync.
-
-#### Why a plain copy fails
-
-**`cp -r configs/claude/ ./.claude/` does not install a usable configuration.**
-In the crefft checkout, `configs/claude/agents` and
-`configs/claude/commands` are symlinks to `../../agents` and `../../commands`.
-GNU `cp -r` copies the links verbatim, so the target project gets
-`.claude/agents -> ../../agents`, which resolves outside the project and does
-not exist; `test -e .claude/agents` fails. The script passes `-L` and explicit
-per-component destinations, so both arrive as real directories of files.
-
-**The same command behaves differently when `.claude` already exists.** With
-GNU `cp`, a directory operand copied into an existing directory lands inside
-it: the tree appears at `.claude/claude/`, the project's `.claude/settings.json`
-is left untouched, and Claude Code loads none of the new configuration while
-the sync still reports success. macOS `cp` instead merges the contents and
-overwrites the project's `settings.json`. The script names every source and
-destination path explicitly, so fresh and existing projects get the same
-result on both platforms.
-
-**Verify what was installed, not what was copied.** The script exits non-zero
-unless `.claude/settings.json`, `.claude/agents/code/reviewer.md`,
-`.claude/commands/code.md`, and `.claude/skills/README.md` exist as regular
-files at the paths Claude Code loads.[^9]
+The receipt is the deletion boundary, not the containing directory. Retaining
+it makes an upstream removal safe without removing a project's own
+configuration. Settings can contain project-specific permissions and hooks,
+so replacing them requires a separate opt-in.
 
 ### GitHub Action for Auto-Sync
 
-Use the maintained template at
-[`.github/workflows/sync-crefft.yml`](../../configs/github/workflows/sync-crefft.yml)
-rather than hand-rolling a workflow. Copy it into your project's
-`.github/workflows/`, then customize `SYNC_PATHS`:
+Use the maintained
+[`sync-crefft.yml` template](../../configs/github/workflows/sync-crefft.yml),
+not an embedded copying workflow:
 
-```yaml
-# .github/workflows/sync-crefft.yml
-name: Sync crefft Configs
-
-on:
-  schedule:
-    - cron: '0 0 * * 0'  # Weekly
-  workflow_dispatch:
-
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Fetch crefft configs
-        run: |
-          curl -sL https://github.com/agh/crefft/archive/main.tar.gz | tar xz
-          mkdir -p ./.claude
-          cp -rL crefft-main/configs/claude/. ./.claude/
-          test -f .claude/settings.json
-          test -f .claude/agents/code/architect.md
-          test -f .claude/commands/code.md
-          rm -rf crefft-main
-
-      - name: Create PR if changes
-        uses: peter-evans/create-pull-request@v5
-        with:
-          title: "chore: sync Claude configs from crefft"
-          commit-message: "chore: sync Claude configs from crefft"
-          branch: sync-crefft-configs
-          body: |
-            Automated sync of Claude Code configs from [crefft](https://github.com/agh/crefft).
+```bash
+mkdir -p .github/workflows
+curl -fsSL -o .github/workflows/sync-crefft.yml \
+  https://raw.githubusercontent.com/agh/crefft/v2026.10.0/configs/github/workflows/sync-crefft.yml
 ```
+
+Follow the [adoption notes](../../configs/github/README.md#adopting-sync-crefftyml)
+for repository permissions. The template checks out `CREFFT_REF`
+(`v2026.10.0` by default) into `.crefft-upstream/` and calls
+`.crefft-upstream/scripts/sync-claude-config.sh`. Set `CREFFT_COMMIT` to a
+reviewed full commit SHA for additional verification. Every action remains
+pinned by full SHA.
+
+The workflow opens a pull request containing only `.claude/` changes,
+including the receipt. A manual dry run invokes the same applier in a
+temporary project clone and reports changes without altering the project's
+workspace or opening a pull request.
 
 ### Version Pinning
 
-Pin to a release tag so config changes arrive on your schedule rather than
-upstream's. **The source paths differ by release**: `agents/` and `commands/`
-sit at the repository root only in releases *after* v2.11.0; in v2.11.0 and
-earlier they live under `configs/claude/`. Match `SYNC_PATHS` to the release
-you pin, or the sync step reports `Source not found` and copies nothing:
+Consumers **MUST** select a release tag, not `main`. The script verifies that
+`HEAD` resolves to that tag, that `VERSION` matches it, and that source inputs
+are clean. It records both the tag and resolved commit in the receipt.
+Tarball-only installs are not supported because they lack the Git metadata
+needed to verify the checkout.
 
-```yaml
-- name: Fetch crefft configs (pinned to v2026.10.0)
-  run: |
-    curl -sL https://github.com/agh/crefft/archive/refs/tags/v2026.10.0.tar.gz | tar xz
-    mkdir -p ./.claude/agents ./.claude/commands
-    cp -rL crefft-2026.10.0/configs/claude/. ./.claude/
-    cp -rL crefft-2026.10.0/agents/. ./.claude/agents/
-    cp -rL crefft-2026.10.0/commands/. ./.claude/commands/
-```
+Consumers **SHOULD** also supply `--commit` with a full SHA obtained through
+their release-review process; the workflow exposes the same check as
+`CREFFT_COMMIT`. A mismatch fails before destination writes. Passing the
+checkout's own SHA without independently reviewing it adds no protection.
 
-For a manual install from a pinned tarball (paths shown for v2026.10.0):
+#### Why
 
-```bash
-CREFFT_VERSION=2026.10.0
-curl -sL "https://github.com/agh/crefft/archive/refs/tags/v${CREFFT_VERSION}.tar.gz" | tar xz
-mkdir -p .claude
-rsync -aL --delete "crefft-${CREFFT_VERSION}/agents/"   .claude/agents/
-rsync -aL --delete "crefft-${CREFFT_VERSION}/commands/" .claude/commands/
-rsync -aL "crefft-${CREFFT_VERSION}/configs/claude/skills/" .claude/skills/
-cp "crefft-${CREFFT_VERSION}/configs/claude/settings.json" .claude/settings.json
-rm -rf "crefft-${CREFFT_VERSION}"
-```
-
-GitHub's tag archives preserve symlinks, so `-L` matters here: it turns any
-link in the archive into a regular file at the destination.
+A release pin makes updates deliberate. A separately reviewed commit pin
+also detects a moved tag. Checking the source tree prevents an edited
+checkout from claiming the identity of an unchanged release.
 
 ---
 

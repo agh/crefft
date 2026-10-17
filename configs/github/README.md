@@ -19,8 +19,8 @@ cannot schedule them inside crefft itself.
 
 [sync]: workflows/sync-crefft.yml
 
-[^scopes]: Requires `contents: write` and `pull-requests: write` to mirror
-    crefft's agents, commands, and Claude settings into your project.
+[^scopes]: Requires `contents: write` and `pull-requests: write` to propose
+    updates to crefft-owned Claude configuration files in your project.
 
 ## Why these are templates, not live workflows
 
@@ -43,25 +43,74 @@ Keeps a downstream project's `.claude/` tree in step with crefft.
 ```bash
 mkdir -p .github/workflows
 curl -fsSL -o .github/workflows/sync-crefft.yml \
-  https://raw.githubusercontent.com/agh/crefft/main/configs/github/workflows/sync-crefft.yml
+  https://raw.githubusercontent.com/agh/crefft/v2026.10.0/configs/github/workflows/sync-crefft.yml
 ```
 
 ### Configure
 
-Edit the `SYNC_PATHS` block. Each line is `source:destination`, where
-`source` is a path inside crefft and `destination` a path in your project:
+Set `CREFFT_REF` to the release tag you have reviewed. It **MUST NOT** be a
+branch such as `main`. The default is `v2026.10.0`. Optionally set
+`CREFFT_COMMIT` to the independently reviewed full commit SHA:
 
 ```yaml
-SYNC_PATHS: |
-  agents:.claude/agents
-  commands:.claude/commands
-  configs/claude/settings.json:.claude/settings.json
+env:
+  CREFFT_REPO: agh/crefft
+  CREFFT_REF: v2026.10.0
+  CREFFT_COMMIT: ''
 ```
 
-Directories are mirrored with `rsync --archive --delete`. A destination
-directory **MUST** contain only synced content: anything removed upstream is
-removed locally, so project-specific files placed there **WILL** be deleted.
-Keep local additions in a sibling directory.
+The template checks out that release into `.crefft-upstream/` and invokes
+`.crefft-upstream/scripts/sync-claude-config.sh --ref "${CREFFT_REF}"`, adding
+`--commit` when `CREFFT_COMMIT` is set. There is no separate copying logic
+or configurable `SYNC_PATHS` mapping. The runner needs Bash, Git, and Python 3.
+
+The applier verifies the checkout against the release tag and optional
+commit SHA before writing. It installs these fixed mappings:
+
+| Source in crefft | Destination in the project |
+| ---------------- | -------------------------- |
+| `agents/` | `.claude/agents/` |
+| `commands/` | `.claude/commands/` |
+| `configs/claude/skills/` | `.claude/skills/` |
+| `configs/claude/infrastructure/` | `.claude/infrastructure/` |
+| `configs/claude/settings.json` | `.claude/settings.json` |
+
+Every source component is required; a missing source fails before any write.
+Existing settings are preserved. Replacing them requires an explicit
+`--overwrite-settings` argument to the script; the template does not pass it.
+
+#### Why
+
+One applier keeps automated and manual installs consistent. A release pin
+prevents weekly jobs from following an unreviewed branch, and an independent
+commit pin detects a moved tag.
+
+### Ownership and adoption
+
+Consumers **MUST** retain and commit `.claude/crefft-receipt.json` with the
+installed files. It records the release, resolved commit, and SHA-256 of each
+installed file. Only previously recorded files can be replaced or removed.
+Project-specific files beside them survive.
+
+An unowned conflicting path stops the entire sync with a list of conflicts
+and no writes. For an earlier installation without a receipt, consumers
+**MAY** run the pinned script manually with `--adopt` to claim identical
+files. Adoption compares contents only; differing files still conflict.
+Locally modified owned files and symlinks also block the sync. Review
+conflicts rather than deleting project additions to make a run pass.
+
+**Do:** use the pinned script for adoption and keep its receipt.
+**Don't:** mirror a whole directory or move project-specific agents into a
+user's home directory merely to protect them from sync.
+
+See [manual sync](../../guides/ai/claude-code.md#manual-sync) for the same
+applier outside GitHub Actions.
+
+#### Why
+
+File-level ownership makes upstream deletion safe without granting crefft
+ownership of the project's entire `.claude/` tree. Preserving settings
+protects project-specific permissions and hooks.
 
 ### Repository settings
 
@@ -81,10 +130,20 @@ template prefers it when present.
 
 Run the workflow manually with **Preview changes without creating a pull
 request** ticked. The dry run reports `git status --porcelain` to the job
-summary and then restores the workspace. `dry_run` is a Boolean input, so the
-conditions compare `inputs.dry_run == true`; comparing against the string
-`'true'` — as the original did — is always false and lets a preview run open
-a pull request anyway.
+summary after running the applier in a temporary project clone. It neither
+changes the project's `.claude/` tree nor opens a pull request; there is no
+workspace-wide restore or clean step. `dry_run` is a Boolean input, so the
+conditions compare `inputs.dry_run == true`.
+
+The workflow validates `VERSION` as one calendar version before exporting it.
+Preview outputs enter the shell through `env:` and are printed with
+`printf '%s\n'`, never interpolated into shell source.
+
+#### Why
+
+A preview needs the same ownership checks as an install, without applying
+changes to the working project. Treating version and report values as data
+prevents filenames or upstream text from becoming shell commands.
 
 ## Adopting `doc-sync.yml`
 

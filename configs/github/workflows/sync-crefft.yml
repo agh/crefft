@@ -6,7 +6,7 @@
 #
 # Install:
 #   1. Copy to .github/workflows/sync-crefft.yml in your project.
-#   2. Review SYNC_PATHS below — the defaults suit a Claude Code project.
+#   2. Review CREFFT_REF and optionally set CREFFT_COMMIT below.
 #   3. Enable "Allow GitHub Actions to create and approve pull requests" in
 #      Settings > Actions > General. Without it, create-pull-request fails.
 #   4. Optionally set CREFFT_SYNC_TOKEN if you need the pull request to
@@ -35,19 +35,13 @@ permissions:
 
 env:
   CREFFT_REPO: agh/crefft
-  CREFFT_BRANCH: main
-  # source:destination, one per line. Sources are paths inside crefft.
-  # Directories are mirrored exactly with rsync --delete, so anything removed
-  # upstream is removed locally too. Do not point a destination at a directory
-  # that also holds project-specific files.
-  SYNC_PATHS: |
-    agents:.claude/agents
-    commands:.claude/commands
-    configs/claude/settings.json:.claude/settings.json
+  CREFFT_REF: v2026.10.0
+  # Optional full commit SHA: the applier verifies it against the release checkout.
+  CREFFT_COMMIT: ''
 
 jobs:
   sync:
-    name: Mirror crefft configuration
+    name: Sync owned crefft configuration
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -61,63 +55,56 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: ${{ env.CREFFT_REPO }}
-          ref: ${{ env.CREFFT_BRANCH }}
+          ref: ${{ env.CREFFT_REF }}
           path: .crefft-upstream
           persist-credentials: false
 
       - name: Sync configs
         id: sync
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
           set -euo pipefail
 
-          # Read the upstream version before the checkout is removed, so the
-          # commit message cannot say `unknown`.
-          version="$(cat .crefft-upstream/VERSION 2>/dev/null || echo unknown)"
-          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+          # Verify the optional pin before executing code from the upstream checkout.
+          commit="$(git -C .crefft-upstream rev-parse HEAD)"
+          if [ -n "${CREFFT_COMMIT}" ] && [ "${commit}" != "${CREFFT_COMMIT}" ]; then
+            printf '%s\n' '::error::crefft commit does not match CREFFT_COMMIT' >&2
+            exit 1
+          fi
+          version="$(cat .crefft-upstream/VERSION)"
+          if [[ ! "${version}" =~ ^[0-9]{4}\.(1[0-2]|[1-9])\.(0|[1-9][0-9]*)$ ]]; then
+            printf '%s\n' '::error::VERSION must contain one calendar version' >&2
+            exit 1
+          fi
 
-          while IFS= read -r mapping; do
-            [ -z "${mapping}" ] && continue
+          project_dir="${GITHUB_WORKSPACE}"
+          if [ "${DRY_RUN}" = 'true' ]; then
+            # Preview in a disposable project clone; never restore or clean the workspace.
+            preview_dir="$(mktemp -d "${RUNNER_TEMP}/crefft-preview.XXXXXXXX")"
+            trap 'rm -rf -- "${preview_dir}"' EXIT
+            git clone --quiet --no-hardlinks "${GITHUB_WORKSPACE}" "${preview_dir}"
+            project_dir="${preview_dir}"
+          fi
 
-            src="${mapping%%:*}"
-            dest="${mapping##*:}"
-            src_path=".crefft-upstream/${src}"
+          args=(--ref "${CREFFT_REF}")
+          if [ -n "${CREFFT_COMMIT}" ]; then
+            args+=(--commit "${CREFFT_COMMIT}")
+          fi
+          .crefft-upstream/scripts/sync-claude-config.sh "${args[@]}" "${project_dir}"
 
-            if [ ! -e "${src_path}" ]; then
-              echo "::warning::source not found upstream: ${src}"
-              continue
-            fi
-
-            mkdir -p "$(dirname "${dest}")"
-
-            if [ -d "${src_path}" ]; then
-              # --archive preserves modes and symlinks, --delete removes files
-              # dropped upstream, and the trailing slashes copy contents rather
-              # than nesting the directory. Dotfiles come along automatically:
-              # rsync has no glob to forget them, unlike `cp -r src/*`.
-              mkdir -p "${dest}"
-              rsync --archive --delete "${src_path}/" "${dest}/"
-            else
-              rsync --archive "${src_path}" "${dest}"
-            fi
-
-            echo "synced: ${src} -> ${dest}"
-          done <<< "${SYNC_PATHS}"
-
-          rm -rf .crefft-upstream
-
-          # git status --porcelain reports additions, modifications, *and*
-          # deletions, which a diff of tracked files alone would miss.
-          changed="$(git status --porcelain)"
+          printf 'version=%s\ncommit=%s\n' "${version}" "${commit}" >> "${GITHUB_OUTPUT}"
+          changed="$(git -C "${project_dir}" status --porcelain --untracked-files=all -- .claude)"
           if [ -n "${changed}" ]; then
-            echo "changes=true" >> "${GITHUB_OUTPUT}"
+            printf '%s\n' 'changes=true' >> "${GITHUB_OUTPUT}"
           else
-            echo "changes=false" >> "${GITHUB_OUTPUT}"
+            printf '%s\n' 'changes=false' >> "${GITHUB_OUTPUT}"
           fi
 
           {
-            echo 'report<<SYNC_REPORT_EOF'
-            echo "${changed:-No changes.}"
-            echo 'SYNC_REPORT_EOF'
+            printf '%s\n' 'report<<SYNC_REPORT_EOF'
+            printf '%s\n' "${changed:-No changes.}"
+            printf '%s\n' 'SYNC_REPORT_EOF'
           } >> "${GITHUB_OUTPUT}"
 
       - name: Dry run summary
@@ -125,32 +112,21 @@ jobs:
         # rather than the string `true`. On a scheduled run inputs.dry_run is
         # null and this step is skipped.
         if: inputs.dry_run == true
+        env:
+          SYNC_VERSION: ${{ steps.sync.outputs.version }}
+          SYNC_CHANGES: ${{ steps.sync.outputs.changes }}
+          SYNC_REPORT: ${{ steps.sync.outputs.report }}
         run: |
           {
-            echo '## crefft sync — dry run'
-            echo
-            echo "Upstream version: \`${{ steps.sync.outputs.version }}\`"
-            echo
-            if [ "${{ steps.sync.outputs.changes }}" = 'true' ]; then
-              echo 'A pull request would be opened with these changes:'
-              echo
-              echo '```'
-              echo "${{ steps.sync.outputs.report }}"
-              echo '```'
+            printf '%s\n' '## crefft sync — dry run' ''
+            printf '%s\n' "Upstream version: \`${SYNC_VERSION}\`" ''
+            if [ "${SYNC_CHANGES}" = 'true' ]; then
+              printf '%s\n' 'A pull request would be opened with these changes:' ''
+              printf '%s\n' '```' "${SYNC_REPORT}" '```'
             else
-              echo 'No changes detected.'
+              printf '%s\n' 'No changes detected.'
             fi
           } >> "${GITHUB_STEP_SUMMARY}"
-
-          # A dry run must not mutate anything, including the workspace.
-          # Restore tracked files, then discard only the untracked files under
-          # the sync destinations — never a blanket `git clean -fd`, which
-          # would also delete a developer's unrelated untracked work.
-          git checkout -- .
-          while IFS= read -r mapping; do
-            [ -z "${mapping}" ] && continue
-            git clean -fdq -- "${mapping##*:}" 2>/dev/null || true
-          done <<< "${SYNC_PATHS}"
 
       - name: Create pull request
         if: steps.sync.outputs.changes == 'true' && inputs.dry_run != true
@@ -160,20 +136,21 @@ jobs:
           commit-message: |
             chore: sync crefft configs to ${{ steps.sync.outputs.version }}
 
-            Mirrors ${{ env.CREFFT_REPO }}@${{ env.CREFFT_BRANCH }} into the
-            paths listed in SYNC_PATHS.
+            Apply ${{ env.CREFFT_REPO }}@${{ env.CREFFT_REF }} with its ownership receipt.
+            Upstream commit: ${{ steps.sync.outputs.commit }}
           title: 'chore: sync crefft configs to ${{ steps.sync.outputs.version }}'
           body: |
             ## crefft config sync
 
-            Mirrors agent and command definitions from
+            Applies the pinned Claude Code configuration from
             [${{ env.CREFFT_REPO }}](https://github.com/${{ env.CREFFT_REPO }}).
 
             - Upstream version: `${{ steps.sync.outputs.version }}`
-            - Source: `${{ env.CREFFT_REPO }}@${{ env.CREFFT_BRANCH }}`
+            - Source: `${{ env.CREFFT_REPO }}@${{ env.CREFFT_REF }}`
+            - Commit: `${{ steps.sync.outputs.commit }}`
 
-            Directories are mirrored with `rsync --archive --delete`, so files
-            removed upstream are removed here as well.
+            The upstream sync script replaces or removes only receipt-owned files.
+            Project additions survive, and existing settings are preserved.
 
             ### Changes
 
@@ -186,6 +163,7 @@ jobs:
             - Confirm no project-specific overrides were overwritten.
             - Exercise the agents and commands you rely on.
             - Review any permission or hook changes in `settings.json`.
+          add-paths: .claude/
           branch: chore/sync-crefft
           delete-branch: true
           labels: |
