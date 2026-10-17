@@ -61,7 +61,7 @@ body:
       label: Upstream style guides to reference
       description: >
         Existing authoritative guides for this topic, with URLs and their
-        licences. Anything vendored into `reference/` must have its licence
+        licenses. Anything vendored into `reference/` must have its license
         recorded in THIRD_PARTY_NOTICES.md.
 
   - type: textarea

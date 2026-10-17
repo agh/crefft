@@ -660,7 +660,7 @@ type explicitly either way.
 
 **Why**: basic authentication sends the password in an easily reversible form
 on every request. Digest does not, and stating the type explicitly means the
-2027.1.0 default change cannot alter the device's behaviour unannounced.
+2027.1.0 default change cannot alter the device's behavior unannounced.
 
 Two settings are conditional rather than universal:
 

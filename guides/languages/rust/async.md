@@ -354,7 +354,7 @@ where
 A `JoinHandle` resolves to `Result<T, JoinError>`. Production code **MUST**
 handle that error rather than unwrapping it.
 
-**Why**: `JoinError` means the task panicked or was cancelled. Unwrapping it
+**Why**: `JoinError` means the task panicked or was canceled. Unwrapping it
 turns one task's panic into the caller's panic, which in an `async fn` running
 on a shared runtime takes down the request that happened to be awaiting it and
 loses the original panic message.

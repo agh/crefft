@@ -14,7 +14,7 @@ What was wrong, missing or out of date. Link the issue if there is one:
 - [ ] Fix — a rule, example, command or link that was wrong
 - [ ] Version update — a pinned tool, action or reference version
 - [ ] New guide or new section
-- [ ] Provenance — licence, attribution or notice for vendored material
+- [ ] Provenance — license, attribution or notice for vendored material
 - [ ] Repository maintenance — CI, templates, tooling
 
 ## Sources
@@ -40,16 +40,18 @@ change makes no such claim.
 - [ ] No deprecated tool recommended without a migration path
 - [ ] Lines are at or below 100 characters
 - [ ] Content is linked, not duplicated across guides
-- [ ] British English in prose
+- [ ] US English spelling in prose, including Welsh-named projects; Welsh
+      names, proper nouns, quotations and upstream tool and code spellings
+      stay unchanged
 
 ## Vendored Material
 
 Tick if this PR touches anything under `reference/`, then confirm:
 
 - [ ] Not applicable
-- [ ] Upstream URL, licence, licence URL and required attribution are recorded
+- [ ] Upstream URL, license, license URL and required attribution are recorded
       in `THIRD_PARTY_NOTICES.md`
-- [ ] Licence text is present in the vendor directory where the licence
+- [ ] License text is present in the vendor directory where the license
       requires it
 - [ ] Modifications are recorded in the vendor directory's `NOTICE`
 - [ ] `reference/security/cis/` is untouched (CC BY-NC-ND 4.0, no derivatives)

@@ -531,7 +531,7 @@ darling = "0.24.1"  # darling[^25]
 **Why**: darling derives the parser from a struct definition, so unknown keys,
 missing required keys and wrong value types all produce spanned errors for
 free. Hand-written `Meta` traversal typically accumulates one `if` per key and
-degrades to ignoring anything unrecognised.
+degrades to ignoring anything unrecognized.
 
 ## References
 

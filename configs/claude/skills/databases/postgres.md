@@ -62,7 +62,7 @@ Error: Error validating query: DELETE FROM public.users
 ```
 
 **Why**: the access mode is the only server-side control over what the tool will
-execute. A pinned image tag keeps that behaviour reproducible; `latest` can
+execute. A pinned image tag keeps that behavior reproducible; `latest` can
 change the default under you.
 
 ### Multiple Databases
@@ -292,7 +292,7 @@ ORDER BY occurred_at;
 
 The `execute_sql` tool accepts a single `sql` string and no parameter array, so
 there is no bind channel through the MCP server. Agents **MUST** run
-parameterised statements through a client that binds values — `psql` with
+parameterized statements through a client that binds values — `psql` with
 `PREPARE`/`EXECUTE`, or a driver — and **MUST NOT** build the statement by
 interpolating an incident timestamp into the SQL text.
 

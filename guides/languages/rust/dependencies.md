@@ -27,7 +27,7 @@ cargo-audit[^3] checks the crates in `Cargo.lock` against the RustSec Advisory
 Database[^7]. It reports the advisory ID, the affected version range and the
 first patched release for each finding, and exits non-zero, which is what makes
 it usable as a CI gate. It reads the lockfile only, so it says nothing about
-licences, duplicate versions or crate provenance — those belong to cargo-deny,
+licenses, duplicate versions or crate provenance — those belong to cargo-deny,
 below.
 
 ```bash
@@ -47,8 +47,8 @@ cargo audit
 ## Dependency Policy and Supply Chain
 
 cargo-audit[^3] answers one question: are any dependencies subject to a
-published advisory? Projects **MUST** also enforce a licence and provenance
-policy. cargo-deny[^31] **MUST** be used for advisories, licences, banned
+published advisory? Projects **MUST** also enforce a license and provenance
+policy. cargo-deny[^31] **MUST** be used for advisories, licenses, banned
 crates and permitted sources. cargo-vet[^43] **SHOULD** be used where audit
 provenance is a requirement.
 
@@ -59,7 +59,7 @@ GPL crate entering an MIT product, about two incompatible versions of the same
 crate being linked in, or about a dependency being pulled from an unreviewed
 git remote rather than crates.io. cargo-deny checks all four in one pass and
 fails the build with a specific reason. cargo-vet goes further and records
-which human or organisation audited each version, so an upgrade is a reviewable
+which human or organization audited each version, so an upgrade is a reviewable
 event rather than a lockfile diff.
 
 ```bash
@@ -136,7 +136,7 @@ requirements, a worse outcome.[^45] The Cargo book states the same position:
 | Contributor CI stability | Unaffected by upstream yanks | Breaks on upstream yanks |
 | MSRV verification | A pinned graph that builds on the MSRV | Must be reconstructed each run |
 | Latest-dependency coverage | Requires a scheduled `cargo update` job | Automatic, on every run |
-| Binaries and reproducible artefacts | **Required** | Not acceptable |
+| Binaries and reproducible artifacts | **Required** | Not acceptable |
 
 ```yaml
 # The job a committed lockfile obliges you to add
@@ -219,7 +219,7 @@ upgraded".[^3] Running the mutating form first overwrites dependency
 requirements before anyone has seen what it proposes; the change surfaces only
 in the manifest diff or in the next failing build, and recovery depends on
 version control or on retyping the requirements by hand. The feature is
-labelled experimental upstream, which is a further reason to look before
+labeled experimental upstream, which is a further reason to look before
 writing.
 
 ```bash
@@ -267,7 +267,7 @@ updates:
 
 [^3]: [cargo-audit](https://github.com/rustsec/rustsec/tree/main/cargo-audit) - Audit Cargo.lock for security vulnerabilities
 [^7]: [RustSec Advisory Database](https://rustsec.org/) - Security advisory database for Rust crates
-[^31]: [cargo-deny](https://github.com/EmbarkStudios/cargo-deny) - Advisory, licence, ban and source policy for Cargo dependencies
+[^31]: [cargo-deny](https://github.com/EmbarkStudios/cargo-deny) - Advisory, license, ban and source policy for Cargo dependencies
 [^43]: [cargo-vet](https://mozilla.github.io/cargo-vet/) - Recording and enforcing dependency audits
 [^45]: [Change in Guidance on Committing Lockfiles](https://blog.rust-lang.org/2023/08/29/committing-lockfiles/) - The Cargo team's 2023 reversal
 [^46]: [Cargo.toml vs Cargo.lock](https://doc.rust-lang.org/cargo/guide/cargo-toml-vs-cargo-lock.html) - "When in doubt, check Cargo.lock into the version control system"

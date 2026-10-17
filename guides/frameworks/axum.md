@@ -167,7 +167,7 @@ Tokio ecosystem and want their middleware to be ordinary Tower layers.
 Choose between Axum, Actix-web[^5] and Rocket[^6] on criteria you can check
 against your own workload:
 
-| Criterion | Favours |
+| Criterion | Favors |
 | --------- | ------- |
 | The service already uses Tokio, Hyper, Tower or tonic | Axum — same runtime, same middleware, no bridging |
 | Middleware must be shared with non-HTTP services (gRPC, queues) | Axum — Tower layers are transport-agnostic |
@@ -189,7 +189,7 @@ of a different version on someone else's machine.
 
 ## Project Structure
 
-Projects **SHOULD** organise code by feature, so that everything one endpoint
+Projects **SHOULD** organize code by feature, so that everything one endpoint
 needs is in one directory:
 
 ```text
@@ -1278,7 +1278,7 @@ async fn rejections_map_to_documented_statuses() {
 }
 ```
 
-Timeouts and other deadline behaviour belong on Tokio's paused clock, so the
+Timeouts and other deadline behavior belong on Tokio's paused clock, so the
 suite does not spend the real duration waiting:
 
 ```rust
@@ -1334,7 +1334,7 @@ assert!(!response.status().is_success());
 
 **Why**: A rejection is part of the published contract, and Axum's rejections
 are not all the status a reader would guess: syntactically invalid JSON is
-`400`, but JSON that parses and then fails to deserialise is `422`, and the
+`400`, but JSON that parses and then fails to deserialize is `422`, and the
 wrong `Content-Type` is `415` before the body is looked at. Those three are
 easy to document wrongly and impossible to notice from a suite that only asserts
 `201`. The table form matters because the interesting property is the *set* of
@@ -1380,7 +1380,7 @@ method routes by panicking as the router is assembled, not by failing to
 compile. Without a test that assembles the whole router — including
 documentation and metrics routes merged in later — a stale `:id` capture
 or a path registered twice reaches production and crashes the process on
-start-up. Asserting the status is not `404` also proves the parameterised
+start-up. Asserting the status is not `404` also proves the parameterized
 route matched rather than merely existing.
 
 ## Database Integration
@@ -2096,7 +2096,7 @@ public key.
 `Validation` on its own only enforces `exp`. Issuer and audience are
 unchecked until `set_issuer` and `set_audience` are called, and `nbf` is
 unchecked until `validate_nbf` is set, so a token minted for a different
-service is otherwise accepted. `set_required_spec_claims` recognises
+service is otherwise accepted. `set_required_spec_claims` recognizes
 `exp`, `nbf`, `aud`, `iss` and `sub` only; any other required claim, such
 as `jti` for replay tracking, has to be checked by the application. Use
 short-lived access tokens with refresh-token rotation.
@@ -2242,7 +2242,7 @@ e.enforce((subject, object, action)).unwrap_or(false)
 supporting ACL, RBAC, and ABAC models. Policies can be stored in files or
 databases and modified at runtime without code changes.
 
-`unwrap_or(false)` fails closed, so it is not an authorisation bypass — but it
+`unwrap_or(false)` fails closed, so it is not an authorization bypass — but it
 is undiagnosable. A policy file that no longer parses, a matcher that refers to
 a removed attribute, or an adapter that cannot reach its store all present to
 the operator as users being denied access they should have, with nothing in the
@@ -2257,7 +2257,7 @@ reloads, which is precisely when a silent denial is hardest to trace.
 
 ### Tower-HTTP Auth Layers
 
-Projects **MAY** use tower-http[^13] layers to authorise requests before they
+Projects **MAY** use tower-http[^13] layers to authorize requests before they
 reach a handler. Credentials **MUST** come from configuration or application
 state, never from a literal in the source:
 
@@ -2489,7 +2489,7 @@ channel or convert with `.into()` at the send site.
 whenever a slow consumer falls behind the channel capacity. Treating that as
 termination drops the client mid-session with no close frame and no log line.
 Matching the two error variants separately keeps a lagging client connected and
-tells it to resynchronise, and reserves disconnection for `Closed`.
+tells it to resynchronize, and reserves disconnection for `Closed`.
 
 Axum's WebSocket support is built on tokio-tungstenite[^15] but exposes a stable
 API that will not break with internal updates. Use `socket.split()` to handle
@@ -2563,7 +2563,7 @@ Services **MUST** also:
 
 - serve WebSockets over `wss://` only, so the ticket and the frames are
   encrypted in transit;
-- re-check authorisation per message for anything privileged, because the
+- re-check authorization per message for anything privileged, because the
   connection outlives the token that opened it;
 - close connections whose session has expired or been logged out, rather than
   letting an open socket outlive its session record;
@@ -3372,16 +3372,16 @@ pub async fn get<T: DeserializeOwned>(&self, key: &str) -> Option<T> {
 
 **Why**: Redis provides distributed caching that survives application restarts
 and can be shared across multiple instances. deadpool-redis offers an async
-connection pool optimised for Tokio.
+connection pool optimized for Tokio.
 
 Collapsing failures into `None` is a defensible *policy* — an optional cache
 that is unreachable should not take the service down — but making it the
 signature's only option removes the choice. With `Option<T>`, a Redis outage
 looks exactly like a cold cache: the hit rate falls to zero, every request goes
 to the database, and nothing in the logs or metrics says why. A corrupt or
-schema-drifted entry is worse, because it re-serialises on every write and never
+schema-drifted entry is worse, because it re-serializes on every write and never
 recovers. Returning `Result<Option<T>, CacheError>` keeps the same runtime
-behaviour when the caller wants it, while making the fail-open decision explicit
+behavior when the caller wants it, while making the fail-open decision explicit
 at one place and countable.
 
 Import the Redis traits through `deadpool_redis::redis` rather than a separate
@@ -3970,7 +3970,7 @@ client.start().await?;
 testing and user targeting, so a flag can be flipped without a deployment.
 
 The 0.17 client is constructed by converting the builder — `into_client::<F>`
-takes the API URL, application name, instance id and optional authorisation in
+takes the API URL, application name, instance id and optional authorization in
 one call — and it is generic over a `FeatureKey` type, so `Client` alone is not
 a type. Startup is two steps that the removed `start` used to hide:
 `register()` announces the instance and its strategies once, and
@@ -3978,7 +3978,7 @@ a type. Startup is two steps that the removed `start` used to hide:
 metrics until `stop_poll()` is called. Spawning it without registering means the
 server never learns the instance exists; registering without polling means the
 flags never change after start-up. Both need to happen, and the polling task
-needs cancelling at shutdown or the last metrics window is lost.
+needs canceling at shutdown or the last metrics window is lost.
 
 A transport feature must be selected explicitly: `default_transport` is
 `#[cfg]`-gated on one of the `reqwest-client*` features, so a bare
@@ -4618,7 +4618,7 @@ scheduled rotation are prohibited rather than merely discouraged, because
 both push users towards predictable variants.
 
 Stating the rule in prose and annotating the schema does not implement it.
-Deserialising into `String` and validating later gives every future handler a
+Deserializing into `String` and validating later gives every future handler a
 chance to forget, and the compiler cannot help, because an unchecked password
 and a checked one have the same type. Parsing into `Password` moves the rule
 into the type: a handler that receives one is holding a value that has already

@@ -1648,7 +1648,7 @@ Django 5.2+ provides native async variants for all authentication operations.
 `request.user` resolves the session user synchronously, so touching it inside a
 coroutine either blocks the loop or raises `SynchronousOnlyOperation`;
 `await request.auser()` returns the same user without either. `JsonResponse`
-serialises with `DjangoJSONEncoder`, which handles dates, `Decimal` and `UUID`
+serializes with `DjangoJSONEncoder`, which handles dates, `Decimal` and `UUID`
 but not model instances — passing a `QuerySet` result straight through raises
 `TypeError: Object of type Order is not JSON serializable`. Every model
 **MUST** be converted to a dict or serializer output before it reaches the
@@ -1902,7 +1902,7 @@ rejects handshakes whose `Origin` is outside `ALLOWED_HOSTS`; use
 `OriginValidator` with an explicit list when the socket origins differ from the
 site's hosts. `AuthMiddlewareStack` only populates `scope["user"]` — it never
 rejects anyone, so an unguarded `self.accept()` admits `AnonymousUser` and any
-`\w+` room name the URL pattern matches. Authentication and authorisation are
+`\w+` room name the URL pattern matches. Authentication and authorization are
 separate decisions and both **MUST** be made before `group_add()`: once a
 channel is in a group it receives everything broadcast to that room. Public
 anonymous rooms are a legitimate policy, but they **MUST** be written as an
@@ -2896,7 +2896,7 @@ def test_missing_translation_falls_back_to_source():
 the next `_("Order created")` raises
 `TypeError: 'str' object is not callable`. Loop variables **MUST NOT** be named
 `_` in a module that imports `gettext` under that alias. Asserting expected
-catalogue values instead of "translation differs from source" also removes the
+catalog values instead of "translation differs from source" also removes the
 second fault: identical translations are legitimate, and the original test
 would have failed on them.
 

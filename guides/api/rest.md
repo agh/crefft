@@ -809,7 +809,7 @@ Projects **SHOULD** follow these versioning principles:
 
 ## Authentication
 
-### Credentials, Token Formats and Delegated Authorisation
+### Credentials, Token Formats and Delegated Authorization
 
 These three concerns are routinely conflated. Keep them separate:
 
@@ -817,7 +817,7 @@ These three concerns are routinely conflated. Keep them separate:
 | ----------------------- | --------------------------- | ------------------------------------- |
 | Credential              | API key, session cookie     | Who the caller claims to be           |
 | Token format            | JWT, opaque reference token | How a bearer token is encoded and checked |
-| Delegated authorisation | OAuth 2.0                   | How a user grants an application limited access |
+| Delegated authorization | OAuth 2.0                   | How a user grants an application limited access |
 
 **Why**: JWT is a token format, not an authentication scheme; a JWT is carried
 with the `Bearer` scheme defined in RFC 6750. OAuth 2.0 can issue tokens in
@@ -831,7 +831,7 @@ verify a signature and then trust whatever the payload asserts.
 | API keys                 | Server-to-server     | Long-lived; scope, rotate and revoke them |
 | Bearer tokens (RFC 6750) | Any client           | Short-lived; carries a JWT or opaque token |
 | OAuth 2.0 (BCP 240)      | Third-party access   | Delegated, scoped, user-consented         |
-| Session cookies          | Browser applications | Require `Secure`, `HttpOnly`, `SameSite` and CSRF defence |
+| Session cookies          | Browser applications | Require `Secure`, `HttpOnly`, `SameSite` and CSRF defense |
 
 ### Credentials in URLs
 
@@ -919,12 +919,12 @@ Projects using OAuth 2.0 **MUST** follow
 [RFC 9700](https://www.rfc-editor.org/rfc/rfc9700.html) (BCP 240, January
 2025), which updates RFCs 6749, 6750 and 6819:
 
-- Authorisation servers **MUST** support PKCE (RFC 7636) and public clients
+- Authorization servers **MUST** support PKCE (RFC 7636) and public clients
   **MUST** use it. `S256` is the only challenge method that does not expose
-  the verifier in the authorisation request.
+  the verifier in the authorization request.
 - The resource owner password credentials grant **MUST NOT** be used.
 - Clients **SHOULD NOT** use the implicit grant or any other response type
-  that returns an access token in the authorisation response.
+  that returns an access token in the authorization response.
 - Access tokens **SHOULD** be audience-restricted, and a resource server
   **MUST** refuse a request whose token was not issued for it.
 - Refresh tokens for public clients **MUST** be sender-constrained or
@@ -947,7 +947,7 @@ Authorization: Bearer <access-token>
 
 Projects **MUST** enforce scope on the server for every request. A scope in a
 token records what the user granted the client; it is not evidence that this
-request is permitted. See [Function-Level Authorisation](#function-level-authorisation).
+request is permitted. See [Function-Level Authorization](#function-level-authorization).
 
 ## Security
 
@@ -960,11 +960,11 @@ vendored in this repository at
 
 | Risk                                                 | Where this guide addresses it |
 | ---------------------------------------------------- | ----------------------------- |
-| API1 Broken object level authorization               | [Object-Level Authorisation](#object-level-authorisation) |
+| API1 Broken object level authorization               | [Object-Level Authorization](#object-level-authorization) |
 | API2 Broken authentication                           | [Authentication](#authentication) |
-| API3 Broken object property level authorization      | [Property-Level Authorisation](#property-level-authorisation) |
+| API3 Broken object property level authorization      | [Property-Level Authorization](#property-level-authorization) |
 | API4 Unrestricted resource consumption               | [Rate Limiting](#rate-limiting), [Pagination Defaults](#pagination-defaults), [Resource Consumption](#resource-consumption) |
-| API5 Broken function level authorization             | [Function-Level Authorisation](#function-level-authorisation) |
+| API5 Broken function level authorization             | [Function-Level Authorization](#function-level-authorization) |
 | API6 Unrestricted access to sensitive business flows | [Sensitive Business Flows](#sensitive-business-flows) |
 | API7 Server side request forgery                     | [Server-Side Request Forgery](#server-side-request-forgery) |
 | API8 Security misconfiguration                       | [HTTPS](#https), [Security Headers](#security-headers), [CORS](#cors) |
@@ -1048,7 +1048,7 @@ Access-Control-Allow-Headers: Content-Type, Authorization
 Access-Control-Max-Age: 86400
 ```
 
-### Object-Level Authorisation
+### Object-Level Authorization
 
 Every endpoint that accepts an object identifier **MUST** verify, on every
 request, that the authenticated caller may act on that specific object, using
@@ -1074,12 +1074,12 @@ they own order 1. Returning `404` rather than `403` for an object the caller
 may not see avoids confirming that the identifier exists.
 
 Projects **MUST NOT** rely on identifiers being unguessable. Random UUIDs
-raise the cost of enumeration; they are not an authorisation control.
+raise the cost of enumeration; they are not an authorization control.
 
-### Property-Level Authorisation
+### Property-Level Authorization
 
 Projects **MUST** allowlist the properties each caller may write, and the
-properties serialised into each response:
+properties serialized into each response:
 
 ```python
 WRITABLE_BY_OWNER = {"name", "email"}
@@ -1102,10 +1102,10 @@ def serialise_user(user, actor):
 
 **Why**: Rejecting unknown fields catches typos, not privilege escalation: a
 writable-but-privileged field such as `credit_limit` or `is_admin` is a known
-field. Serialising the whole record leaks properties the caller is not
+field. Serializing the whole record leaks properties the caller is not
 entitled to read, even when the client never displays them.
 
-### Function-Level Authorisation
+### Function-Level Authorization
 
 Projects **MUST** deny by default. Every route declares the permission it
 requires, and a route with no declared permission is unreachable:
@@ -1156,7 +1156,7 @@ apply controls proportionate to that harm:
 - Step-up verification before an irreversible or high-value step
 
 **Why**: This risk does not come from a defect. Every request is individually
-valid and individually authorised; the harm comes from volume and timing, so
+valid and individually authorized; the harm comes from volume and timing, so
 only a flow-level control sees it.
 
 ### Server-Side Request Forgery

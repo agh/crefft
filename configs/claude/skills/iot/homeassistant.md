@@ -434,7 +434,7 @@ action_approval:
 
 `automation.trigger` runs the automation's action block, and a script runs
 whatever it contains. Either can call `lock.unlock` or
-`alarm_control_panel.disarm`, so auto-approving them re-authorises exactly the
+`alarm_control_panel.disarm`, so auto-approving them re-authorizes exactly the
 actions the list above restricts.
 
 **Why**: the guard has to sit on the effect, not on the entry point. A rule

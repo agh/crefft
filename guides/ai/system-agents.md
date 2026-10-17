@@ -609,7 +609,7 @@ the settings object is omitted, so the keys install nothing.
 
 Teams **MUST** use project scope so the review contract is versioned with the infrastructure
 it reviews. Individuals working across unrelated repositories **SHOULD** use user scope.
-Plugin scope **SHOULD** be used when the family is distributed to other organisations,
+Plugin scope **SHOULD** be used when the family is distributed to other organizations,
 because plugin subagents load under a `<plugin>:<name>` namespace and cannot collide with a
 project's own definitions.
 

@@ -556,10 +556,10 @@ function setTheme(choice) {
 }
 ```
 
-### Native Control Colours
+### Native Control Colors
 
 `color-scheme` is a separate CSS property that tells the browser which palette
-to use for scrollbars, form controls and system colours. It is not the `dark`
+to use for scrollbars, form controls and system colors. It is not the `dark`
 variant. Projects **SHOULD** set it with the `scheme-*` utilities so native
 widgets follow the selected theme:
 

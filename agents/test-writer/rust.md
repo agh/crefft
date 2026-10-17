@@ -296,7 +296,7 @@ Time-dependent tests **MUST** drive a paused clock rather than sleeping.
 
 ### Why
 
-A unit test that dials `https://api.example.com` fails on an aeroplane, leaks
+A unit test that dials `https://api.example.com` fails on an airplane, leaks
 its result to whoever runs it, and turns an unrelated outage into a red build.
 A test that waits five real seconds is both slow and flaky: the deadline it
 asserts on depends on load. Tokio's `start_paused = true` auto-advances the
@@ -651,7 +651,7 @@ back to source. It **MUST NOT** infer coverage from a rendered summary.
 A pasted report fragment cannot be validated, cannot be diffed and cannot be
 turned into a list of files that need tests. The `llvm-cov export` JSON has a
 documented schema, a `type` discriminator and absolute filenames, so a parser
-can reject the wrong file, normalise paths against the workspace root and
+can reject the wrong file, normalize paths against the workspace root and
 rank targets deterministically.
 
 ### Schema
@@ -664,7 +664,7 @@ version `3.1.0`:
 | ---- | ------- |
 | `type` | Always `llvm.coverage.json.export`; reject anything else |
 | `data[].totals` | Workspace counters |
-| `data[].files[].filename` | Absolute path; normalise against the workspace root |
+| `data[].files[].filename` | Absolute path; normalize against the workspace root |
 | `data[].files[].summary.lines` | `{count, covered, percent}` |
 | `data[].files[].summary.regions` | `{count, covered, notcovered, percent}` |
 | `data[].files[].summary.branches` | All zero unless built with nightly `--branch` |

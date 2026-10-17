@@ -93,7 +93,7 @@ repositories.
 
 Read-only mode takes priority: write tools stay unregistered even when
 `--tools` names one. Lockdown mode is a best-effort content filter against
-prompt injection from public repository content, not an authorisation boundary —
+prompt injection from public repository content, not an authorization boundary —
 it does not change what the credential can read or write.
 
 ## Access Levels
@@ -107,7 +107,7 @@ The two vocabularies **MUST NOT** be mixed in one row.
 | `readonly` | Metadata: Read, Contents: Read, Issues: Read, Pull requests: Read | Analysis |
 | `read-write` | above, plus Issues: Write, Pull requests: Write | Automation |
 | `releases` | Metadata: Read, Contents: **Write** | Release mgmt |
-| `admin` | Administration: Write (organisation or repository) | Rarely needed |
+| `admin` | Administration: Write (organization or repository) | Rarely needed |
 
 Releases are created through the Contents permission. `write:packages` is a
 classic scope for publishing **packages**; it does not create releases, and
@@ -285,10 +285,10 @@ Agents **MUST**:
 - Read `retry-after` first, then `x-ratelimit-reset`, and wait the stated time.
   Retrying sooner extends the block.
 - Treat `403` and `429` with `x-ratelimit-remaining: 0` as rate limiting, not
-  as authorisation failure.
+  as authorization failure.
 - Use conditional requests (`If-None-Match`); `304` responses do not count
   against the primary limit.
-- Serialise writes rather than issuing them concurrently.
+- Serialize writes rather than issuing them concurrently.
 
 **Why**: secondary limits punish retry storms. A client that backs off on the
 server's own schedule recovers; one that retries immediately is blocked longer.
@@ -434,5 +434,5 @@ fail there. Use `pull_request_target` only with an explicit, reviewed checkout
 of the base ref; it runs with repository secrets against untrusted code.
 
 **Why**: `permissions` is declared per workflow because repository defaults
-differ between organisations. Declaring it makes the job's authority explicit
+differ between organizations. Declaring it makes the job's authority explicit
 and independent of a setting the workflow author cannot see.

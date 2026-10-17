@@ -35,7 +35,7 @@ A proposal **SHOULD** fall into one of four shapes:
 2. **Update a version** — a pinned tool version that has moved on, or a tool
    that is now deprecated.
 3. **Add a guide** — a language, framework or topic crefft does not cover.
-4. **Correct provenance** — attribution, licence or notice problems in
+4. **Correct provenance** — attribution, license or notice problems in
    `reference/` or [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 Open an issue first for anything larger than a fix. The issue forms in
@@ -61,8 +61,9 @@ These are the rules a reviewer will check. They are not negotiable.
 - **MUST NOT** recommend a deprecated tool without a migration path.
 - **SHOULD** keep lines at or below 100 characters, including code blocks.
 - **SHOULD** link to an existing guide rather than duplicating its content.
-- **SHOULD** use British English in prose. Tool names, flags and code keep
-  their upstream spelling.
+- **SHOULD** use US English spelling in all human-facing prose, including
+  Welsh-named projects. Welsh names, proper nouns, quotations and upstream
+  tool and code spellings stay unchanged.
 
 ### Verifying Time-Sensitive Claims
 
@@ -73,12 +74,12 @@ evidence. This applies to human and AI contributors alike.
 
 ### Vendored Material
 
-`reference/` holds third-party work under third-party licences.
+`reference/` holds third-party work under third-party licenses.
 
 - **MUST NOT** add material to `reference/` without also recording its
-  upstream URL, licence, licence URL and required attribution in
-  [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), and copying the licence
-  text into the vendor directory where the licence requires it.
+  upstream URL, license, license URL and required attribution in
+  [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), and copying the license
+  text into the vendor directory where the license requires it.
 - **MUST NOT** edit `reference/security/cis/` — that material is
   CC BY-NC-ND 4.0 and carries a NoDerivatives condition. See
   [`reference/security/cis/NOTICE`](reference/security/cis/NOTICE).

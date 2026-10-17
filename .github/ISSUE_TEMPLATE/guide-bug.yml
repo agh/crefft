@@ -56,7 +56,7 @@ body:
       label: Evidence
       description: >
         Link to upstream documentation, a release note, an issue or a commit
-        that shows the correct behaviour. Memory is not evidence.
+        that shows the correct behavior. Memory is not evidence.
       placeholder: https://docs.astral.sh/ruff/
     validations:
       required: true

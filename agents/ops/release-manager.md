@@ -239,7 +239,7 @@ Modes are described in the prompt, not passed as flags:
 
 | Mode | Prompt | Effect |
 | ---- | ------ | ------ |
-| Analyse | "Assess release readiness for `<sha>`. Do not change any files." | Assessment only |
+| Analyze | "Assess release readiness for `<sha>`. Do not change any files." | Assessment only |
 | Changelog | "Generate the changelog entry for `<version>`." | Returns entry text |
 | Dry run | "Simulate the release of `<version>` and report every action." | No mutation |
 | Execute | "Execute the release of `<version>` after I confirm." | Mutates on confirmation |
@@ -249,7 +249,7 @@ Modes are described in the prompt, not passed as flags:
 For every mode the agent:
 
 1. **Collects** signals from all sources, each bound to the release SHA
-2. **Analyses** changes semantically
+2. **Analyzes** changes semantically
 3. **Calculates** the confidence score
 4. **Calculates** a library's SemVer bump or anything else's next CalVer number
 5. **Generates** a changelog preview with `### Breaking` first when present

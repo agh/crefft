@@ -181,7 +181,7 @@ end
 Sessions are disabled by default, so an action that reads `request.session`
 **MUST** be backed by session configuration in the app class, and every
 collaborator a callback uses **MUST** be declared through `Deps`. Callbacks
-**MUST NOT** store per-request state in instance variables: Hanami memoises one
+**MUST NOT** store per-request state in instance variables: Hanami memoizes one
 action instance per component key and reuses it across requests. Pass state
 between callbacks through `response[]` instead.
 
@@ -312,7 +312,7 @@ end
 
 Views **SHOULD** contain presentation logic only, never business logic.
 
-Presentation behaviour attached to a domain object **MUST** live in a Hanami
+Presentation behavior attached to a domain object **MUST** live in a Hanami
 View part rather than an ad hoc presenter class. Exposures are undecorated by
 default in Hanami 3, so a view **MUST** ask for decoration explicitly with
 `decorate` or `decorate: true`.
@@ -458,7 +458,7 @@ auto-registration and struct lookup expect (`repos.post_repo`,
 
 Structs are the output of a repository: immutable projections of requested data,
 with no persistence logic. Attribute types come from the relation schema, so a
-struct class is only needed when adding behaviour.
+struct class is only needed when adding behavior.
 
 ```ruby
 # app/structs/post.rb

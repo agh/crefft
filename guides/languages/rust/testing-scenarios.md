@@ -9,9 +9,9 @@ BCP 14 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)
 [RFC 8174](https://datatracker.ietf.org/doc/html/rfc8174) when, and only
 when, they appear in all capitals, as shown here.
 
-This guide covers test patterns for behaviours that unit tests miss: end-to-end
+This guide covers test patterns for behaviors that unit tests miss: end-to-end
 acceptance, idempotence, reliability under failure, compatibility across
-versions and platforms, internationalisation, and data integrity. The toolchain,
+versions and platforms, internationalization, and data integrity. The toolchain,
 lint, formatting and pre-commit rules in the [Rust Style Guide](../rust.md)
 apply and are not repeated here, and so do the [dependency](dependencies.md) and
 [CI](ci.md) rules; every version quoted is listed in the
@@ -428,20 +428,20 @@ fn test_unicode_handling() {
 }
 ```
 
-### Unicode Normalisation
+### Unicode Normalization
 
-unic **MUST NOT** be used. Normalisation-only work **SHOULD** use
+unic **MUST NOT** be used. Normalization-only work **SHOULD** use
 unicode-normalization[^16]; locale-aware formatting, collation, segmentation
 and case mapping **SHOULD** use ICU4X[^47].
 
 **Why**: unic 0.9.0 was published on 3 March 2019 and carries Unicode 10 data.
 The current standard is Unicode 17.0.0, so unic classifies every character
-assigned since 2017 as unassigned and normalises them incorrectly or not at
+assigned since 2017 as unassigned and normalizes them incorrectly or not at
 all. unicode-normalization 0.1.25 exposes
 `unicode_normalization::UNICODE_VERSION == (17, 0, 0)`, matching the current
 standard, and does one job well. ICU4X is the choice when the requirement is
-internationalisation rather than normalisation: it carries CLDR locale data,
-which no normalisation crate does.[^48][^16][^47]
+internationalization rather than normalization: it carries CLDR locale data,
+which no normalization crate does.[^48][^16][^47]
 
 ```toml
 [dependencies]
@@ -454,8 +454,8 @@ unicode-normalization = "0.1.25"  # Unicode 17.0.0 data
 icu = "2.3.1"  # ICU4X[^47]
 ```
 
-Normalisation fixtures **MUST** be written with explicit Unicode escapes.
-Editors and clipboards silently normalise pasted text, so two literals that
+Normalization fixtures **MUST** be written with explicit Unicode escapes.
+Editors and clipboards silently normalize pasted text, so two literals that
 look different on screen can hold identical code points, which turns the
 assertion into a no-op or an outright failure.
 
@@ -641,10 +641,10 @@ async fn test_without_migrations(pool: PgPool) -> sqlx::Result<()> {
 
 [^12]: [cucumber-rs](https://github.com/cucumber-rs/cucumber) - Cucumber testing framework for Rust
 [^13]: [reqwest](https://github.com/seanmonstar/reqwest) - Ergonomic HTTP client for Rust
-[^16]: [unicode-normalization](https://github.com/unicode-rs/unicode-normalization) - Unicode normalisation for Rust, Unicode 17.0.0 data
+[^16]: [unicode-normalization](https://github.com/unicode-rs/unicode-normalization) - Unicode normalization for Rust, Unicode 17.0.0 data
 [^17]: [sqlx](https://github.com/transact-rs/sqlx) - Async SQL toolkit with compile-time checked queries
 [^29]: [GitHub Actions runner images](https://github.com/actions/runner-images) - Runner image labels and architectures
-[^47]: [ICU4X](https://unicode-org.github.io/icu4x/) - Unicode's internationalisation library for Rust
+[^47]: [ICU4X](https://unicode-org.github.io/icu4x/) - Unicode's internationalization library for Rust
 [^48]: [Unicode 17.0.0](https://www.unicode.org/versions/latest/) - The current version of the Unicode Standard
 
 ## See Also

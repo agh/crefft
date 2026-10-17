@@ -166,7 +166,7 @@ handler also fires for a deliberate `halt 404` from a route and replaces its
 body, discarding the specific message. The exception-keyed handler only
 covers unmatched routes.
 
-Records **MUST NOT** be serialised with `to_h`: `ActiveRecord::Base` does not
+Records **MUST NOT** be serialized with `to_h`: `ActiveRecord::Base` does not
 define it. Models **MUST** expose an explicit allowlist instead.
 
 ```ruby
@@ -772,7 +772,7 @@ end
 ```
 
 **Why lower-case header names?** Rack 3 requires every response header name
-to be lower case so that servers no longer have to normalise them.[^8]
+to be lower case so that servers no longer have to normalize them.[^8]
 Returning `"Content-Type"` fails validation with
 `Rack::Lint::LintError: uppercase character in header name: Content-Type`,
 and Sinatra 4 runs on Rack 3.

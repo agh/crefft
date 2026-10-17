@@ -137,13 +137,13 @@ decisions. Each collector MUST implement the `SignalCollector` interface.
 
 ### Evidence Binding
 
-Every signal **MUST** be bound to the exact artefact being released. A signal
+Every signal **MUST** be bound to the exact artifact being released. A signal
 that cannot be bound **MUST** be treated as missing, never as passing.
 
 #### Why
 
 Release readiness is a claim about one specific commit and one specific
-artefact. "Recent workflow runs are green" is not that claim: the green run
+artifact. "Recent workflow runs are green" is not that claim: the green run
 may have tested an earlier tree, an approval may predate the last force-push,
 and the scanned container may not be the one about to be published. GitHub's
 own protected-branch controls encode the same invariant — required status
@@ -164,7 +164,7 @@ Every collected signal record **MUST** carry:
 | `run_id` | `string` | Workflow run, job or scan ID that produced the evidence |
 | `event` | `string` | Trigger that produced it, e.g. `push`, `pull_request` |
 | `lockfile_digest` | `string` | SHA-256 of the resolved dependency lockfile |
-| `artifact_digest` | `string` | SHA-256 digest of the artefact the evidence covers |
+| `artifact_digest` | `string` | SHA-256 digest of the artifact the evidence covers |
 | `collected_at` | `timestamp` | When the collector read the evidence |
 | `expires_at` | `timestamp` | When the evidence stops counting |
 
@@ -175,14 +175,14 @@ Collectors **MUST**:
 - Reject any signal whose `evidence_sha` differs from `target_sha`.
 - Reject any signal read after its `expires_at`.
 - Reject any signal whose `artifact_digest` differs from the digest of the
-  artefact that will be promoted and published.
+  artifact that will be promoted and published.
 - Reject any dependency signal whose `lockfile_digest` differs from the
   lockfile at `target_sha`.
 - Record a rejection as a missing signal with its reason, so the confidence
   score and the report show the gap rather than silently omitting it.
 
 Collectors **MUST NOT** substitute evidence from a parent commit, a sibling
-branch, a rebuilt artefact, or a re-run whose inputs were not the target tree.
+branch, a rebuilt artifact, or a re-run whose inputs were not the target tree.
 
 ```yaml
 evidence_binding:
@@ -649,12 +649,12 @@ ID and is used to build submission endpoints such as
 it purely as a
 [transport credential for submitting events](https://develop.sentry.dev/sdk/foundations/transport/authentication/).
 
-Outcome tracking does the opposite: it **reads** organisation and project
+Outcome tracking does the opposite: it **reads** organization and project
 data. Those endpoints — for example
 `GET /api/0/organizations/{organization_id_or_slug}/stats_v2/`, which returns
 event counts by outcome — authenticate with
 [auth tokens](https://github.com/getsentry/sentry-docs/blob/master/docs/api/auth.mdx)
-passed as `Authorization: Bearer <token>`, and require an organisation
+passed as `Authorization: Bearer <token>`, and require an organization
 identifier that a DSN does not carry. Configuring only a DSN produces 401
 responses, so the entire outcome-tracking loop silently yields no data.
 
@@ -665,16 +665,16 @@ Collectors **MUST**:
   not a personal token tied to one engineer's account.
 - Request only the read
   [scopes](https://github.com/getsentry/sentry-docs/blob/master/docs/api/permissions.mdx)
-  the queries need — `org:read` for organisation statistics, `project:read`
+  the queries need — `org:read` for organization statistics, `project:read`
   for project metadata, `event:read` for issues and events.
-- Send the organisation slug or ID and the project slugs explicitly.
+- Send the organization slug or ID and the project slugs explicitly.
 - Follow [Link-header pagination](https://github.com/getsentry/sentry-docs/blob/master/docs/api/pagination.mdx)
   until the `rel="next"` link reports `results="false"`, rather than reading
   only the first page.
-- Honour the `X-Sentry-Rate-Limit-*` response
+- Honor the `X-Sentry-Rate-Limit-*` response
   [headers](https://github.com/getsentry/sentry-docs/blob/master/docs/api/ratelimits.mdx)
   and back off on 429. `stats_v2` is rate limited to 20 requests per second
-  per IP, user and organisation.
+  per IP, user and organization.
 
 Collectors **MUST NOT** put a DSN in a read configuration. A DSN belongs in a
 configuration block only where the agent itself emits telemetry to Sentry.
@@ -1579,7 +1579,7 @@ jobs:
 ```
 
 A full-history checkout supplies commits, not evidence identity. `fetch-depth:
-0` says nothing about which tree the tests ran against or which artefact was
+0` says nothing about which tree the tests ran against or which artifact was
 scanned, so `release_sha` **MUST** be resolved once and passed to every
 collector, and the collectors **MUST** apply the rules in
 [Evidence Binding](#evidence-binding).
@@ -1910,7 +1910,7 @@ The agent MUST:
 
 ### LLM Data Privacy
 
-Content **MUST** be sanitised before prompt construction, not after. Once a
+Content **MUST** be sanitized before prompt construction, not after. Once a
 credential reaches the provider it has left the trust boundary, and no
 downstream masking undoes that.
 

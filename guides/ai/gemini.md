@@ -215,8 +215,8 @@ knowledge cutoff January 2025[^5]
 
 - Strongest reasoning in the Gemini 3 family for broad world knowledge
 - Improved token efficiency and factual consistency over Gemini 3 Pro
-- Optimised for agentic workflows needing precise tool usage
-- A companion `gemini-3.1-pro-preview-customtools` endpoint that prioritises
+- Optimized for agentic workflows needing precise tool usage
+- A companion `gemini-3.1-pro-preview-customtools` endpoint that prioritizes
   caller-defined tools such as `view_file` or `search_code`[^5]
 
 **Use Cases**:
@@ -600,7 +600,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/etc/gemini/key.json"
 ```
 
 You SHOULD block the exception from becoming the habit by setting the
-organisation policy constraint that disables service account key creation, and
+organization policy constraint that disables service account key creation, and
 granting exemptions only to projects that have demonstrated they cannot use a
 safer method[^24].
 
@@ -679,7 +679,7 @@ Footnote markers MUST stay in the surrounding prose. A marker such as
 `[^n]` inside a command changes what the command means: `pip` reads
 `google-cloud-aiplatform[^n]` as a malformed extras group and refuses the
 requirement, and a shell reads `aiplatform.googleapis.com[^n]` as a bracket
-glob that can expand to a neighbouring filename.
+glob that can expand to a neighboring filename.
 
 #### SDK Installation
 
@@ -1764,7 +1764,7 @@ lifecycle dates.
 | `gemini-3.1-pro-preview`[^5] | 1,048,576 | 65,536        | ~800K words or ~3500 pages |
 
 No current Gemini model accepts more than 1M input tokens. Inputs larger than
-that MUST be split, summarised, or retrieved selectively; see
+that MUST be split, summarized, or retrieved selectively; see
 [Long Context Strategies](#long-context-strategies).
 
 **Token Estimation**:

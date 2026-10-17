@@ -392,12 +392,12 @@ id **MUST** be added to `allowed_mentions.roles`. A display name such as
 
 - **MUST NOT** post sensitive data (secrets, PII, credentials)
 - **MUST** set `allowed_mentions` explicitly on every payload
-- **MUST** sanitise any user-provided content before embedding it
+- **MUST** sanitize any user-provided content before embedding it
 - **MUST** include agent identifier in messages
 
 Embeds do **not** prevent injection. They constrain layout, not content: an
 embed field renders Markdown, renders links, and will happily carry text
-supplied by whoever filed the issue being summarised. The controls that do work
+supplied by whoever filed the issue being summarized. The controls that do work
 are mention suppression, length validation, and not turning untrusted strings
 into links.
 

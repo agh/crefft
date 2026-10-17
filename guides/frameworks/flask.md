@@ -78,7 +78,7 @@ def create_app(config: dict | None = None) -> Flask:
 **Why**: The application factory pattern enables multiple app instances with
 different configurations, facilitates testing, and defers extension
 initialization until configuration is loaded. Every extension instance
-**MUST** be initialised here: an extension that is only constructed in
+**MUST** be initialized here: an extension that is only constructed in
 `extensions.py` is never attached to the app, and the first request that
 depends on it fails at runtime.
 
@@ -471,7 +471,7 @@ def logout() -> tuple[dict, int]:
 session cookie and rebuilds `current_user` from it through the `user_loader`.
 Constructing `LoginManager()` in `extensions.py` only creates the object;
 `init_app` is what attaches it to an application instance[^7]. An
-uninitialised manager is not a login failure but a server error: every
+uninitialized manager is not a login failure but a server error: every
 `login_required` route returns 500 with `AttributeError: 'Flask' object has
 no attribute 'login_manager'`.
 

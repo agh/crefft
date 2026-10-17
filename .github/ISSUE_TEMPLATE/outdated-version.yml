@@ -64,7 +64,7 @@ body:
     attributes:
       label: Kind of change
       options:
-        - Patch or minor bump, no behaviour change
+        - Patch or minor bump, no behavior change
         - Major bump, breaking changes
         - Tool deprecated or replaced
         - Security release

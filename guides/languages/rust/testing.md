@@ -128,7 +128,7 @@ cargo +nightly-2026-09-01 fuzz run my_target fuzz/corpus/my_target \
 ### Fuzzing in CI
 
 The nightly toolchain **MUST** be pinned by date, the corpus **MUST** be
-persisted between runs, and crash artefacts **MUST** be uploaded.
+persisted between runs, and crash artifacts **MUST** be uploaded.
 
 **Why**: an unpinned `+nightly` makes the job fail on unrelated compiler
 changes with no diff to explain it. A corpus that is discarded each run
@@ -209,7 +209,7 @@ so the shrunk counterexample becomes a permanent regression test.
 ## Mutation Testing
 
 Projects **SHOULD** run cargo-mutants[^33] to measure whether the test suite
-actually detects changed behaviour.
+actually detects changed behavior.
 
 ### Why
 
@@ -399,7 +399,7 @@ async fn test_concurrent_access() {
 ### Concurrency Testing with loom
 
 Loom[^15] **MUST** be declared as a `cfg(loom)` target dependency, the model
-**MUST** use Loom's instrumented synchronisation types, and the test **MUST**
+**MUST** use Loom's instrumented synchronization types, and the test **MUST**
 be run with `--cfg loom` set.
 
 **Why**: Loom cannot observe `std::sync::atomic` or `std::thread`. It permutes

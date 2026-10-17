@@ -76,7 +76,7 @@ against anyone reporting in good faith.
 
 - **MUST** review any configuration, workflow or command before copying it
   into a project. crefft's material is a starting point, not an audited
-  artefact.
+  artifact.
 - **MUST** re-pin GitHub Actions to a commit SHA you have verified yourself
   rather than trusting a tag.
 - **MUST NOT** treat `reference/security/` as live threat intelligence. It is

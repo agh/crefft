@@ -102,7 +102,7 @@ The month and counter **MUST NOT** contain leading zeros.
 ### Why
 
 A release number identifies when a release was made and its order within
-that month. It does not encode a judgement about compatibility. The format
+that month. It does not encode a judgment about compatibility. The format
 also has valid SemVer syntax[^2]: npm, Cargo, PEP 440 and Homebrew accept
 `2026.10.0`. npm, Cargo and Go reject leading zeros, so `2026.03.001`
 is not a portable alternative.

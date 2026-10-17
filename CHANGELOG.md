@@ -13,6 +13,9 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
   everything else uses calendar versioning (`YYYY.M.N`). Projects that
   publish both commands and importable packages count as libraries, and
   release automation selects the matching calculation.
+- Human-facing prose now uses US English spelling, including in Welsh-named
+  projects. Welsh names, proper nouns, quotations and upstream tool and code
+  spellings remain unchanged.
 
 ## [2026.10.0] - 2026-10-17
 
@@ -65,8 +68,8 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
   testing, and a tested version matrix. Axum guide: HTTP hardening, WebSocket
   controls, RFC 9457 problem details, negative and lifecycle tests.
 - `LICENSE` (MIT) for crefft-authored content and `THIRD_PARTY_NOTICES.md`
-  recording the licence, upstream and required attribution of every vendored
-  source, with licence texts and NOTICE files placed next to the material
+  recording the license, upstream and required attribution of every vendored
+  source, with license texts and NOTICE files placed next to the material
   under `reference/`.
 - Community files mandated by the GitHub templates guide: `CONTRIBUTING.md`,
   `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0), `SECURITY.md`, three
@@ -109,7 +112,7 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
   `ServiceBuilder` layer-order rules corrected.
 - `CLAUDE.md` and `GEMINI.md` are real files importing `AGENTS.md` instead
   of symlinks, and the `configs/claude/agents` and `configs/claude/commands`
-  symlinks are removed in favour of the root `agents/` and `commands/`
+  symlinks are removed in favor of the root `agents/` and `commands/`
   directories, so source archives and Windows clones work.
 - `AGENTS.md` now describes the actual repository tree, adds a Commands
   section, uses the full BCP 14 boilerplate (RFC 2119 and RFC 8174) and
@@ -121,9 +124,9 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
   reference monitor reads SLSA from tags and fails on HTTP errors.
 - `sync-crefft.yml` and `doc-sync.yml` moved to
   `configs/github/workflows/` as downstream templates, with the Boolean
-  `dry_run` comparison, `rsync --delete` synchronisation and complete
+  `dry_run` comparison, `rsync --delete` synchronization and complete
   change reporting fixed.
-- `reference/security/manifest.json` licence fields corrected (MITRE terms,
+- `reference/security/manifest.json` license fields corrected (MITRE terms,
   Apache-2.0 for ATLAS, DRL 1.1 for Sigma, FoxIO 1.1 for JA4+, Community
   Specification 1.0 for SLSA) and review dates brought forward.
 

@@ -32,7 +32,7 @@ here is listed in [Tested Version Matrix](rust/versions.md#tested-version-matrix
 | Public API compatibility | cargo-semver-checks[^34] | `cargo semver-checks` |
 | Test suite throughput | cargo-nextest[^11] | `cargo nextest run --all-features` |
 | Benchmarks | Criterion[^35] | `cargo bench` |
-| Undefined behaviour | Miri[^26] | `cargo +nightly-2026-09-01 miri test` |
+| Undefined behavior | Miri[^26] | `cargo +nightly-2026-09-01 miri test` |
 
 `cargo test -- --test-threads=N` controls libtest concurrency, not performance. Measure
 performance with Criterion[^35] and suite wall-clock time with cargo-nextest[^11]; the two
@@ -120,7 +120,7 @@ cargo metadata --format-version 1 --locked \
 
 MSRV and stable **MUST** be separate jobs. A single "stable" lane proves
 nothing about the MSRV, and an MSRV-only lane misses new lints and new
-compiler behaviour.
+compiler behavior.
 
 ```yaml
 jobs:
@@ -325,7 +325,7 @@ cargo fmt -- --check
 ### Configuration (rustfmt.toml)
 
 `rustfmt.toml` **MUST** contain only options that are stable on the channel CI
-runs. Nightly-only options **MUST** be isolated in a separate, clearly labelled
+runs. Nightly-only options **MUST** be isolated in a separate, clearly labeled
 configuration together with a pinned nightly toolchain.
 
 **Why**: rustfmt silently degrades. Running `cargo fmt` on stable 1.9.0 with
@@ -416,17 +416,17 @@ repos:
 [^26]: [Miri](https://github.com/rust-lang/miri) - Experimental interpreter for Rust's mid-level intermediate representation
 [^27]: [The `edition` field](https://doc.rust-lang.org/cargo/reference/manifest.html#the-edition-field) - Cargo manifest reference
 [^30]: [Rust stable channel manifest](https://static.rust-lang.org/dist/channel-rust-stable.toml) - `[pkg.rust] version = "1.98.1 (48a229cea 2026-09-01)"`, manifest dated 2026-09-03
-[^31]: [cargo-deny](https://github.com/EmbarkStudios/cargo-deny) - Advisory, licence, ban and source policy for Cargo dependencies
+[^31]: [cargo-deny](https://github.com/EmbarkStudios/cargo-deny) - Advisory, license, ban and source policy for Cargo dependencies
 [^32]: [proptest](https://github.com/proptest-rs/proptest) - Hypothesis-style property testing with shrinking
 [^33]: [cargo-mutants](https://github.com/sourcefrog/cargo-mutants) - Mutation testing for Rust
 [^34]: [cargo-semver-checks](https://github.com/obi1kenobi/cargo-semver-checks) - Public API SemVer compliance checking
 [^35]: [Criterion](https://github.com/criterion-rs/criterion.rs) - Statistics-driven benchmarking harness
-[^36]: [Announcing Rust 1.85.0 and Rust 2024](https://blog.rust-lang.org/2025/02/20/Rust-1.85.0/) - Edition 2024 stabilisation, 20 February 2025; see the [Edition Guide](https://doc.rust-lang.org/edition-guide/rust-2024/index.html)
+[^36]: [Announcing Rust 1.85.0 and Rust 2024](https://blog.rust-lang.org/2025/02/20/Rust-1.85.0/) - Edition 2024 stabilization, 20 February 2025; see the [Edition Guide](https://doc.rust-lang.org/edition-guide/rust-2024/index.html)
 
 ## See Also
 
 - [Rust API Guidelines](../../reference/rust/checklist.md) - The vendored
-  upstream checklist this guide's API section is organised around
+  upstream checklist this guide's API section is organized around
 - [Testing Guide](../process/testing.md) - Test pyramid, coverage targets and
   flaky-test policy, which this guide does not repeat
 - [CI Guide](../process/ci.md) - Pipeline structure, caching and branch

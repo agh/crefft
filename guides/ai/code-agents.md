@@ -577,7 +577,7 @@ advertises a subcommand with no agent behind it.
 
 **Why the subdirectories are safe**: Claude Code scans `.claude/agents/`
 recursively and takes a subagent's identity from its `name` frontmatter field,
-not from its path, so `code/` and `docs/` are organisation only and do not
+not from its path, so `code/` and `docs/` are organization only and do not
 change how an agent is invoked.[^subagents]
 
 ### Installation Scopes
@@ -652,7 +652,7 @@ rm -rf .claude/agents/code .claude/agents/docs/writer.md .claude/commands/code.m
 `.claude/settings.json` **MUST NOT** be used to enable or install this family.
 The settings schema has no `agents` key: the top-level `agent` key it does
 define selects one agent for the main thread and does not register anything.
-Settings change runtime behaviour — permissions, hooks, sandboxing, plugin
+Settings change runtime behavior — permissions, hooks, sandboxing, plugin
 enablement — for definitions that are already installed:
 
 ```json

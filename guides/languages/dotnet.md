@@ -254,7 +254,7 @@ dotnet test -e ASPNETCORE_ENVIRONMENT=Testing
 `MSBUILD : error MSB1001: Unknown switch`. Parallelism **MUST** be configured
 through the runner, and the .NET 10 SDK offers two.[^33]
 
-**VSTest mode (the default):** xUnit parallelises test collections inside an
+**VSTest mode (the default):** xUnit parallelizes test collections inside an
 assembly. Configure it in `xunit.runner.json` and copy the file to the output
 directory:
 
@@ -618,7 +618,7 @@ You SHOULD use Central Package Management for solutions with multiple projects:
 ```
 
 Once `ManagePackageVersionsCentrally` is set, **no** `PackageReference` anywhere
-in the tree may carry a `Version` attribute — including analyser and build-only
+in the tree may carry a `Version` attribute — including analyzer and build-only
 references inherited from `Directory.Build.props`. Restore fails otherwise:
 
 ```text
@@ -1650,7 +1650,7 @@ public class UserServiceTests
 #### Why
 
 The parameter **MUST** be `string?` whenever `[InlineData(null)]` supplies it.
-With `Nullable` enabled the xUnit analyser rejects the mismatch, and
+With `Nullable` enabled the xUnit analyzer rejects the mismatch, and
 `TreatWarningsAsErrors` turns that into a build failure:
 
 ```text

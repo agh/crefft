@@ -367,7 +367,7 @@ jobs:
 ```
 
 SimpleCov's default output is `coverage/.resultset.json`, which Codecov's
-uploader does not recognise as a coverage report. RSpec jobs **MUST**
+uploader does not recognize as a coverage report. RSpec jobs **MUST**
 therefore add the `simplecov-cobertura` gem[^5] and register its formatter so
 the run also writes `coverage/coverage.xml`.
 

@@ -324,7 +324,7 @@ let window = web_sys::window().unwrap();
 `#[wasm_bindgen(start)]` so that any panic that does occur prints a Rust stack
 trace to the browser console instead of "unreachable executed".
 
-## WASM Size Optimisation
+## WASM Size Optimization
 
 The release profile in [Project Structure](#project-structure) is the size
 configuration; the settings **MUST** be at the workspace root when the crate is

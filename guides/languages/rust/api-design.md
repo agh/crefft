@@ -10,7 +10,7 @@ BCP 14 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)
 when, they appear in all capitals, as shown here.
 
 This guide covers the traits a public type **MUST** implement and the naming,
-documentation and type-safety rules for a published Rust API, organised around
+documentation and type-safety rules for a published Rust API, organized around
 the vendored [Rust API Guidelines](../../../reference/rust/checklist.md). The
 toolchain, lint, formatting and pre-commit rules in the
 [Rust Style Guide](../rust.md) apply and are not repeated here, and so do the
