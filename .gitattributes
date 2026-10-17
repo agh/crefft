@@ -1,0 +1,5 @@
+# GitHub language statistics: count the guides, not the vendored copies
+# under reference/ (three Google guides there are HTML and would otherwise
+# make the repository read as an HTML project).
+reference/** linguist-vendored
+*.md linguist-detectable

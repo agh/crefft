@@ -68,6 +68,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   | `doctrine/` (tree roots) | `crefft/` |
   | `"name": "doctrine"` (package metadata) | `"name": "crefft"` |
 
+- `.gitattributes` marks `reference/` as vendored and counts Markdown, so
+  GitHub reports the repository as Markdown rather than HTML.
+
 - CI: the external URL check moved out of `doc-lint.yml` into a weekly
   `external-links.yml` workflow (also on demand), with a 10 s timeout, one
   retry and four files checked in parallel; pull requests and pushes now run
