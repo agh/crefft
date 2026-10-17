@@ -39,7 +39,7 @@ SQLFluff provides comprehensive linting and formatting for SQL with:
 
 ```bash
 # Install
-pip install sqlfluff
+pip install sqlfluff==3.5.0
 
 # Lint
 sqlfluff lint .
@@ -486,7 +486,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-      - run: pip install sqlfluff
+      - run: pip install sqlfluff==3.5.0
       - run: sqlfluff lint --dialect postgres .
       - run: pip install squawk-cli==2.64.0
       - run: squawk migrations/*.sql

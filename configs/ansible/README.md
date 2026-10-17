@@ -27,7 +27,7 @@ cp configs/ansible/requirements.yml collections/requirements.yml
 ansible-galaxy collection install -r collections/requirements.yml
 
 # Install linting tools
-pipx install ansible-dev-tools
+pipx install ansible-dev-tools==26.10.0
 
 # Lint your playbooks
 ansible-lint

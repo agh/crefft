@@ -407,7 +407,7 @@ services:
       - ./backup:/backup
 
   backup:
-    image: pgbackrest
+    image: woblerr/pgbackrest:2.58.0
     volumes:
       - postgres_data:/var/lib/postgresql/data:ro
       - ./backup:/backup

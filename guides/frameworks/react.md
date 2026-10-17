@@ -1066,7 +1066,7 @@ Projects using React 19 **SHOULD** enable the React Compiler[^13] to automatical
 #### Installation and Configuration
 
 ```bash
-npm install -D babel-plugin-react-compiler eslint-plugin-react-compiler
+npm install -D babel-plugin-react-compiler@1.0.0 eslint-plugin-react-compiler@19.1.0-rc.2
 ```
 
 ```js
@@ -1642,8 +1642,8 @@ jobs:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
-      - run: npx biome ci .
-      - run: npx tsc --noEmit
+      - run: npx @biomejs/biome@2.5.12 ci .
+      - run: npx --package=typescript@6.0.3 tsc --noEmit
 
   test:
     runs-on: ubuntu-latest
@@ -1654,7 +1654,7 @@ jobs:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
-      - run: npx vitest run --coverage
+      - run: npx vitest@5.0.0 run --coverage
 
   e2e:
     runs-on: ubuntu-latest
@@ -1665,8 +1665,8 @@ jobs:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
-      - run: npx playwright install --with-deps
-      - run: npx playwright test
+      - run: npx playwright@1.64.1 install --with-deps
+      - run: npx playwright@1.64.1 test
 ```
 
 ## See Also

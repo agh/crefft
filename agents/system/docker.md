@@ -30,6 +30,7 @@ and container configurations for security, performance, and maintainability issu
 
 ```dockerfile
 # ❌ Common issues
+# crefft: allow-floating -- Negative example demonstrates an unpinned base image.
 FROM python:latest                    # Unpinned version
 COPY . /app                           # Before dependencies
 RUN pip install -r requirements.txt   # Cache invalidated every change
@@ -93,6 +94,7 @@ architecture as the runtime image, which is why both stages use Debian 13.
 # ❌ Tags are mutable
 services:
   api:
+    # crefft: allow-floating -- Negative example contrasts a mutable tag with the digest below.
     image: nginx:latest
     image: nginx:1.25
 
@@ -442,7 +444,7 @@ branches are mutable and can be repointed at new code without warning.
 ```yaml
 # ❌ Mutable reference - the action's code can change under you
 - name: Scan image
-  uses: aquasecurity/trivy-action@master
+  uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
 
 # ✅ CI integration (.github/workflows/build.yml)
 permissions:

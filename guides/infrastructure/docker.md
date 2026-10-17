@@ -274,6 +274,7 @@ registry is compromised, digest-pinned images remain safe.
 # WRONG: Tags are mutable
 services:
   api:
+    # crefft: allow-floating -- Negative example contrasts a mutable tag with the digest below.
     image: nginx:latest
 
 # CORRECT: SHA256 digest pinning
@@ -1098,7 +1099,7 @@ trivy config Dockerfile
 ```yaml
 # GitHub Actions
 - name: Scan image
-  uses: aquasecurity/trivy-action@master
+  uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
   with:
     image-ref: myapp:1.0
     severity: CRITICAL,HIGH
@@ -1111,13 +1112,13 @@ Projects **SHOULD** lint Dockerfiles with Hadolint.
 
 ```bash
 # Install Hadolint
-docker pull hadolint/hadolint
+docker pull hadolint/hadolint:v2.14.0
 
 # Lint Dockerfile
-docker run --rm -i hadolint/hadolint < Dockerfile
+docker run --rm -i hadolint/hadolint:v2.14.0 < Dockerfile
 
 # Ignore specific rules
-docker run --rm -i hadolint/hadolint \
+docker run --rm -i hadolint/hadolint:v2.14.0 \
   --ignore DL3008 --ignore DL3009 < Dockerfile
 ```
 
@@ -1434,7 +1435,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Scan image
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: ghcr.io/${{ github.repository }}:${{ github.sha }}
           severity: CRITICAL,HIGH

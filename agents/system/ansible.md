@@ -555,7 +555,8 @@ driver:
 
 platforms:
   - name: ubuntu-22
-    image: geerlingguy/docker-ubuntu2204-ansible
+    image: "geerlingguy/docker-ubuntu2204-ansible@\
+      sha256:66cb5cb99bd08c40ec7c8d2b1c31efc3359a3e950c05427d1d4bed7b2f33781f"
     pre_build_image: true
 
 provisioner:

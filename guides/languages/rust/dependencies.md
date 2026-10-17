@@ -200,6 +200,7 @@ cargo install cargo-nextest --version 0.9.143 --locked
 
 ```bash
 # BAD: installs whatever is newest today
+# crefft: allow-floating -- Negative example contrasts an unpinned install with the command above.
 cargo install cargo-nextest
 ```
 
@@ -242,8 +243,8 @@ cargo audit fix
 cargo audit fix --dry-run   # too late; the manifest is already modified
 ```
 
-`cargo audit fix` **MUST NOT** be invoked from a default `cargo install
-cargo-audit` build: the subcommand is compiled out unless the `fix` feature is
+`cargo audit fix` **MUST NOT** be invoked from a default cargo-audit build
+made with `cargo install`: the subcommand is compiled out unless the `fix` feature is
 enabled, and the documented remediation step then fails with "error:
 unrecognized subcommand 'fix'".[^3]
 

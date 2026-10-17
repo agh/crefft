@@ -672,7 +672,7 @@ export GEMINI_API_KEY="your-auth-key-here"
 4. Install the Vertex AI SDK, `google-cloud-aiplatform`[^12]:
 
    ```bash
-   pip install google-cloud-aiplatform
+   pip install google-cloud-aiplatform==2.5.0
    ```
 
 Footnote markers MUST stay in the surrounding prose. A marker such as
@@ -688,20 +688,20 @@ Install the Google AI Studio SDK (`google-generativeai`) or the Vertex AI SDK
 
 ```bash
 # For Google AI Studio
-pip install google-generativeai
+pip install google-generativeai==0.8.6
 
 # For Vertex AI
-pip install google-cloud-aiplatform
+pip install google-cloud-aiplatform==2.5.0
 ```
 
 For Node.js, install `@google/generative-ai` or `@google-cloud/vertexai`:
 
 ```bash
 # For Google AI Studio
-npm install @google/generative-ai
+npm install @google/generative-ai@0.24.1
 
 # For Vertex AI
-npm install @google-cloud/vertexai
+npm install @google-cloud/vertexai@1.12.0
 ```
 
 ---

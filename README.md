@@ -244,6 +244,56 @@ Ready-to-copy configuration files:
 
 ---
 
+## Checking executable pins
+
+Copyable tool installs **MUST** name an exact version, and runnable containers
+**MUST NOT** use `:latest` or an implicit latest tag. New pins **MUST** be
+verified against a primary release source and registered in
+[`configs/tool-versions.json`](configs/tool-versions.json). Existing
+[`pre-commit pins`](configs/pre-commit/.pre-commit-config.yaml) take precedence
+for overlapping tools.
+
+**Why**: A floating install can change the copied command's behavior without
+any change to the guide or pipeline.
+
+`python3 scripts/validate_versions.py` checks these rules during `make check`
+and CI, without network requests. It scans `guides/`, `agents/`, `commands/`,
+and `configs/`: `bash`, `sh`, `shell`, `console`, and `zsh` fences; Dockerfile
+instructions; YAML `run:` steps, `image:` values, and `uses:` actions; and
+inline spans beginning with a package-manager command. Native shell,
+Dockerfile, and YAML configuration files are checked too.
+
+```text
+# Don't: a registry alias or missing version resolves again on each launch.
+npx example-tool@latest
+pip install example-tool
+
+# Do: name the exact release.
+npx example-tool@1.2.3
+pip install example-tool==1.2.3
+```
+
+Prose warnings, comments, and nonexecutable fences are not installs. Local
+builds, dependency-manifest installs such as `npm install` without package
+arguments, and `pip install -r requirements.txt` are left to the project's
+lockfile policy. Versioned image tags remain allowed; this check does not
+replace the [Docker guide's digest-pinning rule][image-pins].
+
+[image-pins]: guides/infrastructure/docker.md#image-digest-pinning
+
+A negative example that must demonstrate floating behavior **MAY** put
+`# crefft: allow-floating -- reason` immediately before the offending command
+or YAML image/action value, inside the same fence or configuration file.
+The nonempty reason **MUST** explain why floating is the point of that example.
+The marker exempts only the next logical instruction, including its shell
+continuations, not a fence, workflow, file, or subsequent command. Every
+exemption is listed in text and JSON output.
+
+**Why**: Teaching the failure requires keeping a few unsafe examples, but an
+exception must not hide a later install or silently disable the gate.
+
+---
+
 ## Reference material
 
 `reference/` holds third-party guides vendored verbatim for offline reading and

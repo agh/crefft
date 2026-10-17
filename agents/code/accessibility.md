@@ -483,12 +483,12 @@ document.querySelector('main h1')?.focus();
 
 ```bash
 # axe-core (most comprehensive)
-npm install @axe-core/react
+npm install @axe-core/react@4.14.0
 # or
-npx @axe-core/cli https://example.com
+npx @axe-core/cli@4.14.0 https://example.com
 
 # pa11y
-npx pa11y https://example.com
+npx pa11y@10.0.0 https://example.com
 
 # Lighthouse
 lighthouse https://example.com --only-categories=accessibility

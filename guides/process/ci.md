@@ -226,7 +226,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.23'
-      - run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - run: go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
       - run: govulncheck ./...
 ```
 
@@ -447,8 +447,8 @@ jobs:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
-      - run: npx biome ci .
-      - run: npx tsc --noEmit
+      - run: npx @biomejs/biome@2.5.12 ci .
+      - run: npx --package=typescript@6.0.3 tsc --noEmit
 
   test:
     runs-on: ubuntu-latest
@@ -460,7 +460,7 @@ jobs:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
-      - run: npx vitest run --coverage --coverage.reporter=lcov
+      - run: npx vitest@5.0.0 run --coverage --coverage.reporter=lcov
       - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         with:
           files: coverage/lcov.info

@@ -497,7 +497,7 @@ schema-registry:
 # ✅ Kafka monitoring with Prometheus
 services:
   kafka-exporter:
-    image: danielqsj/kafka-exporter:latest
+    image: danielqsj/kafka-exporter:v1.10.0
     command:
       - '--kafka.server=kafka1:9092'
       - '--kafka.server=kafka2:9092'

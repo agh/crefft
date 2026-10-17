@@ -598,7 +598,7 @@ emits, and it exports stable JSON. cargo-tarpaulin's own help text lists
 default backend is ptrace, restricted to `x86_64`. Tarpaulin remains useful
 for line coverage; it **MUST NOT** be used to make a branch-coverage claim.
 
-`cargo install cargo-tarpaulin` with no version installs whatever is newest
+`cargo install` without a version for cargo-tarpaulin installs whatever is newest
 that day and resolves the tool's own dependency tree afresh, so the report
 format can change under a pipeline that never changed. `--version` fixes the
 tool; `--locked` makes it build from its published `Cargo.lock`.

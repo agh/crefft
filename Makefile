@@ -109,7 +109,7 @@ secrets: $(GITLEAKS) ## Scan for secrets, and prove the allowlist still bites
 	fi
 	$(GITLEAKS) dir . --config .gitleaks.toml --no-banner --redact --verbose
 
-versions: test ## Check tool versions against the canonical pre-commit config
+versions: test ## Check canonical pins and reject floating executable installs
 	python3 scripts/validate_versions.py
 
 test: ## Run the script unit tests

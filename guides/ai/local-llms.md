@@ -608,7 +608,7 @@ docker run -d \
   --gpus all \
   -v ollama_data:/root/.ollama \
   -p 11434:11434 \
-  ollama/ollama
+  ollama/ollama:0.40.6
 
 # Run a model
 docker exec -it ollama ollama run codellama:7b
@@ -1672,7 +1672,7 @@ docker run -d \
   --gpus all \
   -v ollama_data:/root/.ollama \
   -p 11434:11434 \
-  ollama/ollama
+  ollama/ollama:0.40.6
 
 # Pull and run a model
 docker exec -it ollama ollama run codellama:7b
@@ -1683,7 +1683,7 @@ docker run -d \
   --gpus all \
   -v ~/.cache/huggingface:/root/.cache/huggingface \
   -p 8000:8000 \
-  vllm/vllm-openai:latest \
+  vllm/vllm-openai@sha256:61fc8a896b0a4fbbbdc063bc4b0dbc25ce98e02b5050c24aeb7830ac02039b14 \
   --model meta-llama/Meta-Llama-3.1-8B-Instruct
 
 # Run text-generation-inference[^9] (Hugging Face)
@@ -1692,7 +1692,7 @@ docker run -d \
   --gpus all \
   -p 8080:80 \
   -v $PWD/models:/data \
-  ghcr.io/huggingface/text-generation-inference:latest \
+  ghcr.io/huggingface/text-generation-inference:3.3.7 \
   --model-id meta-llama/Meta-Llama-3.1-8B-Instruct
 ```
 
@@ -1710,7 +1710,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install LLM runtime (choose one)
-RUN pip3 install torch transformers accelerate
+RUN pip3 install torch==2.13.0 transformers==5.20.1 accelerate==1.15.0
 
 # Copy model files (if bundling)
 COPY models/ /app/models/
@@ -1741,7 +1741,7 @@ version: '3.8'
 services:
   # Code generation model
   code-model:
-    image: ollama/ollama
+    image: ollama/ollama:0.40.6
     container_name: ollama-coder
     runtime: nvidia
     environment:
@@ -1761,7 +1761,7 @@ services:
 
   # Chat model
   chat-model:
-    image: vllm/vllm-openai:latest
+    image: vllm/vllm-openai@sha256:61fc8a896b0a4fbbbdc063bc4b0dbc25ce98e02b5050c24aeb7830ac02039b14
     container_name: vllm-chat
     runtime: nvidia
     environment:

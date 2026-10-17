@@ -2586,13 +2586,13 @@ ENTRYPOINT ["dotnet", "MyApi.dll"]
 
 ```bash
 # Build image
-docker build -t myapi:latest .
+docker build -t myapi:1.0.0 .
 
 # Run container
 docker run -d -p 8080:8080 \
   -e ASPNETCORE_ENVIRONMENT=Production \
   -e ConnectionStrings__DefaultConnection="Server=db;..." \
-  myapi:latest
+  myapi:1.0.0
 ```
 
 ### Docker Compose

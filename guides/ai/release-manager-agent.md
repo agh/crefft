@@ -1193,7 +1193,7 @@ the release date and release history. Go libraries use SemVer tags such
 as `v0.x.y` or `v1.x.y`, with `/vN` module paths at major version 2 or
 higher. Command-only Go tools use calendar tags and **MUST** be built from
 checkouts or shipped as release artifacts, not installed with
-`go install module@vYYYY.M.N`.
+`go install` with `module@vYYYY.M.N`.
 
 #### Why
 
@@ -1637,7 +1637,7 @@ own image, pinned to a digest, before running this job.
 # .gitlab-ci.yml
 release:
   stage: release
-  image: crefft/release-manager-agent:latest  # illustrative
+  image: crefft/release-manager-agent:2026.10.0  # Illustrative, locally built release
   script:
     - release-manager analyze
     - release-manager release --if-ready

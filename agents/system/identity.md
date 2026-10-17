@@ -356,6 +356,7 @@ outpost:
 # ❌ Insecure outpost container
 services:
   authentik-proxy:
+    # crefft: allow-floating -- Negative example demonstrates an unpinned outpost image.
     image: ghcr.io/goauthentik/proxy:latest  # Unpinned!
     environment:
       AUTHENTIK_HOST: "http://authentik:9000"  # HTTP!

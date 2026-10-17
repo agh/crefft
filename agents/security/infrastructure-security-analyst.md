@@ -198,6 +198,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "good" {
 
 ```dockerfile
 # BAD
+# crefft: allow-floating -- Negative example demonstrates an unpinned base image.
 FROM ubuntu:latest          # No pinned version
 USER root                   # Running as root
 RUN apt-get update && \

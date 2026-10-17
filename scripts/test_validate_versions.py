@@ -193,6 +193,306 @@ class EvaluateTests(unittest.TestCase):
         self.assertTrue(unknown[0]["documented"])
 
 
+class ExecutablePinTests(unittest.TestCase):
+    def _find(self, text: str, suffix: str = ".md") -> list[tuple[str, str, str]]:
+        return [
+            reference
+            for executable in vv.iter_executables(text, suffix)
+            for reference in vv.floating_references(executable)
+            if not executable.exception
+        ]
+
+    def test_package_managers_reject_floating_and_accept_exact_pins(self):
+        cases = [
+            ("go install example.com/tool@latest", "go install example.com/tool@v1.2.3"),
+            ("go install example.com/tool", "go install example.com/tool@v1.2.3"),
+            ("go get example.com/lib@main", "go get example.com/lib@v1.2.3"),
+            ("go get example.com/lib", "go get example.com/lib@v1.2.3"),
+            ("npx tool", "npx tool@1.2.3"),
+            ("npx -y @scope/tool@latest", "npx -y @scope/tool@1.2.3"),
+            ("npm install tool", "npm install tool@1.2.3"),
+            ("npm install -D @scope/tool@^1.2.3", "npm install -D @scope/tool@1.2.3"),
+            ("pnpm dlx tool", "pnpm dlx tool@1.2.3"),
+            ("pip install tool", "pip install tool==1.2.3"),
+            ("pip3 install 'tool>=1.2.3'", "pip3 install 'tool==1.2.3'"),
+            ("uv tool install tool", "uv tool install tool==1.2.3"),
+            ("uv pip install tool", "uv pip install tool==1.2.3"),
+            ("pipx install tool", "pipx install tool==1.2.3"),
+            ("uvx tool", "uvx tool==1.2.3"),
+            ("cargo install tool", "cargo install tool --version 1.2.3 --locked"),
+            ("cargo install tool --version '^1.2'", "cargo install tool --version=1.2.3"),
+            ("docker run --rm tool:latest", "docker run --rm tool:1.2.3"),
+            ("docker run tool", "docker run tool@sha256:" + "a" * 64),
+        ]
+        for floating, pinned in cases:
+            for language in ("bash", "sh", "shell", "console", "zsh"):
+                with self.subTest(command=floating, language=language):
+                    self.assertTrue(self._find(f"```{language}\n{floating}\n```\n"))
+                    self.assertEqual(self._find(f"```{language}\n{pinned}\n```\n"), [])
+            with self.subTest(inline=floating):
+                self.assertTrue(self._find(f"Run `{floating}`."))
+                self.assertEqual(self._find(f"Run `{pinned}`."), [])
+
+    def test_branch_and_tag_aliases_are_not_pins(self):
+        for selector in ("latest", "main", "master", "HEAD", "next", "*", "^1.2.3", "~1.2.3"):
+            with self.subTest(selector=selector):
+                self.assertTrue(self._find(f"```sh\nnpx tool@{selector}\n```"))
+
+    def test_pseudoversions_prereleases_and_cargo_shorthand_are_pinned(self):
+        for command in (
+            "go install example.com/tool@v0.0.0-20261009192801-be2c69fb417e",
+            "npx tool@4.0.0-alpha.8",
+            "cargo install --locked tool@1.2.3",
+            "pip install 'tool[docker]==1.2.3'",
+        ):
+            with self.subTest(command=command):
+                self.assertEqual(self._find(f"```sh\n{command}\n```"), [])
+
+    def test_explicit_runner_package_is_checked_not_the_binary_name(self):
+        self.assertEqual(
+            self._find("`npx --package=typescript@6.0.3 tsc --noEmit`"), []
+        )
+        self.assertTrue(self._find("`npx --package typescript@latest tsc --noEmit`"))
+        self.assertEqual(self._find("`uvx --from tool==1.2.3 tool-cli`"), [])
+        self.assertTrue(self._find("`uvx --from tool tool-cli`"))
+
+    def test_all_packages_are_checked(self):
+        refs = self._find(
+            "```sh\nnpm install good@1.2.3 bad\npip install good==1.2.3 bad\n```"
+        )
+        self.assertEqual([(kind, name) for kind, name, _ in refs],
+                         [("npm", "bad"), ("python", "bad")])
+
+    def test_shell_continuations_and_chained_commands_are_checked(self):
+        text = (
+            "```bash\nnpm install --save-dev \\\n"
+            "  good@1.2.3 bad && go install example.com/tool@HEAD\n```"
+        )
+        self.assertEqual([name for _, name, _ in self._find(text)], ["bad", "example.com/tool"])
+
+    def test_semicolons_without_spaces_and_multiple_docker_commands(self):
+        self.assertTrue(self._find("```sh\nnpx good@1.2.3;npx bad\n```"))
+        self.assertEqual(self._find("```sh\nnpx good@1.2.3;npx other@2.3.4\n```"), [])
+        self.assertTrue(self._find("```sh\ndocker run good:1.2.3;docker run bad:latest\n```"))
+
+    def test_multiline_inline_spans_and_double_backticks(self):
+        self.assertTrue(self._find("Run `go install\nexample.com/tool@latest`."))
+        self.assertEqual(self._find("Run ``go install example.com/tool@v1.2.3``."), [])
+
+    def test_console_prompts_and_environment_prefixes_are_checked(self):
+        self.assertTrue(self._find("```console\n$ CI=1 npx tool\n```"))
+        self.assertEqual(self._find("```zsh\nCI=1 npx tool@1.2.3\n```"), [])
+
+    def test_yaml_run_steps_scalar_literal_and_folded(self):
+        for language in ("yaml", "yml"):
+            for value in (
+                "go install example.com/tool@latest",
+                "'go install example.com/tool@latest'",
+                "|\n    go install example.com/tool@latest\n    tool --help",
+                ">-\n    go install\n    example.com/tool@latest",
+            ):
+                text = f"```{language}\n- run: {value}\n  name: install\n```"
+                with self.subTest(language=language, value=value):
+                    self.assertTrue(self._find(text))
+                    self.assertEqual(self._find(text.replace("@latest", "@v1.2.3")), [])
+
+    def test_quoted_yaml_run_keeps_inner_quotes(self):
+        text = '```yaml\n- run: npx tool "**/*.md"\n```'
+        self.assertEqual(self._find(text), [("npm", "tool", "")])
+        self.assertEqual(self._find(text.replace("npx tool", "npx tool@1.2.3")), [])
+
+    def test_yaml_nonexecutable_values_are_not_shell_commands(self):
+        text = (
+            "```yaml\nname: npx tool@latest\n"
+            "env:\n  WARNING: go install example.com/tool@latest\n```"
+        )
+        self.assertEqual(self._find(text), [])
+
+    def test_yaml_images_and_floating_actions(self):
+        for value in ("image: tool:latest", "image: >-\n  tool:latest",
+                      "uses: owner/action@master", "uses: owner/action@HEAD"):
+            with self.subTest(value=value):
+                self.assertTrue(self._find(f"```yaml\n{value}\n```"))
+                pinned = value.replace(":latest", ":1.2.3").replace("@master", "@v1.2.3")
+                pinned = pinned.replace("@HEAD", "@" + "a" * 40)
+                self.assertEqual(self._find(f"```yaml\n{pinned}\n```"), [])
+
+    def test_yaml_escaped_image_line_is_one_exact_digest(self):
+        digest = "a" * 64
+        text = '```yaml\nimage: "example.com/image@\\\n  sha256:' + digest + '"\n```'
+        refs = [
+            reference
+            for executable in vv.iter_executables(text)
+            for reference in vv.executable_references(executable)
+        ]
+        self.assertEqual(refs, [("docker", "example.com/image", "sha256:" + digest)])
+        self.assertEqual(self._find(text), [])
+
+    def test_dockerfile_commands_and_stage_aliases(self):
+        text = "```dockerfile\nFROM python:latest AS base\nRUN pip install tool\nFROM base\n```"
+        self.assertEqual(self._find(text),
+                         [("docker", "python", "latest"), ("python", "tool", "")])
+        pinned = text.replace("python:latest", "python:3.14.0").replace(
+            "pip install tool", "pip install tool==1.2.3"
+        )
+        self.assertEqual(self._find(pinned), [])
+        self.assertEqual(self._find("```dockerfile\nFROM scratch\n```"), [])
+
+    def test_dockerfile_exec_form_and_platform_stage_alias(self):
+        text = (
+            '```dockerfile\nFROM --platform=$BUILDPLATFORM python:3.14.0 AS base\n'
+            'RUN ["pip", "install", "tool"]\n'
+            'FROM --platform=$TARGETPLATFORM base\n```'
+        )
+        self.assertEqual(self._find(text), [("python", "tool", "")])
+        self.assertEqual(self._find(text.replace('"tool"', '"tool==1.2.3"')), [])
+
+    def test_docker_run_options_and_registry_ports(self):
+        text = (
+            "```bash\ndocker run --rm --name test -e KEY=value -p 8000:80 \\\n"
+            "  -v models:/data registry.example.com:5000/tool:latest --model example\n```"
+        )
+        self.assertEqual(self._find(text),
+                         [("docker", "registry.example.com:5000/tool", "latest")])
+        self.assertEqual(self._find(text.replace(":latest", ":1.2.3")), [])
+        self.assertEqual(self._find(
+            "```sh\ndocker run --pull always --platform linux/arm64 tool:1.2.3\n```"
+        ), [])
+
+    def test_prose_comments_and_other_fences_are_exempt(self):
+        text = (
+            "Avoid @latest, @main, @master, @HEAD, and :latest in runnable installs.\n"
+            "Pin `@playwright/mcp@latest` instead of copying it unchanged.\n"
+            "```text\nnpx tool@latest\n```\n"
+            "```json\n{\"command\": \"npx\", \"args\": [\"tool@latest\"]}\n```\n"
+            "```bash\n# npx tool@latest\nprintf '%s' 'npx tool@latest'\n```\n"
+        )
+        self.assertEqual(self._find(text), [])
+
+    def test_nested_nonexecutable_fences_and_tilde_fences(self):
+        text = "````markdown\n```bash\nnpx tool@latest\n```\n````\n"
+        self.assertEqual(self._find(text), [])
+        self.assertTrue(self._find("  ~~~sh\nnpx tool@latest\n  ~~~\n"))
+
+    def test_manifest_and_local_installs_do_not_resolve_new_tool_versions(self):
+        for command in (
+            "npm install", "pip install -r requirements.txt", "pip install .",
+            "pip install --no-cache-dir --target=/deps -r requirements.txt",
+            "go install ./cmd/tool", "go get ./...",
+        ):
+            with self.subTest(command=command):
+                self.assertEqual(self._find(f"```bash\n{command}\n```"), [])
+        self.assertTrue(self._find("```bash\ngo get -u ./...\n```"))
+
+    def test_exception_applies_only_to_next_logical_command(self):
+        text = (
+            "```bash\n# crefft: allow-floating -- Demonstrate the unsafe install.\n"
+            "go install \\\n  example.com/tool@latest\n"
+            "npx tool\n```"
+        )
+        self.assertEqual(self._find(text), [("npm", "tool", "")])
+
+    def test_exception_cannot_hide_a_second_chained_install(self):
+        for operator in ("&&", ";", "||", "|"):
+            with self.subTest(operator=operator):
+                text = (
+                    "```sh\n# crefft: allow-floating -- Negative example.\n"
+                    f"npx tool {operator} npx other\n```"
+                )
+                self.assertEqual(self._find(text), [("npm", "other", "")])
+
+    def test_exception_requires_reason_and_immediate_adjacency(self):
+        for comment in (
+            "# crefft: allow-floating", "# crefft: allow-floating -- ",
+            "# crefft: allow-floating -- Negative example.\n",
+            "# crefft: allow-floating -- Negative example.\n# Another comment",
+        ):
+            with self.subTest(comment=comment):
+                self.assertTrue(self._find(f"```sh\n{comment}\nnpx tool\n```"))
+
+    def test_yaml_and_dockerfile_exceptions(self):
+        for language, command in (
+            ("yaml", "image: tool:latest"), ("yaml", "- run: npx tool"),
+            ("dockerfile", "FROM tool:latest"),
+        ):
+            text = (
+                f"```{language}\n"
+                "# crefft: allow-floating -- Negative example.\n"
+                f"{command}\n```"
+            )
+            with self.subTest(language=language, command=command):
+                self.assertEqual(self._find(text), [])
+
+    def test_collector_reports_locations_exceptions_and_commands_directory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / "commands" / "example.md"
+            path.parent.mkdir()
+            path.write_text(
+                "```sh\n# crefft: allow-floating -- Negative example.\n"
+                "npx tool\nnpx other\n```", encoding="utf-8",
+            )
+            findings, exceptions = vv.collect_floating(root)
+            self.assertEqual(findings[0]["location"], "commands/example.md:4")
+            self.assertEqual(exceptions[0]["location"], "commands/example.md:3")
+            self.assertEqual(exceptions[0]["reason"], "Negative example.")
+
+    def test_native_config_files_are_scanned(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            configs = root / "configs"
+            configs.mkdir()
+            for filename, text in (
+                ("Dockerfile", "FROM tool:latest"),
+                ("install.sh", "go install example.com/tool"),
+                ("workflow.yml", "steps:\n  - run: uv tool install tool"),
+            ):
+                (configs / filename).write_text(text, encoding="utf-8")
+            findings, _ = vv.collect_floating(root)
+            self.assertEqual(len(findings), 3)
+
+
+class ToolVersionsTests(unittest.TestCase):
+    def test_canonical_file_has_exact_versions_and_agrees_with_hooks(self):
+        pins = vv.parse_tool_versions(vv.TOOL_VERSIONS_FILE, vv.parse_canonical(vv.CONFIG_FILE))
+        self.assertEqual(pins["go"]["github.com/pkg/errors"], "v0.9.1")
+        self.assertEqual(pins["go"]["mvdan.cc/sh/v3/cmd/shfmt"], "v3.12.0")
+
+    def test_invalid_or_floating_canonical_config_fails(self):
+        for text in ('[]', '{"npm": []}', '{"npm": {"tool": "latest"}}'):
+            with self.subTest(text=text), tempfile.TemporaryDirectory() as tmp:
+                path = Path(tmp) / "pins.json"
+                path.write_text(text, encoding="utf-8")
+                with self.assertRaises(ValueError):
+                    vv.parse_tool_versions(path, {})
+
+    def test_canonical_pre_commit_disagreement_fails(self):
+        with self.assertRaises(ValueError):
+            vv.parse_tool_versions(vv.TOOL_VERSIONS_FILE, {"golangci/golangci-lint": "v0.0.1"})
+
+    def test_install_drift_is_reported(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            guides = root / "guides"
+            guides.mkdir()
+            (guides / "x.md").write_text("`npx tool@1.2.3`", encoding="utf-8")
+            findings = vv.collect_install_mismatches({"npm": {"tool": "2.0.0"}}, root)
+            self.assertEqual(findings[0]["found"], "1.2.3")
+            self.assertEqual(findings[0]["expected"], "2.0.0")
+
+    def test_floating_exception_cannot_hide_canonical_drift(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            guides = root / "guides"
+            guides.mkdir()
+            (guides / "x.md").write_text(
+                "```sh\n# crefft: allow-floating -- Negative example.\n"
+                "npx tool@1.2.3\n```", encoding="utf-8",
+            )
+            findings = vv.collect_install_mismatches({"npm": {"tool": "2.0.0"}}, root)
+            self.assertEqual(len(findings), 1)
+
+
 class MainExitCodeTests(unittest.TestCase):
     @staticmethod
     def _run(argv: list[str]) -> tuple[int, str]:
@@ -219,6 +519,8 @@ class MainExitCodeTests(unittest.TestCase):
         payload = json.loads(output)
         self.assertIn("mismatches", payload)
         self.assertIn("unknown", payload)
+        self.assertIn("floating", payload)
+        self.assertIn("floating_exceptions", payload)
         self.assertGreater(payload["canonical_count"], 0)
 
     def test_strict_fails_on_undocumented_tool(self):
@@ -248,6 +550,31 @@ class MainExitCodeTests(unittest.TestCase):
             code, output = self._run(["--root", str(root)])
             self.assertEqual(code, 1)
             self.assertIn("MISMATCH", output)
+
+    def test_floating_command_fails_without_strict_in_text_and_json(self):
+        import json
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            guide = root / "guides" / "x.md"
+            guide.parent.mkdir()
+            guide.write_text("```bash\nnpx tool@latest\n```", encoding="utf-8")
+            code, output = self._run(["--root", str(root)])
+            self.assertEqual(code, 1)
+            self.assertIn("FLOATING guides/x.md:2", output)
+            code, output = self._run(["--json", "--root", str(root)])
+            self.assertEqual(code, 1)
+            self.assertEqual(len(json.loads(output)["floating"]), 1)
+
+    def test_malformed_install_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            guide = root / "guides" / "x.md"
+            guide.parent.mkdir()
+            guide.write_text("```sh\npip install 'tool\n```", encoding="utf-8")
+            code, output = self._run(["--root", str(root)])
+            self.assertEqual(code, 1)
+            self.assertIn("syntax", output)
 
 
 if __name__ == "__main__":

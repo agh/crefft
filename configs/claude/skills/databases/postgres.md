@@ -21,7 +21,7 @@ its connection string from `argv[2]`, not from an environment variable, so an
 `env`-only configuration exits before it opens a connection:
 
 ```console
-$ POSTGRES_CONNECTION=postgres://... npx -y @modelcontextprotocol/server-postgres
+$ POSTGRES_CONNECTION=postgres://... npx -y @modelcontextprotocol/server-postgres@0.6.2
 npm warn deprecated @modelcontextprotocol/server-postgres@0.6.2: Package no longer supported.
 Please provide a database URL as a command-line argument
 ```

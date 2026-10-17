@@ -167,7 +167,7 @@ When generating tests, **SHOULD** use mutation-first workflow:
 | Language | Tool | Command |
 | -------- | ---- | ------- |
 | Python | mutmut | `mutmut run --paths-to-mutate=src/` |
-| JavaScript/TypeScript | Stryker | `npx stryker run` |
+| JavaScript/TypeScript | Stryker | `npx --package=@stryker-mutator/core@10.0.0 stryker run` |
 | Go | go-mutesting | `go-mutesting ./...` |
 | Java | PIT | `mvn org.pitest:pitest-maven:mutationCoverage` |
 | Rust | cargo-mutants | `cargo mutants` |

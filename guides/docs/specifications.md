@@ -836,10 +836,10 @@ jobs:
       - run: npm ci
 
       # Lint markdown
-      - run: npx markdownlint-cli2 "**/*.md"
+      - run: npx markdownlint-cli2@0.23.2 "**/*.md"
 
       # Check links
-      - run: npx markdown-link-check docs/**/*.md
+      - run: npx markdown-link-check@3.15.0 docs/**/*.md
 
       # Validate frontmatter against the checked-in schema
       - run: node scripts/check-frontmatter.mjs

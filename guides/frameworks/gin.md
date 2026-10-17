@@ -18,7 +18,7 @@ All Go tooling applies. Additional considerations:
 
 | Task | Tool | Command |
 | ---- | ---- | ------- |
-| Install | go get | `go get -u github.com/gin-gonic/gin` |
+| Install | go get | `go get github.com/gin-gonic/gin@v1.12.0` |
 | Run dev | go run | `go run main.go` |
 | Test | go test + httptest | `go test -v ./...` |
 | Build | go build | `go build -o bin/app` |

@@ -14,11 +14,11 @@ interpreted as described in [RFC 2119][rfc2119].
 
 | Task | Tool | Command |
 | ---- | ---- | ------- |
-| Install | npm | `npm install tailwindcss` |
-| Build | Tailwind CLI | `npx @tailwindcss/cli -i input.css -o output.css` |
-| Watch | Tailwind CLI | `npx @tailwindcss/cli -i input.css -o output.css --watch` |
-| Build (prod) | Tailwind CLI | `NODE_ENV=production npx @tailwindcss/cli -i input.css -o output.css --minify` |
-| Vite plugin | npm | `npm install @tailwindcss/vite` |
+| Install | npm | `npm install tailwindcss@4.3.3` |
+| Build | Tailwind CLI | `npx @tailwindcss/cli@4.3.3 -i input.css -o output.css` |
+| Watch | Tailwind CLI | `npx @tailwindcss/cli@4.3.3 -i input.css -o output.css --watch` |
+| Build (prod) | Tailwind CLI | [Production build](#production-optimization) |
+| Vite plugin | npm | `npm install @tailwindcss/vite@4.3.3` |
 
 ## Why Tailwind CSS
 
@@ -55,7 +55,7 @@ Projects using Tailwind CSS v4+ **MUST** use the simplified CSS-first configurat
 ### Basic Installation
 
 ```bash
-npm install tailwindcss
+npm install tailwindcss@4.3.3
 ```
 
 ### CSS Configuration (v4+)
@@ -140,7 +140,7 @@ export default {
 **Migration path**: Use the automated upgrade tool[^3]:
 
 ```bash
-npx @tailwindcss/upgrade
+npx @tailwindcss/upgrade@4.3.3
 ```
 
 ## Project Organization
@@ -654,7 +654,8 @@ Projects **MAY** define custom utilities using `@utility`:
 Projects **SHOULD** use official Tailwind plugins for extended functionality:
 
 ```bash
-npm install @tailwindcss/typography @tailwindcss/forms @tailwindcss/container-queries
+npm install @tailwindcss/typography@0.5.20 @tailwindcss/forms@0.5.11 \
+  @tailwindcss/container-queries@0.1.1
 ```
 
 ```css
@@ -678,7 +679,7 @@ Projects **MUST** optimize Tailwind for production:
 
 ```bash
 # Production build with minification
-NODE_ENV=production npx @tailwindcss/cli -i input.css -o output.css --minify
+NODE_ENV=production npx @tailwindcss/cli@4.3.3 -i input.css -o output.css --minify
 ```
 
 **Tailwind v4+ automatic optimizations:**
@@ -816,7 +817,7 @@ leaves a `media="print"` sheet print-only forever:
 
 ```tsx
 // Install
-npm install tailwindcss @tailwindcss/vite
+npm install tailwindcss@4.3.3 @tailwindcss/vite@4.3.3
 
 // vite.config.ts
 import { defineConfig } from 'vite'
@@ -850,7 +851,7 @@ export function Button({ children, variant = 'primary' }) {
 
 ```bash
 # Install
-npm install tailwindcss @tailwindcss/vite
+npm install tailwindcss@4.3.3 @tailwindcss/vite@4.3.3
 ```
 
 ```javascript
@@ -951,7 +952,7 @@ otherwise `strict` mode rejects the implicit `any`.
 
 ```bash
 # Install
-npm install tailwindcss @tailwindcss/vite
+npm install tailwindcss@4.3.3 @tailwindcss/vite@4.3.3
 ```
 
 ```javascript

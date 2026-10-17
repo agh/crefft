@@ -85,7 +85,7 @@ complex cases like heredocs and pipeline formatting correctly.
 
 ```bash
 # Install
-go install mvdan.cc/sh/v3/cmd/shfmt@latest
+go install mvdan.cc/sh/v3/cmd/shfmt@v3.12.0
 
 # Format
 shfmt -w script.sh
@@ -411,7 +411,7 @@ with CI systems out of the box.
 brew install bats-core
 
 # npm
-npm install --global bats
+npm install --global bats@1.13.0
 
 # Verify
 bats --version
@@ -572,7 +572,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install bats
-        run: npm install --global bats
+        run: npm install --global bats@1.13.0
       - name: Run tests
         run: bats tests/
 ```
@@ -657,7 +657,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: shellcheck
-        uses: ludeeus/action-shellcheck@master
+        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # 2.0.0
         with:
           scandir: './scripts'
       - name: Install shfmt

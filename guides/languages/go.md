@@ -39,7 +39,7 @@ Projects **MUST** use golangci-lint[^1] for linting Go code.
 
 ```bash
 # Install
-go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.0
 
 # Run
 golangci-lint run
@@ -263,7 +263,7 @@ Projects **SHOULD** use deadcode[^5] to identify unused functions and methods.
 
 ```bash
 # Install
-go install golang.org/x/tools/cmd/deadcode@latest
+go install golang.org/x/tools/cmd/deadcode@v0.52.0
 
 # Run
 deadcode ./...
@@ -309,7 +309,7 @@ linters-settings:
 Or standalone:
 
 ```bash
-go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.6.0
 gocyclo -over 15 .
 ```
 
@@ -424,7 +424,7 @@ go test -bench=. -benchtime=10s ./...
 go test -bench=. -count=5 ./...
 
 # Compare benchmarks with benchstat
-go install golang.org/x/perf/cmd/benchstat@latest
+go install golang.org/x/perf/cmd/benchstat@v0.0.0-20261009192801-be2c69fb417e
 go test -bench=. -count=10 > old.txt
 # Make changes...
 go test -bench=. -count=10 > new.txt
@@ -557,15 +557,21 @@ Projects **MUST** commit both `go.mod` and `go.sum` to version control.
 - **Version selection**: Automatic minimum version selection prevents dependency conflicts
 - **No external tools**: Built into the Go toolchain
 
+`github.com/pkg/errors` is in upstream
+[maintenance mode](https://github.com/pkg/errors#roadmap), with `v0.9.1` its final
+published release; new code **SHOULD** use
+[standard-library error wrapping](https://go.dev/blog/go1.13-errors) instead.
+**Why**: `fmt.Errorf` with `%w`, `errors.Is`, and `errors.As` need no legacy dependency.
+
 ```bash
 # Initialize a new module
 go mod init github.com/user/repo
 
 # Add dependencies (automatically updates go.mod)
-go get github.com/pkg/errors@latest
 go get github.com/pkg/errors@v0.9.1
 
 # Update dependencies
+# crefft: allow-floating -- Deliberately refresh dependencies for review, not a repeatable install.
 go get -u ./...
 
 # Tidy up (remove unused, add missing)
@@ -616,7 +622,7 @@ Projects **SHOULD** run vulnerability scans in CI.
 
 ```bash
 # Install govulncheck
-go install golang.org/x/vuln/cmd/govulncheck@latest
+go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
 
 # Scan for vulnerabilities
 govulncheck ./...
@@ -755,7 +761,7 @@ interfaces in unit tests.
 
 ```bash
 # Install mockgen
-go install go.uber.org/mock/mockgen@latest
+go install go.uber.org/mock/mockgen@v0.6.0
 
 # Generate mocks from interface (source mode)
 mockgen -source=repository.go -destination=mocks/repository_mock.go -package=mocks

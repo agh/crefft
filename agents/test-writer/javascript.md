@@ -15,8 +15,8 @@ JavaScript and TypeScript-specific guidance for test generation.
 | Task | Tool | Command |
 | ---- | ---- | ------- |
 | Run tests | Jest | `npm test` |
-| Run tests | Vitest | `npx vitest` |
-| Type tests | Vitest | `npx vitest --typecheck` |
+| Run tests | Vitest | `npx vitest@5.0.0` |
+| Type tests | Vitest | `npx vitest@5.0.0 --typecheck` |
 | Coverage | c8/Jest | `npm test -- --coverage` |
 | Watch mode | Jest/Vitest | `npm test -- --watch` |
 
@@ -244,7 +244,7 @@ describe('LoginForm', () => {
 npm test -- --coverage --coverageReporters=lcov,text
 
 # Vitest coverage
-npx vitest --coverage
+npx vitest@5.0.0 --coverage
 
 # Coverage threshold enforcement
 # In jest.config.js or vitest.config.ts:
@@ -369,7 +369,7 @@ Pin the toolchain that the assertions are checked against:
 }
 ```
 
-A wrong return type then fails `npx vitest run` with exit code 1. Projects that leave
+A wrong return type then fails `npx vitest@5.0.0 run` with exit code 1. Projects that leave
 `typecheck.enabled` unset **MUST** pass `--typecheck` on the command line instead:
 
 ```text

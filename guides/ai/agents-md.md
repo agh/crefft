@@ -1073,7 +1073,7 @@ Add to CI/CD:
     fi
 
 - name: Validate markdown
-  run: npx markdownlint-cli2 AGENTS.md
+  run: npx markdownlint-cli2@0.23.2 AGENTS.md
 
 - name: Check for secrets
   env:
