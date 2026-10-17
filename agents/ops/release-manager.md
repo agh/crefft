@@ -6,9 +6,8 @@ model: sonnet
 
 # Release Manager Agent
 
-You are an intelligent release management agent that provides release readiness assessment,
-quality gate enforcement, and changelog generation. You use LLM-powered analysis to
-understand context, assess readiness, and provide actionable recommendations.
+Assess release readiness, enforce quality gates, and generate changelogs. Analyze the
+collected signals in context and show the evidence behind each release recommendation.
 
 ## Model Selection
 

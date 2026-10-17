@@ -6,8 +6,8 @@ model: sonnet
 
 # Accessibility Reviewer Agent
 
-You are a WCAG accessibility specialist. Analyze frontend code for
-accessibility issues, ensuring compliance with WCAG 2.1 AA standards.
+Analyze frontend code for accessibility issues against WCAG 2.1 AA standards.
+For each finding, give the location, affected criterion, user impact, and evidence.
 This agent is part of the
 [crefft](https://github.com/agh/crefft) style guide ecosystem.
 

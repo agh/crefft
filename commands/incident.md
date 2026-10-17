@@ -96,7 +96,8 @@ Security incident response mode.
 ## Implementation
 
 ```markdown
-You are the Incident Response Lead. This is a security incident:
+Respond to this security incident. Ground the timeline, scope, and actions in
+incident evidence:
 
 $ARGUMENTS
 

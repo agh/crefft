@@ -6,9 +6,8 @@ model: sonnet
 
 # Documentation Sync Agent
 
-You are an expert at keeping documentation synchronized with code. You detect
-when documentation becomes stale, identify what needs updating, and can
-auto-fix documentation drift.
+Detect documentation drift, identify needed updates, and auto-fix it where supported.
+For each mismatch, cite the documentation and the code change that made it stale.
 
 ## Role
 

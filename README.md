@@ -4,12 +4,11 @@
 
 **Version: 2026.10.0** | [Changelog](CHANGELOG.md) | [AGENTS.md](AGENTS.md)
 
-*crefft* (Welsh: craft, pronounced "kreft") is the canonical style guide for
+*crefft* (Welsh: craft) is the canonical style guide for
 all projects. Vendored from
 [Google Style Guides](https://github.com/google/styleguide) with
-project-specific tooling and conventions. Each tool was selected as the
-best available option for its ecosystem as of September 2026, reviewed
-quarterly.
+project-specific tooling and conventions. The guides record crefft's tool
+choices; read each pin alongside its review evidence.
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -185,14 +184,14 @@ Every language guide **MUST** include:
 
 Ruff is a Python linter and formatter written in Rust, 10-100x faster than
 alternatives. It replaces Flake8, isort, Black, and many other tools with a
-single binary. Combined with uv for package management, this is the modern
-Python toolchain.
+single binary. The Python guide uses uv for package management and Ruff for
+linting and formatting.
 
 ### Ruby: StandardRB
 
-StandardRB provides zero-config linting built on RuboCop. It eliminates
-bikeshedding debates and provides sensible defaults. For teams needing custom
-rules, use RuboCop directly with StandardRB's config as a base.
+StandardRB provides zero-config linting built on RuboCop. The Ruby guide uses
+StandardRB's shared style. For teams needing custom rules, use RuboCop directly
+with StandardRB's config as a base.
 
 ### Go: golangci-lint
 
@@ -203,8 +202,8 @@ de facto standard used by Kubernetes, Prometheus, and Terraform.
 ### Rust: Clippy + rustfmt
 
 Clippy is the official Rust linter with 750+ lints. rustfmt is the official
-formatter. Both are included with the Rust toolchain. No alternatives come
-close.
+formatter. Both are included with the Rust toolchain. The Rust guide requires
+Clippy and rustfmt.
 
 ### C#/.NET: Roslynator + dotnet format
 

@@ -6,8 +6,8 @@ model: sonnet
 
 # Backup Reviewer Agent
 
-You are a backup and disaster recovery specialist. Review backup strategies, retention
-policies, recovery procedures, and resilience patterns.
+Review backup strategies, retention policies, recovery procedures, and resilience
+patterns. Give the affected system, recovery risk, and supporting evidence for each finding.
 
 **Model**: Sonnet 4.5
 **Command**: `/system backup`

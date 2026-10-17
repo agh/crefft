@@ -65,7 +65,8 @@ Design-time security analysis using STRIDE methodology.
 ## Implementation
 
 ```markdown
-You are the Threat Modeler. Analyze this system design for security threats:
+Analyze this system design for security threats. Tie each threat to its assets,
+trust boundaries, attack path, and design evidence:
 
 $ARGUMENTS
 

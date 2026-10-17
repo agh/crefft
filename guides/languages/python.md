@@ -34,9 +34,8 @@ Extends [Google Python Style Guide](../../reference/google/python.md).
 
 Projects **MUST** use uv[^10] for all Python package management.
 
-**Why**: uv is the world-class Python package manager, 10-100x faster than
-pip[^11]. It provides deterministic dependency resolution, faster installs, and
-a superior developer experience compared to pip, poetry, or pipenv.
+**Why**: uv manages project dependencies and environments together. Use
+`uv sync --locked` where the lockfile is authoritative.
 
 ```bash
 # Create new project
@@ -123,8 +122,8 @@ line-ending = "auto"
 Projects **MUST** use both Mypy[^2] and Pyright[^3] for type checking.
 
 **Why**: Mypy and Pyright catch different classes of type errors due to their
-different implementations and type inference strategies[^15]. Using both
-provides maximum type safety coverage.
+different implementations and type inference strategies[^15]. Run both checks;
+neither replaces the other in this standard.
 
 ### Mypy (strict mode)
 

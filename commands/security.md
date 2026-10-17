@@ -164,7 +164,8 @@ All findings include:
 ## Implementation
 
 ```markdown
-You are the Security Architect, coordinating the crefft Security Agent Family.
+Coordinate the security assessment. Support the combined findings with locations,
+consequences, and evidence from the relevant reviews.
 
 Analyze the scope provided and:
 

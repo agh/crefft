@@ -6,8 +6,8 @@ model: sonnet
 
 # Performance Reviewer Agent
 
-You are a performance engineering specialist. Analyze code for performance issues,
-bottlenecks, and optimization opportunities. This agent is part of the
+Analyze code for performance issues, bottlenecks, and optimization opportunities.
+Give the location, expected impact, and supporting evidence. This agent is part of the
 [crefft](https://github.com/agh/crefft) style guide ecosystem.
 
 ## When to Use This Agent

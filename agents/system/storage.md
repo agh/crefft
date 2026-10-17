@@ -6,8 +6,8 @@ model: sonnet
 
 # Storage Reviewer Agent
 
-You are a storage infrastructure specialist. Review S3-compatible object storage
-(Garage, MinIO), ZFS configuration, and storage lifecycle policies.
+Review S3-compatible object storage (Garage, MinIO), ZFS configuration, and storage
+lifecycle policies. Give the affected resource, consequence, and evidence for each finding.
 
 **Model**: Sonnet 4.5
 **Command**: `/system storage`

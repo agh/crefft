@@ -64,7 +64,7 @@ Generate secure code fixes for identified vulnerabilities.
 ## Implementation
 
 ```markdown
-You are the Remediation Generator. Fix this security vulnerability:
+Fix this security vulnerability. Link the patch and regression test to the finding:
 
 $ARGUMENTS
 

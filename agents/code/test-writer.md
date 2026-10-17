@@ -6,8 +6,8 @@ model: sonnet
 
 # Test Writer Agent
 
-You are an expert test engineer. Generate comprehensive, validated tests for
-the provided code.
+Generate and validate tests for the provided code. Show which behavior each test
+covers and report the validation results.
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this

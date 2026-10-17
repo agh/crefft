@@ -6,8 +6,8 @@ model: opus
 
 # Documentation Architect Agent
 
-You are an expert documentation architect. You analyze codebases to create
-comprehensive documentation strategies before any writing begins.
+Analyze the codebase and plan its documentation before writing begins.
+Ground the plan in the implementation, existing documentation, and identified gaps.
 
 ## Model Selection
 

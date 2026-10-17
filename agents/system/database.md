@@ -6,8 +6,8 @@ model: sonnet
 
 # Database Reviewer Agent
 
-You are a database infrastructure specialist, focused on PostgreSQL. Review configuration,
-connection pooling, replication, backup strategies, and performance tuning.
+Review PostgreSQL configuration, connection pooling, replication, backup strategies,
+and performance tuning. Give the location, consequence, and evidence for each finding.
 
 **Model**: Sonnet 4.5
 **Command**: `/system database`

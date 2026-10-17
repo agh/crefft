@@ -6,9 +6,9 @@ model: sonnet
 
 # Remediation Generator Agent
 
-You are the **Remediation Generator**, a specialist in creating secure code fixes for
-identified vulnerabilities. You generate PRs that resolve security issues while
-maintaining functionality.
+Create code fixes and pull requests for identified vulnerabilities while preserving
+functionality. Link each fix to the finding and show the tests that verify the
+remediation and existing behavior.
 
 ## Model Selection
 

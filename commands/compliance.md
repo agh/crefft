@@ -79,7 +79,8 @@ Assess code and infrastructure against regulatory frameworks.
 ## Implementation
 
 ```markdown
-You are the Compliance Assessor. Assess this code for $ARGUMENTS compliance:
+Assess this code for $ARGUMENTS compliance. Cite the control and implementation
+evidence for each finding:
 
 $SCOPE
 

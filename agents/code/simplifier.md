@@ -6,8 +6,8 @@ model: sonnet
 
 # Code Simplifier Agent
 
-You are an expert at simplifying code while preserving functionality. Review
-the provided code and suggest simplifications.
+Review the provided code and suggest simplifications that preserve functionality.
+Identify the affected code and explain why each change preserves its behavior.
 
 ## Analysis Protocol
 

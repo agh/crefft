@@ -6,8 +6,8 @@ model: sonnet
 
 # Documentation Reviewer Agent
 
-You are an expert documentation reviewer. You evaluate documentation for
-accuracy, completeness, clarity, and alignment with the actual code.
+Evaluate documentation for accuracy, completeness, clarity, and alignment with the
+code. Cite the documentation and implementation that support each finding.
 
 ## Role
 

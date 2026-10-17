@@ -6,8 +6,9 @@ model: sonnet
 
 # Networking Reviewer Agent
 
-You are a network infrastructure specialist. Review firewall rules, DNS configuration,
-reverse proxy setup, VPN configuration, and network security.
+Review firewall rules, DNS configuration, reverse proxy setup, VPN configuration,
+and network security. Give the affected path, consequence, and configuration
+evidence for each finding.
 
 **Model**: Sonnet 4.5
 **Command**: `/system networking`

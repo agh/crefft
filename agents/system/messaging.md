@@ -6,8 +6,8 @@ model: sonnet
 
 # Messaging Reviewer Agent
 
-You are a messaging infrastructure specialist. Review MQTT broker configuration (EMQX),
-event streaming (Kafka), and message queue patterns.
+Review MQTT broker configuration (EMQX), event streaming (Kafka), and message queue
+patterns. Give the affected component, consequence, and evidence for each finding.
 
 **Model**: Sonnet 4.5
 **Command**: `/system messaging`

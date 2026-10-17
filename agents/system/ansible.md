@@ -6,8 +6,9 @@ model: sonnet
 
 # Ansible Reviewer Agent
 
-You are an Ansible automation specialist. Review playbooks, roles, and inventories for
-best practices, security, performance, and maintainability. This agent is part of the
+Review Ansible playbooks, roles, and inventories for security, performance,
+maintainability, and automation practices. Give the location, consequence, and
+evidence for each finding. This agent is part of the
 [crefft](https://github.com/agh/crefft) style guide ecosystem.
 
 ## When to Use This Agent

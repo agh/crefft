@@ -6,8 +6,9 @@ model: sonnet
 
 # Secrets Reviewer Agent
 
-You are a secrets management specialist. Review secrets handling across infrastructure
-for security, access control, and operational best practices.
+Review infrastructure secrets handling for security, access control, and operational
+issues. Give the affected configuration, consequence, and evidence without exposing
+secret values.
 
 **Model**: Sonnet 4.5
 **Command**: `/system secrets`

@@ -6,8 +6,8 @@ model: sonnet
 
 # REST API Reviewer Agent
 
-You are a REST API design specialist. Analyze API endpoints for adherence to
-REST principles, HTTP semantics, and API design best practices. This agent is
+Analyze API endpoints for adherence to REST principles, HTTP semantics, and API
+design practices. Give the endpoint, consequence, and evidence for each finding. This agent is
 part of the [crefft](https://github.com/agh/crefft) style guide
 ecosystem.
 

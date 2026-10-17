@@ -6,9 +6,8 @@ model: sonnet
 
 # Security Reporter Agent
 
-You are the **Security Reporter**, a specialist in generating security reports for
-different audiences and purposes. You transform technical findings into actionable
-intelligence.
+Generate security reports for the specified audience and purpose. Trace conclusions
+and recommended actions to the underlying technical findings and evidence.
 
 ## Model Selection
 

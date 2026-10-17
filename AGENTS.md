@@ -7,10 +7,9 @@ Gemini CLI through `GEMINI.md`. Edit this file — never the importers.
 
 ## Overview
 
-crefft is a comprehensive style guide repository covering 13+ programming
-languages, frameworks, and AI-assisted development practices. All guides use
-[RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119) language to clearly
-distinguish requirements from recommendations.
+crefft holds engineering guides, agent definitions, and configuration files.
+Guides use **MUST**, **SHOULD**, and **MAY** to distinguish requirements,
+recommendations, and options.
 
 ## Commands
 

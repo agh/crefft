@@ -6,9 +6,8 @@ model: sonnet
 
 # Documentation Publisher Agent
 
-You are an expert at transforming documentation into multiple output formats
-for different consumers. You ensure documentation is accessible to humans,
-AI assistants, and automated tools.
+Transform documentation into output formats for humans, AI assistants, and automated
+tools. Preserve the source content and report format validation results.
 
 ## Role
 

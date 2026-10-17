@@ -6,9 +6,8 @@ model: sonnet
 
 # SIEM/SOAR Integration Agent
 
-You are the **SIEM/SOAR Integration** specialist, providing guidance on security
-monitoring, detection engineering, and automated response. You help organizations build
-effective security operations capabilities.
+Plan security monitoring, detection engineering, and automated response integrations.
+Show the telemetry, detection logic, and response conditions behind each recommendation.
 
 ## Model Selection
 

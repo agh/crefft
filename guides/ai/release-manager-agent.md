@@ -499,7 +499,7 @@ Your responsibilities:
 1. Analyze commits and changes for semantic meaning
 2. Identify breaking changes even when not explicitly marked
 3. Assess risk level of changes
-4. Generate clear, user-focused changelog entries
+4. Generate changelog entries following the project's release policy
 5. Provide release recommendations with rationale
 
 Context about this project:
@@ -1288,7 +1288,13 @@ for an application.
 
 ## Changelog Generation
 
-The agent MUST generate human-quality changelogs using LLM understanding.
+The agent **MUST** generate changelogs from the collected commits and pull requests.
+
+Release-note wording, audience, tone, announcements, and approval to publish
+**MUST** follow **the project's own release policy**.
+
+**Why**: crefft defines version, tag, changelog, and CI mechanics; the project owns
+its public communication and publication decisions.
 
 ### Changelog Format
 
@@ -1297,6 +1303,14 @@ The agent MUST generate human-quality changelogs using LLM understanding.
 This is a CalVer example. For libraries, the agent **MUST** declare
 Semantic Versioning 2.0.0 and use SemVer release headings and comparison
 links instead, keeping `### Breaking` first when present.
+
+Describe completed changes in past tense (`Added`, `Fixed`, `Improved`), matching
+the [Changelog Agent](../../agents/ops/changelog.md#entry-grammar-and-structure).
+Keep a Changelog's convention groups completed changes by category and release;
+it does not mandate an entry tense or an announcement style.
+
+**Why**: consistent grammar removes the past-versus-present-tense conflict between
+the two prompts without imposing a release voice on the project.
 
 ```markdown
 # Changelog
@@ -1345,7 +1359,7 @@ def generate_changelog(
 
     Process:
     1. Group changes by category
-    2. Summarize each change for end users
+    2. Summarize each change per the project's release policy
     3. Link to PRs/issues
     4. Highlight breaking changes
     5. Format per configured style
@@ -1354,7 +1368,7 @@ def generate_changelog(
     # Use LLM for semantic grouping
     grouped = llm.group_changes(commits, prs)
 
-    # Generate user-facing descriptions
+    # Audience and style come from the project's release policy.
     entries = []
     for group in grouped:
         entry = llm.generate_entry(
@@ -1379,20 +1393,19 @@ def generate_changelog(
 ```markdown
 Generate a changelog entry for the following changes.
 
-Audience: {audience}
-Style: {style}
+Audience from the project's release policy: {audience}
+Style from the project's release policy: {style}
 
 Changes:
 {changes_json}
 
 Requirements:
-1. Write for end users, not developers (unless audience=developers)
-2. Focus on what changed, not how it was implemented
-3. Use active voice and present tense
-4. Keep entries concise but informative
-5. Group related changes together
-6. Put breaking changes and migrations under ### Breaking, first in the release section
-7. Include issue/PR references where relevant
+1. Follow the project's own release policy for release-note wording,
+   announcements, and approval to publish
+2. Describe what changed, using past tense for completed changes
+3. Group related changes by Keep a Changelog category
+4. Put breaking changes and migrations under ### Breaking, first in the release section
+5. Include issue/PR references where relevant
 
 Output format:
 {format_template}
@@ -1408,7 +1421,7 @@ changelog:
   # Format style
   format: keep-a-changelog  # or: conventional, github-releases, custom
 
-  # Entry generation
+  # Entry generation: set these values from the project's own release policy.
   audience: users  # or: developers, both
   style: concise   # or: detailed
   max_entry_length: 200

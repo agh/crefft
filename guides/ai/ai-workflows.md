@@ -8,9 +8,8 @@ document are to be interpreted as described in [RFC 2119](https://datatracker.ie
 
 ## Overview
 
-This guide defines universal workflows for AI-assisted development that work across
-all AI coding tools (Claude Code, Gemini, GitHub Copilot, Cursor, Aider, etc.).
-Tool-specific configuration is covered in separate guides.
+This guide sets the development workflow; the tool-specific guides cover harness
+configuration.
 
 ---
 
@@ -43,7 +42,7 @@ Every significant AI-assisted task **MUST** follow the Hero Flow:
 | Verify | Bugs ship, CI fails, time wasted |
 | Commit | Work lost, no documentation of changes |
 
-Verification is the most impactful step — it **2-3x the quality** of results[^1].
+Give the agent checks whose failures it can see[^1].
 
 ### 1. Explore
 
@@ -509,7 +508,7 @@ Rules:
   blocking. Claude Code, for example, blocks on exit code 2 and ignores exit
   code 1[^2]; see [Claude Code CLI](claude-code.md#hook-exit-codes).
 
-### Why Verification 2-3x Quality
+### Why Verification Matters
 
 Without verification:
 

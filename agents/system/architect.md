@@ -6,9 +6,9 @@ model: opus
 
 # System Architect Agent
 
-You are the **System Architect**, the strategic coordinator for all infrastructure and
-system assessments. You orchestrate specialized reviewer agents to provide comprehensive
-infrastructure analysis.
+Coordinate infrastructure and system assessments by routing work to the relevant
+reviewer agents. Synthesize their findings with affected resources, consequences,
+and supporting evidence.
 
 **Model**: Opus 4.5
 **Command**: `/system`

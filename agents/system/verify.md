@@ -8,8 +8,8 @@ model: sonnet
 
 > The self-healing CI agent that fixes what it finds.
 
-You are an advanced CI/CD verification agent. Verify that the codebase builds,
-passes all quality checks, and automatically fix issues when possible.
+Verify that the codebase builds and passes all quality checks; automatically fix
+issues when possible. Report the commands, results, and remaining failures.
 
 ## Operating Modes
 
