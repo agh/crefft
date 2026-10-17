@@ -138,12 +138,16 @@ Every user-visible change **MUST** add an entry to [CHANGELOG.md](CHANGELOG.md)
 under `## [Unreleased]`, following
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Do not edit `VERSION`
 in a pull request; releases are cut separately following
-[calendar versioning (`YYYY.M.N`)](guides/process/versioning.md).
+[calendar versioning (`YYYY.M.N`)](guides/process/versioning.md) for crefft
+itself. The guides require Semantic Versioning 2.0.0 for libraries in every
+ecosystem and CalVer for everything else. A project that publishes both a
+command and importable packages is a library.
 Breaking changes **MUST** go under `### Breaking`, first in the release
 section, and commits **MUST** retain `!` or a `BREAKING CHANGE:` footer.
 
-**Why**: a calendar version records when a release was made, not whether it
-is compatible; migration notes make incompatible changes explicit.
+**Why**: dependency resolvers assume SemVer compatibility ranges for libraries.
+A calendar version records release order instead; migration notes make
+incompatible changes explicit under either policy.
 
 ## Adding a New Guide
 

@@ -7,6 +7,13 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+### Changed
+
+- Libraries in every ecosystem now use Semantic Versioning 2.0.0;
+  everything else uses calendar versioning (`YYYY.M.N`). Projects that
+  publish both commands and importable packages count as libraries, and
+  release automation selects the matching calculation.
+
 ## [2026.10.0] - 2026-10-17
 
 ### Breaking

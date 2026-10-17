@@ -17,7 +17,8 @@ document are to be interpreted as described in [RFC 2119](https://datatracker.ie
 
 **All projects MUST follow:**
 
-- [Calendar versioning (`YYYY.M.N`)](guides/process/versioning.md), with imported Go modules excepted
+- [Versioning](guides/process/versioning.md): Semantic Versioning 2.0.0 for
+  libraries in every ecosystem; calendar versioning (`YYYY.M.N`) for everything else
 - [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 

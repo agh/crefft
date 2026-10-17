@@ -1160,16 +1160,24 @@ blockers:
 
 ### Version Calculation
 
-The engine **MUST** calculate the next calendar version (`YYYY.M.N`) from
-the release date and release history, following the
-[Versioning Guide](../process/versioning.md).
-Imported Go modules retain Semantic Versioning (`v0.x.y` or `v1.x.y`);
-they **MUST NOT** use the CalVer calculation below. A command-only Go tool
-with calendar tags **MUST** be built from its checkout or shipped as release
-artefacts, not installed with `go install module@vYYYY.M.N`.
+The engine **MUST** classify the project using the
+[Versioning Guide](../process/versioning.md). A library is a package
+published for other code to depend on through a package manager or module
+system. A project with both a command and importable packages is a library.
+Libraries in every ecosystem **MUST** use Semantic Versioning 2.0.0:
+MAJOR for breaking changes, MINOR for compatible features and PATCH for
+fixes. Breaking changes take precedence over features, then fixes.
+
+Anything else **MUST** use the next calendar version (`YYYY.M.N`) from
+the release date and release history. Go libraries use SemVer tags such
+as `v0.x.y` or `v1.x.y`, with `/vN` module paths at major version 2 or
+higher. Command-only Go tools use calendar tags and **MUST** be built from
+checkouts or shipped as release artifacts, not installed with
+`go install module@vYYYY.M.N`.
 
 #### Why
 
+Dependency resolvers assume SemVer compatibility ranges for libraries.
 Commit types and compatibility do not determine a calendar release number.
 The monthly counter starts at 0 and increments beyond the highest release
 already made that month; breaking changes remain an independent flag and
@@ -1177,8 +1185,13 @@ the first `### Breaking` changelog section.
 
 #### Version Logic
 
-This example accepts released numeric versions, including historical
-SemVer releases, and does not define pre-release suffix policy:
+This example accepts stable numeric versions without tag prefixes, including
+historical SemVer releases before a non-library project's CalVer migration.
+The caller supplies the project classification and classified changes.
+For a library with no releases, bumps start from `0.0.0`; a release needs
+breaking, feature or fix changes. SemVer defines library pre-releases;
+CalVer pre-release suffix policy remains undecided and is outside this
+example:
 
 ```python
 import re
@@ -1197,11 +1210,13 @@ def calculate_version(
     released_versions: list[str],
     release_date: date,
     breaking_changes: list[str],
+    *,
+    is_library: bool,
+    feature_changes: list[str],
+    fix_changes: list[str],
 ) -> VersionRecommendation:
-    """Calculate calendar order and report breaking changes independently."""
-    if release_date.year < 1000:
-        raise ValueError("release year must have four digits")
-    counters = []
+    """Select a library's SemVer bump or anything else's next CalVer number."""
+    versions = []
     for version in released_versions:
         match = re.fullmatch(
             r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)",
@@ -1209,9 +1224,29 @@ def calculate_version(
         )
         if match is None:
             raise ValueError(f"invalid numeric release version: {version}")
-        year, month, counter = map(int, match.groups())
+        versions.append(tuple(map(int, match.groups())))
+
+    if is_library:
+        major, minor, patch = max(versions, default=(0, 0, 0))
+        if breaking_changes:
+            version = f"{major + 1}.0.0"
+            reason = "Breaking library changes require a MAJOR bump"
+        elif feature_changes:
+            version = f"{major}.{minor + 1}.0"
+            reason = "Compatible library features require a MINOR bump"
+        elif fix_changes:
+            version = f"{major}.{minor}.{patch + 1}"
+            reason = "Library fixes require a PATCH bump"
+        else:
+            raise ValueError("library release needs breaking, feature or fix changes")
+        return VersionRecommendation(version, reason, tuple(breaking_changes))
+
+    if release_date.year < 1000:
+        raise ValueError("release year must have four digits")
+    counters = []
+    for year, month, counter in versions:
         if year >= 1000 and (year > 9999 or not 1 <= month <= 12):
-            raise ValueError(f"invalid calendar release version: {version}")
+            raise ValueError(f"invalid calendar release version: {year}.{month}.{counter}")
         if (year, month) == (release_date.year, release_date.month):
             counters.append(counter)
 
@@ -1223,9 +1258,11 @@ def calculate_version(
     )
 ```
 
-**Do**: compute `2026.10.1` after `2026.10.0`, whether the change is a fix,
-feature or breaking removal. **Don't**: derive major/minor/patch bumps from
-commit types.
+**Do**: bump a library from `1.4.2` to `2.0.0` for breaking changes,
+`1.5.0` for compatible features or `1.4.3` for fixes. For anything else,
+compute `2026.10.1` after `2026.10.0` regardless of change type.
+**Don't**: use the monthly counter for a library or a compatibility bump
+for an application.
 
 ---
 
@@ -1236,6 +1273,10 @@ The agent MUST generate human-quality changelogs using LLM understanding.
 ### Changelog Format
 
 #### Keep a Changelog Format (Default)
+
+This is a CalVer example. For libraries, the agent **MUST** declare
+Semantic Versioning 2.0.0 and use SemVer release headings and comparison
+links instead, keeping `### Breaking` first when present.
 
 ```markdown
 # Changelog
@@ -1424,9 +1465,9 @@ actions:
 
 Human-triggered release with AI assistance.
 
-A supplied version override **MUST** match the number calculated from the
-release date and release history, or the release **MUST** stop with an
-error. An override is not a way to bypass calendar numbering.
+A supplied version override **MUST** match the calculated library SemVer
+bump or non-library CalVer number, or the release **MUST** stop with an
+error. An override is not a way to bypass the project's versioning policy.
 
 ```yaml
 workflow: manual
@@ -2184,7 +2225,7 @@ sum(release_manager_blockers_detected) by (severity)
 
 - [AI Workflows](ai-workflows.md) - General AI development patterns
 - [Claude Best Practices](claude.md) - LLM usage guidelines
-- [Versioning Guide](../process/versioning.md) - CalVer mechanics and the Go exception
+- [Versioning Guide](../process/versioning.md) - Library SemVer and CalVer mechanics
 - [CI Guide](../process/ci.md) - Continuous integration patterns
 - [GitHub Templates](../process/github-templates.md) - PR and issue templates
 

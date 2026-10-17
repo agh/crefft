@@ -344,7 +344,7 @@ fixtures for complex scenarios that need exact reproduction.
 ## See Also
 
 - [CI/CD Guide](ci.md) - CI workflow configuration and best practices
-- [Versioning Guide](versioning.md) - CalVer, Go exception and changelog management
+- [Versioning Guide](versioning.md) - Library SemVer, CalVer and changelog management
 - [GitHub Templates](github-templates.md) - Issue and PR templates
 
 ## References
