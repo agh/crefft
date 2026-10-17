@@ -431,6 +431,6 @@ repos:
   flaky-test policy, which this guide does not repeat
 - [CI Guide](../process/ci.md) - Pipeline structure, caching and branch
   protection
-- [Versioning Guide](../process/versioning.md) - SemVer policy behind
-  `cargo semver-checks`
+- [Versioning Guide](../process/versioning.md) - CalVer numbering, breaking
+  changes and the Go exception; API compatibility is checked separately
 - [Languages index](README.md) - The other language style guides

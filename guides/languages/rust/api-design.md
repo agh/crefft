@@ -195,8 +195,10 @@ each one.
 The guidelines encode what the standard library and the wider ecosystem already
 do. A crate that deviates costs its users on every call: they guess the wrong
 method name, cannot find the error conditions, and discover breaking changes at
-upgrade time. Following them is also cheaper than fixing them later, because
-most are unfixable after 1.0 without a major version.
+upgrade time. Following them is also cheaper than fixing them after publication,
+because correcting a public API can break existing callers. Release numbers
+follow the [Versioning Guide](../../process/versioning.md), independently of
+compatibility.
 
 ### Naming
 
@@ -305,7 +307,7 @@ impl Format for Json {
 ```
 
 ```rust
-// GOOD: adding a field later is a minor release, because downstream cannot
+// GOOD: adding a field later is compatible, because downstream cannot
 // construct or exhaustively destructure this type.
 #[non_exhaustive]
 pub struct Request {

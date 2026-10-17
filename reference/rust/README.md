@@ -110,8 +110,9 @@ edition = "2024"
 ```
 
 The declared MSRV **MUST** be built in CI. A number nobody tests is a guess.
-Raising it is a minor version bump at least; crates whose consumers pin
-conservatively **SHOULD** treat it as breaking.
+Raising it does not select a numeric version component. Release numbers
+**MUST** follow the [Versioning Guide](../../guides/process/versioning.md);
+incompatible toolchain requirements **MUST** be recorded under `### Breaking`.
 
 ### Choose an edition deliberately
 

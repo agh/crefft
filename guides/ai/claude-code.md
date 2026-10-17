@@ -960,19 +960,19 @@ earlier they live under `configs/claude/`. Match `SYNC_PATHS` to the release
 you pin, or the sync step reports `Source not found` and copies nothing:
 
 ```yaml
-- name: Fetch crefft configs (pinned to v3.0.0)
+- name: Fetch crefft configs (pinned to v2026.10.0)
   run: |
-    curl -sL https://github.com/agh/crefft/archive/refs/tags/v3.0.0.tar.gz | tar xz
+    curl -sL https://github.com/agh/crefft/archive/refs/tags/v2026.10.0.tar.gz | tar xz
     mkdir -p ./.claude/agents ./.claude/commands
-    cp -rL crefft-3.0.0/configs/claude/. ./.claude/
-    cp -rL crefft-3.0.0/agents/. ./.claude/agents/
-    cp -rL crefft-3.0.0/commands/. ./.claude/commands/
+    cp -rL crefft-2026.10.0/configs/claude/. ./.claude/
+    cp -rL crefft-2026.10.0/agents/. ./.claude/agents/
+    cp -rL crefft-2026.10.0/commands/. ./.claude/commands/
 ```
 
-For a manual install from a pinned tarball (paths shown for v3.0.0):
+For a manual install from a pinned tarball (paths shown for v2026.10.0):
 
 ```bash
-CREFFT_VERSION=3.0.0
+CREFFT_VERSION=2026.10.0
 curl -sL "https://github.com/agh/crefft/archive/refs/tags/v${CREFFT_VERSION}.tar.gz" | tar xz
 mkdir -p .claude
 rsync -aL --delete "crefft-${CREFFT_VERSION}/agents/"   .claude/agents/

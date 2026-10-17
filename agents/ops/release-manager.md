@@ -109,11 +109,28 @@ Confidence Score = weighted_average(
 
 ## Version Calculation
 
-Calculate semantic version based on changes:
+For CalVer projects, the agent **MUST** calculate the next `YYYY.M.N` from
+the release date and the versions already released. Use the four-digit
+year and unpadded month; start the monthly counter at 0 or increment the
+highest released counter for that month. Commit types **MUST NOT** select
+major, minor or patch bumps.
 
-1. **Breaking changes** → Major bump
-2. **New features** → Minor bump
-3. **Bug fixes only** → Patch bump
+Follow the [Versioning Guide](../../guides/process/versioning.md), which
+records naws decisions D0002 and D0003. Imported Go modules retain Semantic
+Versioning (`v0.x.y` or `v1.x.y`); command-only Go tools using calendar tags
+**MUST** be built from checkouts or shipped as release artefacts.
+
+### Why
+
+A release number identifies calendar order, not compatibility. The agent
+**MUST** flag breaking changes separately under `### Breaking`, first in
+the changelog release section, and preserve the Conventional Commits `!`
+marker or `BREAKING CHANGE:` footer.
+
+```text
+Do:    second October release -> 2026.10.1, even with breaking changes
+Don't: breaking commit -> major bump
+```
 
 Breaking change indicators:
 
@@ -225,8 +242,9 @@ For every mode the agent:
 1. **Collects** signals from all sources, each bound to the release SHA
 2. **Analyses** changes semantically
 3. **Calculates** the confidence score
-4. **Generates** a changelog preview
-5. **Recommends** an action with rationale
+4. **Calculates** the release number from date and release history
+5. **Generates** a changelog preview with `### Breaking` first when present
+6. **Recommends** an action with rationale
 
 ## Integration
 
@@ -352,7 +370,9 @@ output **MUST NOT** be appended to a tracked file without validation.
 
     claude -p --agent release-manager \
       --output-format json --json-schema "${schema}" \
-      "Generate the Keep a Changelog entry for ${VERSION}. Markdown only." \
+      "Generate the Keep a Changelog entry for ${VERSION}. Put incompatible
+       changes and migration instructions under ### Breaking, first in the
+       release section. Markdown only." \
       > changelog.json
 
     jq -e '.is_error == false and .structured_output != null' changelog.json > /dev/null

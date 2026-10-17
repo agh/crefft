@@ -3,61 +3,156 @@
 > [crefft](../../README.md) > [Process](../README.md) > Versioning
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-document are to be interpreted as described in RFC 2119[^1].
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+"OPTIONAL" in this document are to be interpreted as described in
+BCP 14 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)
+[RFC 8174](https://datatracker.ietf.org/doc/html/rfc8174) when, and only
+when, they appear in all capitals, as shown here.
 
-All @agh projects **MUST** follow Semantic Versioning 2.0.0[^2].
+Every project **MUST** use calendar versioning (CalVer[^1]) in the
+`YYYY.M.N` format, except imported Go modules as described under
+[Go Modules](#go-modules). This policy records naws decisions D0002 and D0003,
+made on 17 October 2026; this guide defines its mechanics.
 
-## Semantic Versioning
+## Quick Reference
 
-```text
-MAJOR.MINOR.PATCH
-```
+| Task | Rule | Example |
+| ---- | ---- | ------- |
+| First release of a month | Four-digit year, unpadded month, counter 0 | `2026.10.0` |
+| Further release that month | Highest counter already released that month + 1 | `2026.10.1` |
+| First release of a new month | Use the new year/month and reset the counter | `2026.11.0` |
+| Tag a release | Prefix the version with `v` | `v2026.10.0` |
+| Record incompatibility | First changelog section: `### Breaking` | Migration instructions |
+| Mark a breaking commit | Conventional Commits `!` or footer | `feat!: remove legacy API` |
+| Release an imported Go module | Semantic Versioning, `v0.x.y` or `v1.x.y` | `v1.4.2` |
 
-- **MAJOR**: Incompatible API changes
-- **MINOR**: Backward-compatible new functionality
-- **PATCH**: Backward-compatible bug fixes
+## Calendar Versioning
 
-### Examples
-
-| Change                    | Version Bump    |
-| ------------------------- | --------------- |
-| Fix a bug                 | 1.0.0 -> 1.0.1  |
-| Add a new feature         | 1.0.1 -> 1.1.0  |
-| Remove a feature          | 1.1.0 -> 2.0.0  |
-| Change function signature | 1.1.0 -> 2.0.0  |
-| Add optional parameter    | 1.1.0 -> 1.2.0  |
-| Security fix              | 1.2.0 -> 1.2.1  |
-
-### Pre-release Versions
-
-```text
-1.0.0-alpha.1
-1.0.0-beta.1
-1.0.0-rc.1
-```
-
-### Build Metadata
+Release numbers **MUST** have exactly three dot-separated components:
 
 ```text
-1.0.0+20240115
-1.0.0+build.123
+YYYY.M.N
 ```
 
-## Version 0.x.y
+`YYYY` is the four-digit release year. `M` is the release month, from 1 to
+12. `N` is the release's number within that month, counting from 0.
+The month and counter **MUST NOT** contain leading zeros.
 
-During initial development (0.x.y):
+### Why
 
-- API is unstable
-- Any change may be breaking
-- 0.1.0 -> 0.2.0 may break compatibility
+A release number identifies when a release was made and its order within
+that month. It does not encode a judgement about compatibility. The format
+also has valid SemVer syntax[^2]: npm, Cargo, PEP 440 and Homebrew accept
+`2026.10.0`. npm, Cargo and Go reject leading zeros, so `2026.03.001`
+is not a portable alternative.
 
-**Rule**: You **SHOULD** stay at 0.x.y until you're confident in API stability.
+```text
+Do:    2026.3.0, 2026.3.1, 2026.10.0
+Don't: 2026.03.001, 26.10.0, 2026.13.0
+```
+
+### Choosing the Next Number
+
+For the release's year and month, projects **MUST** inspect the versions
+already released. If none exists for that month, the counter **MUST** be 0;
+otherwise it **MUST** be one greater than the highest counter already
+released in that month. Commit types and breaking changes **MUST NOT**
+change this calculation.
+
+#### Why
+
+Using the release history prevents duplicate numbers. Resetting the
+counter at each new month makes the first release distinguishable without
+assigning compatibility meaning to any component.
+
+| Release date | Change | Version |
+| ------------ | ------ | ------- |
+| 2026-03-02 | First release of March | `2026.3.0` |
+| 2026-03-09 | Bug fix | `2026.3.1` |
+| 2026-03-27 | Breaking change | `2026.3.2` |
+| 2026-04-01 | First release of April | `2026.4.0` |
+| 2026-10-17 | First release of October | `2026.10.0` |
+| 2026-10-20 | Next release of October | `2026.10.1` |
+| 2027-01-03 | First release of January | `2027.1.0` |
+
+```text
+Do:    2026.10.0 -> 2026.10.1 for any second October release
+Don't: 2026.10.0 -> 2027.0.0 because a commit is breaking
+```
+
+### Compatibility and Dependency Ranges
+
+A version number no longer signals compatibility. Breaking changes
+**MUST** be documented under [Breaking Changes](#breaking-changes),
+independently of the release number.
+
+#### Why
+
+Two releases in one month can be incompatible, while releases in different
+years can remain compatible. Users need the changelog and migration notes,
+not an inferred promise from the leading number.
+
+Under CalVer the leading number is the year, so a caret range such as
+`^2026.10.0` admits every later release that year, including breaking ones.
+Policy for libraries on registries whose resolvers assume SemVer ranges,
+including npm and Cargo, remains undecided. Pre-release suffix policy also
+remains undecided.
+
+## Go Modules
+
+Go modules imported by other modules **MUST** remain on Semantic
+Versioning[^2], using `v0.x.y` or `v1.x.y`, rather than `vYYYY.M.N`.
+
+### Why
+
+The Go module reference[^3] states: "If the module is released at major
+version 2 or higher, the module path must end with a major version suffix
+like /v2". A calendar year in the leading position would therefore require
+a path such as `/v2026`.
+
+A Go command-line tool that nothing imports **MAY** use `vYYYY.M.N`
+tags. Such a tool **MUST** be built from its checkout or distributed as
+release artefacts: `go install module@v2026.10.0` fails when the module path
+has no `/v2026` suffix.
+
+```bash
+# Do: build a command-only tool from its checked-out release.
+git checkout v2026.10.0
+go build ./cmd/mytool
+
+# Don't: request a year-major tag through an unsuffixed module path.
+go install example.com/team/mytool/cmd/mytool@v2026.10.0
+```
+
+## Migration from Semantic Versioning
+
+The first CalVer release **MUST** simply follow the last SemVer release.
+Previously published versions and tags **MUST NOT** be rewritten or
+re-tagged. Projects **MUST** update their version files, release templates,
+tag references and changelog comparison links together.
+
+### Why
+
+Existing tags identify immutable releases used by downstream consumers.
+`2026.10.0` sorts after `2.11.0`, so a migration needs no intermediate
+release and no alteration to history.
+
+```text
+Do:    v2.11.0 -> v2026.10.0; leave v2.11.0 pointing at its original commit
+Don't: re-tag v2.11.0 or insert an intermediate compatibility-major release
+```
 
 ## Changelogs
 
-Every project **MUST** maintain a `CHANGELOG.md` following
-Keep a Changelog[^3].
+Every project **MUST** maintain `CHANGELOG.md` following Keep a
+Changelog[^4], extended with `### Breaking` as the first subsection of
+each release that contains breaking changes.
+
+### Why
+
+A changelog describes the user-facing effect of a release. Putting breaking
+changes first makes the migration work visible even when a release number
+does not communicate compatibility.
 
 ### Format
 
@@ -67,59 +162,88 @@ Keep a Changelog[^3].
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog,
-and this project adheres to Semantic Versioning.
+and this project adheres to calendar versioning (`YYYY.M.N`).
 
 ## [Unreleased]
 
+## [2026.10.1] - 2026-10-20
+
+### Breaking
+- Removed the legacy login endpoint; use `/api/v2/login`.
+
 ### Added
-- New feature X
+- Added profile editing.
 
 ### Changed
-- Updated dependency Y
+- Updated the dashboard layout.
 
 ### Deprecated
-- Old feature Z (use W instead)
+- Deprecated the old export format in favour of JSON.
 
 ### Removed
-- Legacy feature removed
+- Removed an unused example file.
 
 ### Fixed
-- Bug in component A
+- Fixed concurrent-session handling.
 
 ### Security
-- Fixed vulnerability CVE-XXXX
+- Fixed an authentication bypass.
 
-## [1.2.0] - 2024-01-15
+## [2026.10.0] - 2026-10-17
 
 ### Added
-- Feature description
+- First release of October.
 
-[Unreleased]: https://github.com/user/repo/compare/v1.2.0...HEAD
-[1.2.0]: https://github.com/user/repo/compare/v1.1.0...v1.2.0
+[Unreleased]: https://github.com/user/repo/compare/v2026.10.1...HEAD
+[2026.10.1]: https://github.com/user/repo/compare/v2026.10.0...v2026.10.1
 ```
 
 ### Change Types
 
-- **Added**: New features
-- **Changed**: Changes to existing functionality
-- **Deprecated**: Soon-to-be-removed features
-- **Removed**: Removed features
-- **Fixed**: Bug fixes
-- **Security**: Vulnerability fixes
+| Section | Content |
+| ------- | ------- |
+| Breaking | Incompatible changes, impact and migration instructions; first when present |
+| Added | New features |
+| Changed | Changes to existing functionality |
+| Deprecated | Features due for removal |
+| Removed | Removed features |
+| Fixed | Bug fixes |
+| Security | Vulnerability fixes |
+
+```markdown
+<!-- Do: make an incompatible change visible first. -->
+### Breaking
+- Renamed `getUserProfile()` to `getProfile()`; update callers.
+```
+
+```markdown
+<!-- Don't: bury an incompatible change among routine changes. -->
+### Changed
+- Renamed `getUserProfile()` to `getProfile()`.
+```
 
 ## Git Tags
 
-Tag releases with `v` prefix:
+Release tags **MUST** be the version prefixed with `v`:
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+# Do
+git tag v2026.10.0
+
+# Don't
+git tag 2026.10.0
 ```
+
+### Why
+
+One spelling lets release workflows, archives and comparison links identify
+the same release. The `VERSION` file and package metadata contain
+`2026.10.0`; the tag contains `v2026.10.0`.
 
 ## Conventional Commits
 
-You **SHOULD** use Conventional Commits[^4] for commit
-messages. This enables automated changelog generation and version bumping.
+Projects **SHOULD** use Conventional Commits[^5] for commit messages.
+Types classify changes for release notes, not release-number arithmetic:
 
 ```text
 type(scope): description
@@ -129,128 +253,98 @@ type(scope): description
 [optional footer]
 ```
 
-### Types
+### Why
 
-| Type       | Description                  | Version Bump |
-| ---------- | ---------------------------- | ------------ |
-| `feat`     | New feature                  | MINOR        |
-| `fix`      | Bug fix                      | PATCH        |
-| `docs`     | Documentation only           | None         |
-| `style`    | Code style (formatting)      | None         |
-| `refactor` | Code change (no feature/fix) | None         |
-| `perf`     | Performance improvement      | PATCH        |
-| `test`     | Adding tests                 | None         |
-| `chore`    | Maintenance                  | None         |
+Consistent commit metadata supports changelog generation and review without
+coupling a feature or fix to a particular numeric component.
+
+| Type | Description |
+| ---- | ----------- |
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `docs` | Documentation only |
+| `style` | Formatting |
+| `refactor` | Code change without a feature or fix |
+| `perf` | Performance improvement |
+| `test` | Tests |
+| `chore` | Maintenance |
 
 ### Breaking Changes
 
-Indicate breaking changes with `!` or `BREAKING CHANGE:`:
+A breaking commit **MUST** retain the Conventional Commits `!` marker or
+`BREAKING CHANGE:` footer. Its changelog entry **MUST** appear under
+`### Breaking`, first in the release section, and state the migration.
+
+#### Why
+
+The commit marker supports automated detection; the dedicated changelog
+heading gives consumers a human-readable migration path.
 
 ```text
+# Do
 feat!: remove deprecated API endpoint
 
-BREAKING CHANGE: The /v1/users endpoint has been removed.
-Use /v2/users instead.
+BREAKING CHANGE: The /api/v1/users endpoint has been removed.
+Use /api/v2/users instead.
+
+# Don't
+feat: remove deprecated API endpoint
 ```
 
-Breaking changes always bump MAJOR version.
+## Release Automation
 
-## Automated Releases
+Release automation **MUST** calculate `YYYY.M.N` from the release date and
+release history, then update version files, the changelog and tag references
+consistently. It **MUST** detect breaking changes separately and put them
+under `### Breaking`. Imported Go modules use the exception above.
 
-### release-please (Google)
+### Why
 
-```yaml
-# .github/workflows/release.yml
-name: Release
-on:
-  push:
-    branches: [main]
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: googleapis/release-please-action@v4
-        with:
-          release-type: python  # or node, rust, go, etc.
-```
-
-release-please[^5]:
-
-- Creates release PRs based on conventional commits
-- Updates CHANGELOG.md automatically
-- Bumps version numbers
-- Creates GitHub releases
-
-### semantic-release
-
-Alternative for Node.js projects[^6]:
-
-```json
-{
-  "release": {
-    "branches": ["main"],
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      "@semantic-release/changelog",
-      "@semantic-release/npm",
-      "@semantic-release/github"
-    ]
-  }
-}
-```
-
-## API Versioning
-
-For APIs, version in the URL or header:
+A commit analyser that maps `feat` to a minor bump or `fix` to a patch bump
+does not implement this policy. Number selection and compatibility reporting
+are separate operations.
 
 ```text
-# URL versioning (preferred)
+Do:    release date + released versions -> next YYYY.M.N
+       breaking commit markers -> ### Breaking and migration notes
+Don't: feat -> minor bump; fix -> patch bump; breaking -> major bump
+```
+
+## API and Package Versions
+
+API URL or header versions identify contracts, not calendar releases:
+
+```text
 /api/v1/users
 /api/v2/users
-
-# Header versioning
 Accept: application/vnd.myapi.v1+json
 ```
 
-You **SHOULD** maintain at most 2 major versions simultaneously. You **MUST**
-deprecate old versions with at least 6 months notice.
+Projects **SHOULD** maintain at most two API contract versions simultaneously
+and **MUST** give at least six months' notice before removing an old one.
 
-## Library Versioning
+### Why
 
-For libraries, follow language-specific conventions:
+An API contract can survive many releases. Changing its URL every month
+would force migrations without any corresponding contract change.
 
-| Language   | Version Location                |
-| ---------- | ------------------------------- |
-| Python     | `pyproject.toml`, `__version__` |
-| Ruby       | `version.rb`, `.gemspec`        |
-| Go         | `go.mod`, git tags              |
-| Rust       | `Cargo.toml`                    |
-| C#         | `.csproj`, `AssemblyInfo.cs`    |
-| TypeScript | `package.json`                  |
+Package metadata **MUST** carry the project's release version, subject to
+the Go exception. The registry resolver questions above remain open.
+
+| Language | Version location |
+| -------- | ---------------- |
+| Python | `pyproject.toml`, `__version__` |
+| Ruby | `version.rb`, `.gemspec` |
+| Go | Git tags; `go.mod` declares the module path |
+| Rust | `Cargo.toml` |
+| C# | `.csproj`, `AssemblyInfo.cs` |
+| TypeScript | `package.json` |
 
 ## Enforcement Tools
 
-### Conventional Commits: commitlint
+### Conventional Commits
 
-commitlint[^7] enforces conventional commit standards:
-
-```bash
-# Install
-npm install --save-dev @commitlint/cli @commitlint/config-conventional
-
-# Configure
-echo "export default { extends: ['@commitlint/config-conventional'] };" > commitlint.config.js
-```
-
-Add to `.husky/commit-msg`:
-
-```bash
-npx --no -- commitlint --edit $1
-```
-
-Or with pre-commit (Python) using conventional-pre-commit[^8]:
+The pinned conventional-pre-commit hook[^6] checks commit messages:
 
 ```yaml
 # .pre-commit-config.yaml
@@ -266,142 +360,53 @@ repos:
 pre-commit install --hook-type commit-msg
 ```
 
-### Keep a Changelog: kacl-cli
+### Keep a Changelog
 
-Validate CHANGELOG.md format using kacl-cli[^9] or changelog-lint[^10]. The
-validator image **MUST** be pinned to a released tag or digest, and the
-command CI runs **MUST** be the command developers run locally:
-
-```bash
-# Using kacl-cli (Docker, pinned)
-# 0.7.4 index digest: sha256:ff8ed585b95616c9c9d7a0499bf2c15192899872dadff80cc46e37dfec8717dc
-docker run --rm -v "$(pwd)":/workdir:ro -w /workdir \
-  mschmieder/kacl-cli:0.7.4 verify
-
-# Using changelog-lint (Go)
-go install github.com/chavacava/changelog-lint@latest
-changelog-lint CHANGELOG.md
-```
-
-**Why**: `verify` exits non-zero and reports the offending line and column, so
-a single command gates a local commit and a CI job. An unpinned image lets the
-accepted grammar change between two runs of the same build.
-
-kacl-cli compares the text under the `# Changelog` heading literally, line by
-line, against `default_content`. Projects **MUST** declare their own preamble
-in `.kacl.yml`, which kacl-cli loads from the working directory, and **MUST**
-commit that file so local and CI runs apply the same rules:
+A changelog validator **MUST** accept the additional `Breaking` section
+and the project's calendar-versioning preamble. With kacl-cli[^7], commit
+`.kacl.yml` alongside `CHANGELOG.md`:
 
 ```yaml
 # .kacl.yml
 kacl:
   allowed_header_titles: [Changelog]
-  allowed_version_sections: [Added, Changed, Deprecated, Removed, Fixed, Security]
+  allowed_version_sections: [Breaking, Added, Changed, Deprecated, Removed, Fixed, Security]
   default_content:
     - All notable changes to this project will be documented in this file.
     - "The format is based on Keep a Changelog,"
-    - "and this project adheres to Semantic Versioning."
+    - "and this project adheres to calendar versioning (`YYYY.M.N`)."
 ```
 
-Mount the working tree where the container reads it; a validator **MUST NOT**
-be handed a mount path it never opens:
+The validator image **MUST** be pinned, and local checks and CI **MUST**
+use the same command and working directory:
 
 ```bash
-# Do: the tool finds CHANGELOG.md and .kacl.yml in its working directory
+# Do: the tool reads CHANGELOG.md and .kacl.yml from /workdir.
 docker run --rm -v "$(pwd)":/workdir:ro -w /workdir mschmieder/kacl-cli:0.7.4 verify
 
-# Don't: mount elsewhere - exits 1 with "Error: CHANGELOG.md not found"
+# Don't: the tool cannot find CHANGELOG.md in its working directory.
 docker run --rm -v "$(pwd)":/src mschmieder/kacl-cli:0.7.4 verify
 ```
 
-### CI Validation
+#### Why
 
-A workflow file **MUST** declare the events that trigger it and **SHOULD**
-declare least-privilege permissions. The following is a complete file:
-
-```yaml
-# .github/workflows/validate.yml
-name: Validate
-
-on:
-  pull_request:
-  push:
-    branches: [main]
-
-permissions:
-  contents: read
-
-jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      # Validate commit messages
-      - uses: wagoid/commitlint-github-action@v6
-
-      # Validate changelog format
-      - name: Validate CHANGELOG
-        run: |
-          docker run --rm -v "$PWD":/workdir:ro -w /workdir \
-            mschmieder/kacl-cli:0.7.4 verify
-```
-
-**Why**: without `on:`, GitHub never runs the workflow[^12], so the checks
-silently never happen. `fetch-depth: 0` gives commitlint the full commit
-range to lint, and `contents: read` denies the job write access to the
-repository.
-
-### commitsar (Go Alternative)
-
-For CI without Node.js, use commitsar[^11]:
-
-```yaml
-- uses: aevea/commitsar@v0.20.2
-```
+The preamble and allowed sections are part of the validator's grammar.
+Without matching configuration, a valid CalVer changelog can fail a checker
+that still expects a different preamble or rejects `Breaking`.
 
 ## References
 
-[^1]: RFC 2119 - Key words for use in RFCs to Indicate Requirement Levels
-<https://datatracker.ietf.org/doc/html/rfc2119>
-
-[^2]: Semantic Versioning 2.0.0
-<https://semver.org/>
-
-[^3]: Keep a Changelog
-<https://keepachangelog.com/>
-
-[^4]: Conventional Commits 1.0.0
-<https://www.conventionalcommits.org/>
-
-[^5]: release-please - Automated Release PRs and Releases
-<https://github.com/googleapis/release-please>
-
-[^6]: semantic-release - Fully automated version management and package publishing
-<https://github.com/semantic-release/semantic-release>
-
-[^7]: commitlint - Lint commit messages
-<https://commitlint.js.org/>
-
-[^8]: conventional-pre-commit - A pre-commit hook for Conventional Commits
-<https://github.com/compilerla/conventional-pre-commit>
-
-[^9]: kacl-cli (python-kacl) - Keep a Changelog validator
-<https://gitlab.com/schmieder.matthias/python-kacl>
-
-[^10]: changelog-lint - Linter for CHANGELOG files
-<https://github.com/chavacava/changelog-lint>
-
-[^11]: commitsar - Conventional commit compliance checker
-<https://github.com/aevea/commitsar>
-
-[^12]: GitHub Actions workflow syntax - `on`
-<https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#on>
+[^1]: [Calendar Versioning](https://calver.org/) - Calendar-based version conventions
+[^2]: [Semantic Versioning 2.0.0](https://semver.org/) - Numeric syntax and Go exception
+[^3]: [Go module reference: major version suffixes](https://go.dev/ref/mod#major-version-suffixes)
+[^4]: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
+[^5]: [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+[^6]: [conventional-pre-commit](https://github.com/compilerla/conventional-pre-commit)
+[^7]: [kacl-cli](https://gitlab.com/schmieder.matthias/python-kacl) - Changelog validation
 
 ## See Also
 
-- [CI/CD Guide](ci.md) - CI workflow configuration and automation
+- [CI/CD Guide](ci.md) - Release workflow checks
 - [Testing Guide](testing.md) - Testing strategy and best practices
 - [GitHub Templates](github-templates.md) - Issue and PR templates
+- [Release Manager](../ai/release-manager-agent.md) - Release-number calculation and breaking flags

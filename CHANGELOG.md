@@ -3,37 +3,13 @@
 All notable changes to crefft will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/versioning.md).
 
 ## [Unreleased]
 
-## [3.0.0] - 2026-10-17
+## [2026.10.0] - 2026-10-17
 
-### Added
-
-- Rust guide: API design and documentation, dependency policy and supply
-  chain (cargo-deny, cargo-vet), property, mutation, SemVer and benchmark
-  testing, and a tested version matrix. Axum guide: HTTP hardening, WebSocket
-  controls, RFC 9457 problem details, negative and lifecycle tests.
-- `LICENSE` (MIT) for crefft-authored content and `THIRD_PARTY_NOTICES.md`
-  recording the licence, upstream and required attribution of every vendored
-  source, with licence texts and NOTICE files placed next to the material
-  under `reference/`.
-- Community files mandated by the GitHub templates guide: `CONTRIBUTING.md`,
-  `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0), `SECURITY.md`, three
-  issue forms and a pull request template.
-- `scripts/check_vendored.py` and `reference/UPSTREAM.json`: checksum
-  verification of vendored files against their recorded upstream commits.
-- `scripts/check_snippets.py`: syntax checks for fenced code in every guide
-  (warn-only until the Wave 1 example repairs land).
-- `scripts/gen_nav.py`: regenerates `SUMMARY.md` and fails CI when a guide is
-  missing from the navigation or a navigation link is dead.
-- `guides/README.md` as the index of guide categories, and a Reference
-  material table in `README.md`.
-- `Makefile` whose `check` target runs the same checks as CI; `package.json`
-  and lockfile pinning the documentation tools; `.github/dependabot.yml`.
-
-### Changed
+### Breaking
 
 - **BREAKING**: Rename Doctrine to crefft (Welsh for craft) and move the
   repository from `agh/doctrine` to `agh/crefft`. GitHub redirects the old
@@ -63,10 +39,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   | `doctrine/verify-build` | `crefft/verify-build` |
   | `#syncing-from-doctrine` | `#syncing-from-crefft` |
   | `doctrine-main` | `crefft-main` |
-  | `doctrine-2.11.0` | `crefft-3.0.0` |
+  | `doctrine-2.11.0` | `crefft-2026.10.0` |
   | `inet doctrine` | `inet crefft` |
   | `doctrine/` (tree roots) | `crefft/` |
   | `"name": "doctrine"` (package metadata) | `"name": "crefft"` |
+
+- **BREAKING**: crefft now versions itself with CalVer (`YYYY.M.N`).
+  Its [versioning guide](guides/process/versioning.md) requires CalVer for
+  every project, except Go libraries imported by other modules, as recorded
+  in naws decisions D0002 and D0003. Versions no longer signal
+  compatibility; breaking changes have their own first `### Breaking`
+  section. Consumers pinning crefft by version move from `v2.11.0` to
+  `v2026.10.0`.
+
+### Added
+
+- Rust guide: API design and documentation, dependency policy and supply
+  chain (cargo-deny, cargo-vet), property, mutation, SemVer and benchmark
+  testing, and a tested version matrix. Axum guide: HTTP hardening, WebSocket
+  controls, RFC 9457 problem details, negative and lifecycle tests.
+- `LICENSE` (MIT) for crefft-authored content and `THIRD_PARTY_NOTICES.md`
+  recording the licence, upstream and required attribution of every vendored
+  source, with licence texts and NOTICE files placed next to the material
+  under `reference/`.
+- Community files mandated by the GitHub templates guide: `CONTRIBUTING.md`,
+  `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0), `SECURITY.md`, three
+  issue forms and a pull request template.
+- `scripts/check_vendored.py` and `reference/UPSTREAM.json`: checksum
+  verification of vendored files against their recorded upstream commits.
+- `scripts/check_snippets.py`: syntax checks for fenced code in every guide
+  (warn-only until the Wave 1 example repairs land).
+- `scripts/gen_nav.py`: regenerates `SUMMARY.md` and fails CI when a guide is
+  missing from the navigation or a navigation link is dead.
+- `guides/README.md` as the index of guide categories, and a Reference
+  material table in `README.md`.
+- `Makefile` whose `check` target runs the same checks as CI; `package.json`
+  and lockfile pinning the documentation tools; `.github/dependabot.yml`.
+
+### Changed
 
 - `.gitattributes` marks `reference/` as vendored and counts Markdown, so
   GitHub reports the repository as Markdown rather than HTML.
@@ -520,8 +530,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Vendored Google style guides (Python, Markdown, Shell, C#, HTML/CSS, Go,
   TypeScript)
 
-[Unreleased]: https://github.com/agh/crefft/compare/v3.0.0...HEAD
-[3.0.0]: https://github.com/agh/crefft/compare/v2.11.0...v3.0.0
+[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.0...HEAD
+[2026.10.0]: https://github.com/agh/crefft/compare/v2.11.0...v2026.10.0
 [2.11.0]: https://github.com/agh/crefft/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/agh/crefft/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/agh/crefft/compare/v2.8.0...v2.9.0

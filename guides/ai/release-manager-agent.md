@@ -276,7 +276,7 @@ signal_collectors:
       "refactor": 4,
       "test": 3
     },
-    "suggested_bump": "minor",
+    "has_breaking_changes": true,
     "breaking_commits": [
       {
         "sha": "abc123",
@@ -442,8 +442,12 @@ The Dependency Collector analyzes dependency changes and impacts.
 | `added_deps` | `Dependency[]` | Newly added dependencies |
 | `removed_deps` | `Dependency[]` | Removed dependencies |
 | `updated_deps` | `DependencyUpdate[]` | Version changes |
-| `breaking_updates` | `DependencyUpdate[]` | Major version bumps |
+| `breaking_updates` | `DependencyUpdate[]` | Incompatible updates identified from API checks and release notes |
 | `downstream_impact` | `Package[]` | Packages affected by changes |
+
+Major-version signals apply to dependencies whose upstream uses
+compatibility-based versioning. A calendar-year change alone does not
+classify a dependency update as breaking.
 
 #### Configuration
 
@@ -1156,46 +1160,72 @@ blockers:
 
 ### Version Calculation
 
-The engine MUST calculate the appropriate semantic version.
+The engine **MUST** calculate the next calendar version (`YYYY.M.N`) from
+the release date and release history, following the
+[Versioning Guide](../process/versioning.md) and naws decisions D0002 and D0003.
+Imported Go modules retain Semantic Versioning (`v0.x.y` or `v1.x.y`);
+they **MUST NOT** use the CalVer calculation below. A command-only Go tool
+with calendar tags **MUST** be built from its checkout or shipped as release
+artefacts, not installed with `go install module@vYYYY.M.N`.
+
+#### Why
+
+Commit types and compatibility do not determine a calendar release number.
+The monthly counter starts at 0 and increments beyond the highest release
+already made that month; breaking changes remain an independent flag and
+the first `### Breaking` changelog section.
 
 #### Version Logic
 
+This example accepts released numeric versions, including historical
+SemVer releases, and does not define pre-release suffix policy:
+
 ```python
+import re
+from dataclasses import dataclass
+from datetime import date
+
+
+@dataclass(frozen=True)
+class VersionRecommendation:
+    version: str
+    reason: str
+    breaking_changes: tuple[str, ...]
+
+
 def calculate_version(
-    current: SemVer,
-    signals: Signals,
-    config: Config
+    released_versions: list[str],
+    release_date: date,
+    breaking_changes: list[str],
 ) -> VersionRecommendation:
-    """
-    Calculate next version based on changes.
-
-    Rules:
-    1. Breaking changes → Major bump
-    2. New features → Minor bump
-    3. Bug fixes only → Patch bump
-    4. Pre-release handling
-    5. Build metadata
-    """
-
-    if signals.has_breaking_changes:
-        return VersionRecommendation(
-            version=current.bump_major(),
-            reason="Breaking changes detected",
-            breaking_changes=signals.breaking_changes
+    """Calculate calendar order and report breaking changes independently."""
+    if release_date.year < 1000:
+        raise ValueError("release year must have four digits")
+    counters = []
+    for version in released_versions:
+        match = re.fullmatch(
+            r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)",
+            version,
         )
+        if match is None:
+            raise ValueError(f"invalid numeric release version: {version}")
+        year, month, counter = map(int, match.groups())
+        if year >= 1000 and (year > 9999 or not 1 <= month <= 12):
+            raise ValueError(f"invalid calendar release version: {version}")
+        if (year, month) == (release_date.year, release_date.month):
+            counters.append(counter)
 
-    if signals.has_features:
-        return VersionRecommendation(
-            version=current.bump_minor(),
-            reason="New features added",
-            features=signals.features
-        )
-
+    counter = max(counters, default=-1) + 1
     return VersionRecommendation(
-        version=current.bump_patch(),
-        reason="Bug fixes and improvements"
+        version=f"{release_date.year}.{release_date.month}.{counter}",
+        reason="Next release number for the release month",
+        breaking_changes=tuple(breaking_changes),
     )
 ```
+
+**Do**: compute `2026.10.1` after `2026.10.0`, whether the change is a fix,
+feature or breaking removal. **Don't**: derive major/minor/patch bumps from
+commit types.
 
 ---
 
@@ -1213,11 +1243,14 @@ The agent MUST generate human-quality changelogs using LLM understanding.
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to calendar versioning (`YYYY.M.N`).
 
 ## [Unreleased]
 
-## [1.2.0] - 2025-01-02
+## [2026.10.0] - 2026-10-17
+
+### Breaking
+- Renamed `getUserProfile()` to `getProfile()`; update callers (#312).
 
 ### Added
 - User profile editing with avatar upload support (#234)
@@ -1234,7 +1267,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Patched XSS vulnerability in comment rendering (#253)
 
-## [1.1.0] - 2024-12-15
+## [2026.9.0] - 2026-09-15
 ...
 ```
 
@@ -1297,7 +1330,7 @@ Requirements:
 3. Use active voice and present tense
 4. Keep entries concise but informative
 5. Group related changes together
-6. Highlight breaking changes prominently
+6. Put breaking changes and migrations under ### Breaking, first in the release section
 7. Include issue/PR references where relevant
 
 Output format:
@@ -1321,6 +1354,7 @@ changelog:
 
   # Sections to include
   sections:
+    - Breaking
     - Added
     - Changed
     - Deprecated
@@ -1390,13 +1424,17 @@ actions:
 
 Human-triggered release with AI assistance.
 
+A supplied version override **MUST** match the number calculated from the
+release date and release history, or the release **MUST** stop with an
+error. An override is not a way to bypass calendar numbering.
+
 ```yaml
 workflow: manual
 trigger:
   workflow_dispatch:
     inputs:
       version_override:
-        description: "Override calculated version"
+        description: "Requested version; must match the calculated release number"
         required: false
       skip_checks:
         description: "Skip non-critical checks"
@@ -1404,6 +1442,8 @@ trigger:
         default: false
 actions:
   - analyze_changes
+  - calculate_version
+  - validate_version_override
   - present_report
   - await_confirmation
   - execute_release
@@ -2048,7 +2088,7 @@ release-manager analyze [--output json|text|markdown]
 release-manager changelog [--dry-run] [--since <tag>]
 
 # Calculate next version
-release-manager version [--bump major|minor|patch]
+release-manager version
 
 # Execute release
 release-manager release [--dry-run] [--force]
@@ -2068,19 +2108,22 @@ release-manager init [--preset minimal|standard|enterprise]
 ```bash
 # Quick release check
 $ release-manager analyze
-✓ Collected 47 commits since v1.1.0
+✓ Collected 47 commits since v2026.10.0
 ✓ All CI checks passing
 ✓ No security blockers
 ✓ 12 PRs with required approvals
 
 Release Readiness: 87/100 (Good)
-Recommended Version: 1.2.0 (minor - new features)
+Recommended Version: 2026.10.1 (next October release; breaking changes flagged separately)
 
 Proceed with release? [y/N]
 
 # Generate changelog preview
 $ release-manager changelog --dry-run
-## [1.2.0] - 2025-01-02
+## [2026.10.1] - 2026-10-20
+
+### Breaking
+- Renamed `getUserProfile()` to `getProfile()`; update callers (#312).
 
 ### Added
 - User profile editing with avatar upload (#234)
@@ -2092,14 +2135,14 @@ $ release-manager changelog --dry-run
 
 # Execute release
 $ release-manager release
-✓ Version bumped to 1.2.0
+✓ Version set to 2026.10.1
 ✓ CHANGELOG.md updated
-✓ Git tag v1.2.0 created
+✓ Git tag v2026.10.1 created
 ✓ GitHub Release published
 ✓ Package published to npm
 ✓ Slack notification sent
 
-Release v1.2.0 completed successfully!
+Release v2026.10.1 completed successfully!
 ```
 
 ---
@@ -2141,7 +2184,7 @@ sum(release_manager_blockers_detected) by (severity)
 
 - [AI Workflows](ai-workflows.md) - General AI development patterns
 - [Claude Best Practices](claude.md) - LLM usage guidelines
-- [Versioning Guide](../process/versioning.md) - Semantic versioning standards
+- [Versioning Guide](../process/versioning.md) - CalVer mechanics and the Go exception
 - [CI Guide](../process/ci.md) - Continuous integration patterns
 - [GitHub Templates](../process/github-templates.md) - PR and issue templates
 
@@ -2149,7 +2192,7 @@ sum(release_manager_blockers_detected) by (severity)
 
 ## References
 
-- [Semantic Versioning 2.0.0](https://semver.org/)
+- [Calendar Versioning](https://calver.org/)
 - [Keep a Changelog](https://keepachangelog.com/)
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [semantic-release](https://github.com/semantic-release/semantic-release)

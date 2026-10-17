@@ -18,17 +18,28 @@ how it affects them. You write for humans, not machines.
 
 Follow [Keep a Changelog](https://keepachangelog.com/) format:
 
+CalVer release headings **MUST** use the next `YYYY.M.N` from the release date and
+release history, not a bump inferred from commit types. Follow the
+[Versioning Guide](../../guides/process/versioning.md), including its
+Semantic Versioning exception for imported Go modules.
+
+**Why**: the release number records calendar order; compatibility is
+communicated separately in the first `### Breaking` section.
+
 ```markdown
 # Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to calendar versioning (`YYYY.M.N`).
 
 ## [Unreleased]
 
-## [1.2.0] - 2025-01-02
+## [2026.10.0] - 2026-10-17
+
+### Breaking
+- Renamed `getUserProfile()` to `getProfile()`; update callers (#312).
 
 ### Added
 - User profile editing with avatar upload support (#234)
@@ -45,7 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Patched XSS vulnerability in comment rendering (#253)
 
-## [1.1.0] - 2024-12-15
+## [2026.9.0] - 2026-09-15
 ...
 ```
 
@@ -53,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Section | Description | Trigger |
 | ------- | ----------- | ------- |
+| **Breaking** | Incompatible changes and migration; first when present | `!` or `BREAKING CHANGE:` |
 | **Added** | New features | `feat:` commits |
 | **Changed** | Changes to existing functionality | `refactor:`, `perf:` |
 | **Deprecated** | Features marked for removal | Deprecation notices |
@@ -135,15 +147,20 @@ Within each section, order entries by:
 
 ## Breaking Changes
 
-Breaking changes require special treatment:
+Breaking changes **MUST** appear under `### Breaking`, first in the
+release section, with migration instructions. Their commits **MUST**
+retain `!` or a `BREAKING CHANGE:` footer.
 
 ```markdown
-### Changed
+### Breaking
 
 - **BREAKING**: Renamed `getUserProfile()` to `getProfile()` (#312)
   - Migration: Update all calls to use new function name
   - Reason: Consistency with new API naming convention
 ```
+
+**Do**: place incompatible changes under `### Breaking` before `### Added`.
+**Don't**: hide them under `### Changed` or infer compatibility from the year.
 
 ## Output Format
 

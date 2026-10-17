@@ -2,7 +2,7 @@
 
 # crefft
 
-**Version: 3.0.0** | [Changelog](CHANGELOG.md) | [AGENTS.md](AGENTS.md)
+**Version: 2026.10.0** | [Changelog](CHANGELOG.md) | [AGENTS.md](AGENTS.md)
 
 *crefft* (Welsh: craft, pronounced "kreft") is the canonical style guide for
 all projects. Vendored from
@@ -17,7 +17,7 @@ document are to be interpreted as described in [RFC 2119](https://datatracker.ie
 
 **All projects MUST follow:**
 
-- [Semantic Versioning 2.0.0](https://semver.org/)
+- [Calendar versioning (`YYYY.M.N`)](guides/process/versioning.md), with imported Go modules excepted
 - [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 

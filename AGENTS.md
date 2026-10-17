@@ -187,7 +187,7 @@ pipx run grip==4.6.2
 | `README.md` | Landing page, full navigation |
 | `SUMMARY.md` | Generated navigation index (`scripts/gen_nav.py`) |
 | `CHANGELOG.md` | Version history |
-| `VERSION` | Current version (SemVer) |
+| `VERSION` | Current calendar version (`YYYY.M.N`) |
 | `agents/`, `commands/` | Agent and slash-command definitions |
 | `configs/` | Copy-paste config files |
 | `reference/google/` | Upstream Google guides |
@@ -198,10 +198,19 @@ pipx run grip==4.6.2
 
 ### Versioning
 
-- Follow [Semantic Versioning 2.0.0](https://semver.org/)
-- MAJOR: Breaking changes to guide structure
-- MINOR: New guides or significant additions
-- PATCH: Fixes, clarifications, tool updates
+- Releases **MUST** follow [calendar versioning](guides/process/versioning.md)
+  (`YYYY.M.N`), as recorded in naws decisions D0002 and D0003.
+- Use the four-digit release year, month without a leading zero and a
+  monthly counter starting at 0; increment the counter for each further
+  release that month, regardless of commit type.
+- Breaking changes **MUST** appear under `### Breaking`, first in the
+  release section, and retain `!` or `BREAKING CHANGE:` in commits.
+- Imported Go modules remain on Semantic Versioning (`v0.x.y` or `v1.x.y`);
+  the guide defines this exception and the command-only distribution rules.
+
+**Why**: the version identifies release order, not compatibility. Separate
+breaking-change notes preserve migration information without changing the
+calendar calculation.
 
 ### Commit Messages
 

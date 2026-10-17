@@ -2649,20 +2649,28 @@ docker-compose down -v
 
 ### Versioning
 
-You SHOULD use Semantic Versioning and embed version in assemblies:
+Projects **MUST** use calendar versioning (`YYYY.M.N`) from the
+[Versioning Guide](../process/versioning.md) and embed the selected release
+version in assemblies.
+
+#### Why
+
+An assembly and its package need to identify the same calendar release.
+The number does not promise API compatibility; incompatible changes belong
+under `### Breaking` in the changelog.
 
 **Directory.Build.props:**
 
 ```xml
 <PropertyGroup>
-  <Version>1.2.3</Version>
-  <AssemblyVersion>1.2.3.0</AssemblyVersion>
-  <FileVersion>1.2.3.0</FileVersion>
-  <InformationalVersion>1.2.3+$(SourceRevisionId)</InformationalVersion>
+  <Version>2026.10.0</Version>
+  <AssemblyVersion>2026.10.0.0</AssemblyVersion>
+  <FileVersion>2026.10.0.0</FileVersion>
+  <InformationalVersion>2026.10.0+$(SourceRevisionId)</InformationalVersion>
 </PropertyGroup>
 ```
 
-**From Git (MinVer[^25]):**
+**With MinVer[^25]:**
 
 ```xml
 <ItemGroup>
@@ -2686,11 +2694,24 @@ Under Central Package Management, drop the `Version` attribute here and declare
 </ItemGroup>
 ```
 
+With either package-reference form, set the `v` tag prefix and supply the
+calendar version explicitly; MinVer's inferred next version is not the
+project's calendar-release calculation:
+
+```xml
+<PropertyGroup>
+  <MinVerTagPrefix>v</MinVerTagPrefix>
+  <MinVerVersionOverride>2026.10.0</MinVerVersionOverride>
+</PropertyGroup>
+```
+
 ```bash
-# Version from git tags
-git tag v1.2.3
-dotnet build
-# Version: 1.2.3
+# Do: build the explicitly selected calendar release.
+git tag v2026.10.0
+dotnet build -p:MinVerVersionOverride=2026.10.0
+# Version: 2026.10.0
+
+# Don't: use a numeric feature/fix bump as the calendar-release calculation.
 ```
 
 ### NuGet Package Publishing
@@ -2702,15 +2723,15 @@ You SHOULD publish reusable libraries to NuGet[^26].
 dotnet pack -c Release
 
 # Pack with version
-dotnet pack -c Release /p:Version=1.2.3
+dotnet pack -c Release /p:Version=2026.10.0
 
 # Publish to NuGet.org
-dotnet nuget push bin/Release/MyLibrary.1.2.3.nupkg \
+dotnet nuget push bin/Release/MyLibrary.2026.10.0.nupkg \
   --api-key $NUGET_API_KEY \
   --source https://api.nuget.org/v3/index.json
 
 # Publish to private feed
-dotnet nuget push bin/Release/MyLibrary.1.2.3.nupkg \
+dotnet nuget push bin/Release/MyLibrary.2026.10.0.nupkg \
   --api-key $FEED_API_KEY \
   --source https://pkgs.dev.azure.com/myorg/_packaging/myfeed/nuget/v3/index.json
 ```
@@ -2720,7 +2741,7 @@ dotnet nuget push bin/Release/MyLibrary.1.2.3.nupkg \
 ```xml
 <PropertyGroup>
   <PackageId>MyCompany.MyLibrary</PackageId>
-  <Version>1.2.3</Version>
+  <Version>2026.10.0</Version>
   <Authors>My Company</Authors>
   <Company>My Company</Company>
   <Product>My Library</Product>

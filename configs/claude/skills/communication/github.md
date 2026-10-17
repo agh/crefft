@@ -187,7 +187,7 @@ or `gh release create`; see [Release Workflow](#release-workflow).
 ```markdown
 Analyze the last 10 releases:
 - Release frequency
-- Breaking changes (major versions)
+- Breaking changes (`### Breaking` changelog entries and commit markers)
 - Contributors per release
 - Time between releases
 ```
@@ -213,10 +213,10 @@ Find issues labeled "bug" that:
 ### Changelog Generation
 
 ```markdown
-For version 1.2.0:
-1. Find all PRs merged since v1.1.0 tag
+For version 2026.10.1:
+1. Find all PRs merged since v2026.10.0 tag
 2. Categorize by conventional commit type
-3. Generate changelog entries
+3. Generate changelog entries with ### Breaking first when present
 4. Create release with generated notes
 ```
 

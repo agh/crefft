@@ -138,7 +138,12 @@ Every user-visible change **MUST** add an entry to [CHANGELOG.md](CHANGELOG.md)
 under `## [Unreleased]`, following
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Do not edit `VERSION`
 in a pull request; releases are cut separately following
-[Semantic Versioning 2.0.0](https://semver.org/).
+[calendar versioning (`YYYY.M.N`)](guides/process/versioning.md).
+Breaking changes **MUST** go under `### Breaking`, first in the release
+section, and commits **MUST** retain `!` or a `BREAKING CHANGE:` footer.
+
+**Why**: a calendar version records when a release was made, not whether it
+is compatible; migration notes make incompatible changes explicit.
 
 ## Adding a New Guide
 
