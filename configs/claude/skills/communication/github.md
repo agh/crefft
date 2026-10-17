@@ -301,9 +301,12 @@ The REST API is versioned by date. `GET /versions` currently lists
 
 ```bash
 curl -sS -H "X-GitHub-Api-Version: 2026-03-10" \
-  -H "Authorization: Bearer $GITHUB_PAT" \
+  -H @- <<<"Authorization: Bearer $GITHUB_PAT" \
   https://api.github.com/repos/OWNER/REPO
 ```
+
+**Why**: reading the single-line authorization header from stdin keeps the PAT
+out of process arguments; shell tracing **MUST NOT** be enabled.
 
 Agents **SHOULD** send `X-GitHub-Api-Version` explicitly and assert the echoed
 `x-github-api-version-selected`, so that a change to the server default cannot

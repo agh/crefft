@@ -107,6 +107,11 @@ Confidence Score = weighted_average(
 | 30-49 | Low confidence | Address issues first |
 | 0-29 | Critical issues | Release blocked |
 
+Eligibility also requires no blockers and passing mandatory gates; a score
+**MUST NOT** override either requirement.
+
+**Why**: averaging strong signals with a failed required check can still produce a high score.
+
 ## Version Calculation
 
 The agent **MUST** first classify the project using the
@@ -148,6 +153,12 @@ Breaking change indicators:
 - API surface removals or incompatible changes
 
 ## Output Format
+
+Published release notes, announcements, commits, and PR text **MUST NOT**
+credit a tool, agent, or model.
+
+**Why**: published output describes the changes; execution identity belongs in
+internal audit metadata, not contributor credit.
 
 ```markdown
 ## Release Readiness Report
@@ -320,8 +331,15 @@ ORDER BY r.deployed_at DESC;
 ## CI Integration
 
 CI **MUST** run the agent in print mode, constrain its output with a schema,
-parse the decision explicitly, and exit non-zero on a blocking outcome. Model
-output **MUST NOT** be appended to a tracked file without validation.
+parse the decision explicitly, and exit non-zero on any blocker or failed
+mandatory gate, regardless of decision or confidence. Missing gate results
+**MUST** fail closed. Mandatory gates cover CI, tests, security, required
+reviews, and evidence bound to the release SHA. Model output **MUST NOT** be
+appended to a tracked file without validation.
+
+**Why**: a high score or a `release` recommendation cannot override a failed
+required check. Changelog generation **MUST** wait for a successful readiness
+step as well as a `release` decision.
 
 ```yaml
 - name: Release readiness gate
@@ -333,37 +351,58 @@ output **MUST NOT** be appended to a tracked file without validation.
     set -euo pipefail
 
     schema='{"type":"object","additionalProperties":false,
-      "required":["decision","confidence","version","blockers"],
+      "required":["decision","confidence","version","blockers","mandatory_gates"],
       "properties":{
         "decision":{"enum":["release","release_with_review","hold","block"]},
         "confidence":{"type":"integer","minimum":0,"maximum":100},
         "version":{"type":"string"},
-        "blockers":{"type":"array","items":{"type":"string"}}}}'
+        "blockers":{"type":"array","items":{"type":"string"}},
+        "mandatory_gates":{"type":"object","additionalProperties":false,
+          "required":["ci","tests","security","reviews","evidence"],
+          "properties":{"ci":{"type":"boolean"},"tests":{"type":"boolean"},
+            "security":{"type":"boolean"},"reviews":{"type":"boolean"},
+            "evidence":{"type":"boolean"}}}}}'
 
     claude -p --agent release-manager \
       --output-format json --json-schema "${schema}" \
       "Assess release readiness for ${RELEASE_SHA}. Bind every signal to that
-       commit. Do not modify any files." > readiness.json
+       commit. Report mandatory_gates for CI, tests, security, required reviews,
+       and evidence binding. Missing, stale, or unverifiable evidence is not a
+       passing gate. Do not modify any files." > readiness.json
 
     # The CLI reports run failures inside the envelope, not only via exit status.
     jq -e '.is_error == false and .structured_output != null' readiness.json > /dev/null
 
+    # release-guard:start
+    if ! jq -e '
+      .is_error == false and
+      (.structured_output | type == "object" and
+        (.decision == "release" or .decision == "release_with_review") and
+        (.blockers | type == "array" and length == 0) and
+        (.mandatory_gates | type == "object" and
+          has("ci") and has("tests") and has("security") and
+          has("reviews") and has("evidence") and all(.[]; . == true)))
+    ' readiness.json > /dev/null; then
+      echo "release blocked: blockers, mandatory gates, or decision did not pass" >&2
+      exit 1
+    fi
+
     decision=$(jq -r '.structured_output.decision' readiness.json)
     {
+      echo "passed=true"
       echo "decision=${decision}"
       echo "confidence=$(jq -r '.structured_output.confidence' readiness.json)"
       echo "version=$(jq -r '.structured_output.version' readiness.json)"
     } >> "${GITHUB_OUTPUT}"
 
-    if [ "${decision}" = "block" ] || [ "${decision}" = "hold" ]; then
-      jq -r '.structured_output.blockers[]' readiness.json >&2
-      exit 1
-    fi
+    # release-guard:end
 
 - name: Update changelog
   if: |
     github.event_name == 'push' &&
     github.ref == 'refs/heads/main' &&
+    steps.readiness.outcome == 'success' &&
+    steps.readiness.outputs.passed == 'true' &&
     steps.readiness.outputs.decision == 'release'
   env:
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -427,6 +466,7 @@ Three separate failures:
    into a tracked file, with no way to undo it inside the same run.
 
 The steps above address each: print mode with a resolvable `--agent`, a JSON
-Schema plus `.structured_output` parsing, an explicit `exit 1` on `block` or
-`hold`, and a changelog write that is validated for heading, version, and
-duplication before an atomic `mv`.
+Schema plus `.structured_output` parsing, an explicit `exit 1` on any blocker,
+failed or missing mandatory gate, `block`, or `hold`, and a changelog write
+that requires a successful readiness step and is validated for heading,
+version, and duplication before an atomic `mv`.

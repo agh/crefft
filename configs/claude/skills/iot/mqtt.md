@@ -112,13 +112,18 @@ with an **administrator** API key — a `viewer` key gets
 ```bash
 jq -Rs '{type:"file",enable:true,rules:.}' acl.conf > source.json
 
+AUTH="Authorization: Basic $(printf '%s:%s' \
+  "$EMQX_ADMIN_KEY" "$EMQX_ADMIN_SECRET" | base64 | tr -d '\n')"
 curl -sS --fail-with-body -X PUT \
   "https://emqx.example:18083/api/v5/authorization/sources/file" \
-  -u "${EMQX_ADMIN_KEY}:${EMQX_ADMIN_SECRET}" \
+  -H @- <<<"$AUTH" \
   -H 'Content-Type: application/json' \
   -d @source.json
 # HTTP 204
 ```
+
+**Why**: the Basic header is read from stdin so the API key and secret do not
+appear in process arguments. Shell tracing **MUST NOT** be enabled in these examples.
 
 Loading an ACL is administrative. The read-only key an agent uses for the
 queries in [EMQX API Access](#emqx-api-access) **MUST NOT** be able to perform
@@ -152,11 +157,15 @@ last rule with `{deny, all}.` and confirming `authorization.no_match = deny` is
 what makes the deny-by-default claim true:
 
 ```bash
-curl -sS --fail-with-body -u "${EMQX_API_KEY}:${EMQX_API_SECRET}" \
+AUTH="Authorization: Basic $(printf '%s:%s' \
+  "$EMQX_API_KEY" "$EMQX_API_SECRET" | base64 | tr -d '\n')"
+curl -sS --fail-with-body -H @- <<<"$AUTH" \
   "https://emqx.example:18083/api/v5/authorization/settings" \
   | jq '{no_match, deny_action}'
 # {"no_match": "deny", "deny_action": "ignore"}
 ```
+
+**Why**: stdin carries the credential-bearing Basic header, not the process argument list.
 
 Agents **MUST** verify enforcement after loading an ACL by publishing to a
 topic that should be denied and confirming it did not arrive.
@@ -307,9 +316,12 @@ Dashboard credentials **MUST NOT** be used as HTTP Basic auth. EMQX rejects
 them on ordinary API calls:
 
 ```bash
-curl -u "dashboard_user:password" "https://emqx.example:18083/api/v5/clients"
+AUTH="Authorization: Basic $(printf '%s' 'dashboard_user:password' | base64 | tr -d '\n')"
+curl -H @- <<<"$AUTH" "https://emqx.example:18083/api/v5/clients"
 # HTTP 401
 ```
+
+**Why**: even a rejected login should keep credentials out of process arguments.
 
 Use an API key and secret, created under Dashboard -> System -> API Key with
 the narrowest role that works (`viewer` for read-only agents). Administrative
@@ -317,20 +329,28 @@ changes need a separate `administrator` key, referred to below as
 `EMQX_ADMIN_KEY`:
 
 ```bash
+AUTH="Authorization: Basic $(printf '%s:%s' \
+  "$EMQX_API_KEY" "$EMQX_API_SECRET" | base64 | tr -d '\n')"
 curl -sS --fail-with-body \
-  -u "${EMQX_API_KEY}:${EMQX_API_SECRET}" \
+  -H @- <<<"$AUTH" \
   "https://emqx.example:18083/api/v5/clients"
 # HTTP 200
 ```
 
+**Why**: stdin carries the Basic header without exposing the key or secret in arguments.
+
 A `viewer` key is refused on writes, so the role is a real boundary:
 
 ```bash
-curl -u "${EMQX_API_KEY}:${EMQX_API_SECRET}" -X PUT \
+AUTH="Authorization: Basic $(printf '%s:%s' \
+  "$EMQX_API_KEY" "$EMQX_API_SECRET" | base64 | tr -d '\n')"
+curl -H @- <<<"$AUTH" -X PUT \
   "https://emqx.example:18083/api/v5/listeners/tcp:default" \
   -H 'Content-Type: application/json' -d '{"id":"tcp:default"}'
 # HTTP 403 {"code":"UNAUTHORIZED_ROLE",...}
 ```
+
+**Why**: the same stdin transport protects credentials on refused writes.
 
 A role refusal is `403 UNAUTHORIZED_ROLE`. Agents **MUST NOT** treat `401` as
 role denial: `/api/v5/api_key` returns `401 API_KEY_NOT_ALLOW` to *every* API
@@ -340,47 +360,55 @@ Dashboard credentials are valid in exactly one place: the JSON body of
 `POST /api/v5/login`, which returns a short-lived bearer token.
 
 ```bash
-TOKEN=$(curl -sS --fail-with-body -X POST \
+export EMQX_USER EMQX_PASS
+TOKEN=$(jq -n '{username: env.EMQX_USER, password: env.EMQX_PASS}' |
+  curl -sS --fail-with-body -X POST \
   "https://emqx.example:18083/api/v5/login" \
   -H 'Content-Type: application/json' \
-  -d "{\"username\":\"${EMQX_USER}\",\"password\":\"${EMQX_PASS}\"}" \
+  --data-binary @- \
   | jq -r .token)
 
-curl -sS --fail-with-body -H "Authorization: Bearer ${TOKEN}" \
+curl -sS --fail-with-body -H @- <<<"Authorization: Bearer ${TOKEN}" \
   "https://emqx.example:18083/api/v5/clients"
 ```
 
 **Why**: an API key is scoped by role and revocable on its own, whereas a
 Dashboard account is a human login. All of the above **MUST** run over TLS;
 Basic auth and bearer tokens are both replayable in clear text otherwise.
+The login body and subsequent single-line bearer header use stdin so neither
+the password nor the token appears in process arguments; `jq` quotes the JSON.
 
 ### REST API Queries
 
 ```bash
 EMQX="https://emqx.example:18083/api/v5"
-AUTH=(-u "${EMQX_API_KEY}:${EMQX_API_SECRET}")
+AUTH="Authorization: Basic $(printf '%s:%s' \
+  "$EMQX_API_KEY" "$EMQX_API_SECRET" | base64 | tr -d '\n')"
 
 # List all clients
-curl -sS --fail-with-body "${AUTH[@]}" "${EMQX}/clients"
+curl -sS --fail-with-body -H @- <<<"$AUTH" "${EMQX}/clients"
 
 # Get client details
-curl -sS --fail-with-body "${AUTH[@]}" "${EMQX}/clients/device123"
+curl -sS --fail-with-body -H @- <<<"$AUTH" "${EMQX}/clients/device123"
 
 # List subscriptions
-curl -sS --fail-with-body "${AUTH[@]}" "${EMQX}/subscriptions"
+curl -sS --fail-with-body -H @- <<<"$AUTH" "${EMQX}/subscriptions"
 
 # Topic metrics for one topic
-curl -sS --fail-with-body "${AUTH[@]}" "${EMQX}/topics?topic=sensors/kitchen"
+curl -sS --fail-with-body -H @- <<<"$AUTH" "${EMQX}/topics?topic=sensors/kitchen"
 
 # Retained messages: list returns metadata only
-curl -sS --fail-with-body "${AUTH[@]}" \
+curl -sS --fail-with-body -H @- <<<"$AUTH" \
   "${EMQX}/mqtt/retainer/messages?topic=sensors/%2B/temperature"
 
 # Retained payload: use the detail endpoint (payload is base64)
-curl -sS --fail-with-body "${AUTH[@]}" \
+curl -sS --fail-with-body -H @- <<<"$AUTH" \
   "${EMQX}/mqtt/retainer/message/sensors%2Fkitchen%2Ftemperature" \
   | jq -r '.payload | @base64d'
 ```
+
+**Why**: every request reads its Basic header from stdin rather than expanding
+credential-bearing arguments.
 
 ### Useful EMQX Queries for Agents
 
@@ -477,15 +505,19 @@ settings. Sending them returns `HTTP 400`:
 Rate limits are listener properties. Set them on the listener:
 
 ```bash
+AUTH="Authorization: Basic $(printf '%s:%s' \
+  "$EMQX_ADMIN_KEY" "$EMQX_ADMIN_SECRET" | base64 | tr -d '\n')"
 curl -sS --fail-with-body -X PUT \
   "https://emqx.example:18083/api/v5/listeners/tcp:default" \
-  -u "${EMQX_ADMIN_KEY}:${EMQX_ADMIN_SECRET}" \
+  -H @- <<<"$AUTH" \
   -H 'Content-Type: application/json' \
   -d '{"id":"tcp:default","type":"tcp","bind":"0.0.0.0:1883","enable":true,
        "messages_rate":"10/s","bytes_rate":"64KB/s","max_conn_rate":"500/s"}'
 # HTTP 200; reads back as
 # {"messages_rate":"10/s","bytes_rate":"64KB/s","max_conn_rate":"500/s"}
 ```
+
+**Why**: the administrator key and secret stay on stdin, outside process arguments.
 
 | Setting | Where | Meaning |
 | ------- | ----- | ------- |
@@ -503,16 +535,17 @@ the current configuration, modify it, and write it back:
 
 ```bash
 EMQX="https://emqx.example:18083/api/v5"
-AUTH=(-u "${EMQX_ADMIN_KEY}:${EMQX_ADMIN_SECRET}")
+AUTH="Authorization: Basic $(printf '%s:%s' \
+  "$EMQX_ADMIN_KEY" "$EMQX_ADMIN_SECRET" | base64 | tr -d '\n')"
 
-curl -sS --fail-with-body "${AUTH[@]}" "${EMQX}/configs/global_zone" \
+curl -sS --fail-with-body -H @- <<<"$AUTH" "${EMQX}/configs/global_zone" \
   | jq '.mqtt.max_packet_size = "64KB"' > zone.json
 
 curl -sS --fail-with-body -X PUT "${EMQX}/configs/global_zone" \
-  "${AUTH[@]}" -H 'Content-Type: application/json' -d @zone.json
+  -H @- <<<"$AUTH" -H 'Content-Type: application/json' -d @zone.json
 # HTTP 200
 
-curl -sS --fail-with-body "${AUTH[@]}" "${EMQX}/configs/global_zone" \
+curl -sS --fail-with-body -H @- <<<"$AUTH" "${EMQX}/configs/global_zone" \
   | jq -r '.mqtt.max_packet_size'
 # 64KB
 ```
@@ -520,6 +553,7 @@ curl -sS --fail-with-body "${AUTH[@]}" "${EMQX}/configs/global_zone" \
 **Why**: EMQX rejects unknown listener fields outright, so an invented key is
 not a silent no-op here — the whole update fails and the limit that was meant
 to be applied is never applied.
+Reading the Basic header from stdin also keeps administrative credentials out of arguments.
 
 Once `messages_rate` or `bytes_rate` is exceeded, EMQX drops QoS 0 messages and
 rejects QoS 1 and QoS 2 with reason code `0x97` (Quota Exceeded).

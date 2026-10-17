@@ -308,7 +308,7 @@ When investigating an incident at time T:
 ### Authentication
 
 ```bash
-# Basic auth: the wrapper sends these as -u user:password
+# Basic auth: the wrapper builds a Basic header and sends it through stdin
 PROMETHEUS_USER="agent"
 PROMETHEUS_PASSWORD="..."
 
@@ -360,21 +360,19 @@ PROMETHEUS_URL="${PROMETHEUS_URL:-http://localhost:9090}"
 _api() {
   local path="$1"; shift
 
-  local auth=()
+  local auth=""
   if [ -n "${PROMETHEUS_TOKEN:-}" ]; then
-    auth=(-H "Authorization: Bearer ${PROMETHEUS_TOKEN}")
+    auth="Authorization: Bearer ${PROMETHEUS_TOKEN}"
   elif [ -n "${PROMETHEUS_USER:-}" ]; then
-    auth=(-u "${PROMETHEUS_USER}:${PROMETHEUS_PASSWORD:?password required}")
+    auth="Authorization: Basic $(printf '%s:%s' \
+      "$PROMETHEUS_USER" "${PROMETHEUS_PASSWORD:?password required}" | base64 | tr -d '\n')"
   fi
 
   local body rc
-  # ${arr[@]+"${arr[@]}"} keeps an empty array from tripping `set -u`
-  # on bash 3.2, which is what macOS ships.
   # `|| rc=$?` stops `set -e` killing the script before the body is shown.
   rc=0
   body=$(curl -sS --fail-with-body --max-time 30 -G \
-    ${auth[@]+"${auth[@]}"} \
-    "${PROMETHEUS_URL}${path}" "$@") || rc=$?
+    --header @- "${PROMETHEUS_URL}${path}" "$@" <<<"$auth") || rc=$?
 
   if [ "$rc" -ne 0 ]; then
     printf 'prometheus request failed (curl %s): %s\n' "$rc" "$body" >&2
@@ -439,6 +437,11 @@ a complete result.
 
 `PROMETHEUS_TOKEN` or `PROMETHEUS_USER`/`PROMETHEUS_PASSWORD` are attached to
 every request rather than being declared and ignored.
+
+**Why**: `--header @-` reads authentication from stdin, keeping bearer tokens
+and Basic credentials out of process arguments, including passwords with quotes
+or backslashes. Credentials **MUST** be single-line values, and shell tracing
+**MUST NOT** be enabled while using them.
 
 `date -d '1 hour ago'` is GNU-specific. On macOS it fails with `date: illegal
 option -- d`, so the wrapper does arithmetic on `date +%s`, which is portable.

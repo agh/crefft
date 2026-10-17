@@ -24,7 +24,8 @@ For send-only notifications, post to the webhook URL directly. This needs no
 package, so there is no third-party code in the credential's path:
 
 ```bash
-curl -sS --fail-with-body -X POST "$DISCORD_WEBHOOK_URL" \
+printf '%s' "$DISCORD_WEBHOOK_URL" | jq -Rrs '"url = \(tojson)"' |
+  curl -sS --fail-with-body --config - -X POST \
   -H 'Content-Type: application/json' \
   -d '{
     "content": "Release v1.2.0 published",
@@ -35,6 +36,11 @@ curl -sS --fail-with-body -X POST "$DISCORD_WEBHOOK_URL" \
 **Why**: a webhook URL is a bearer credential for one channel. Handing it to an
 unaudited npm package that runs on every `npx -y` resolution widens the blast
 radius for no capability gain.
+
+**Why**: a quoted config on stdin keeps the bearer URL out of `curl` process
+arguments; `jq` escapes quotes and backslashes instead of interpolating raw config.
+Run these pipelines with `set -euo pipefail`; shell tracing **MUST NOT** be
+enabled while handling credentials.
 
 No MCP wrapper is recommended for the webhook path. The most visible candidate,
 `@lmquang/mcp-discord-webhook@1.3.1`, contains no reference to any `DISCORD_*`
@@ -77,7 +83,8 @@ One webhook per channel, each in its own variable:
 
 ```bash
 post_discord() {
-  curl -sS --fail-with-body -X POST "$1" \
+  printf '%s' "$1" | jq -Rrs '"url = \(tojson)"' |
+    curl -sS --fail-with-body --config - -X POST \
     -H 'Content-Type: application/json' \
     -d "$2"
 }
@@ -85,6 +92,8 @@ post_discord() {
 post_discord "$DISCORD_RELEASES_WEBHOOK" "$release_payload"
 post_discord "$DISCORD_ALERTS_WEBHOOK" "$alert_payload"
 ```
+
+**Why**: each URL travels through stdin rather than appearing in the `curl` argument list.
 
 ## Access Levels
 
@@ -199,9 +208,6 @@ pasted into untrusted content still pings by default.
         "inline": false
       }
     ],
-    "footer": {
-      "text": "Released by ops/release-manager"
-    },
     "timestamp": "2025-01-02T10:30:00.000Z"
   }],
   "allowed_mentions": {"parse": []}
@@ -257,8 +263,7 @@ sys.stdout.write(t if len(t) <= limit
     "fields": [
       {"name": "Environment", "value": "production", "inline": true},
       {"name": "Error rate", "value": "0.12% -> 0.45%", "inline": true}
-    ],
-    "footer": {"text": "ops/deploy-validator"}
+    ]
   }],
   "allowed_mentions": {
     "parse": [],
@@ -332,7 +337,7 @@ When Discord is unavailable, agents should:
 - [Diff]({compare_url})
 
 ---
-*Released by {agent} at {timestamp}*
+*Released at {timestamp}*
 ```
 
 ### Deploy Status
@@ -347,7 +352,7 @@ When Discord is unavailable, agents should:
 {details}
 
 ---
-*{agent} - {timestamp}*
+*{timestamp}*
 ```
 
 ### Alert
@@ -393,7 +398,10 @@ id **MUST** be added to `allowed_mentions.roles`. A display name such as
 - **MUST NOT** post sensitive data (secrets, PII, credentials)
 - **MUST** set `allowed_mentions` explicitly on every payload
 - **MUST** sanitize any user-provided content before embedding it
-- **MUST** include agent identifier in messages
+- **MUST NOT** credit tools, agents, or models in published messages
+
+**Why**: announcements describe the release or incident, not the software used
+to prepare them; internal audit metadata is separate from published text.
 
 Embeds do **not** prevent injection. They constrain layout, not content: an
 embed field renders Markdown, renders links, and will happily carry text
@@ -469,7 +477,8 @@ step created, and fails the job if Discord rejects the payload:
             '{embeds: [{title: $title,
                         description: ($notes | .[0:4096])}],
               allowed_mentions: {parse: []}}')
-          curl -sS --fail-with-body -X POST "$DISCORD_WEBHOOK_URL" \
+          printf '%s' "$DISCORD_WEBHOOK_URL" | jq -Rrs '"url = \(tojson)"' |
+            curl -sS --fail-with-body --config - -X POST \
             -H 'Content-Type: application/json' \
             -d "$payload"
 ```
@@ -477,6 +486,8 @@ step created, and fails the job if Discord rejects the payload:
 `jq -n --rawfile` builds the JSON, so a backtick or quote in the release notes
 cannot break out of the payload. `--fail-with-body` makes a `400` a job
 failure and prints Discord's reason.
+
+**Why**: stdin config keeps the secret webhook URL out of the process argument list.
 
 ### Alert Integration
 

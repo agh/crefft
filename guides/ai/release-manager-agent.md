@@ -1089,6 +1089,11 @@ Confidence Score = weighted_average(
 | 30-49 | Low confidence | Address issues first |
 | 0-29 | Critical issues | Release blocked |
 
+Eligibility also requires no blockers and passing mandatory gates; a score
+**MUST NOT** override either requirement.
+
+**Why**: averaging strong signals with a failed required check can still produce a high score.
+
 #### Score Output
 
 ```json
@@ -1113,7 +1118,22 @@ Confidence Score = weighted_average(
 
 ### Blocker Detection
 
-The engine MUST identify release blockers.
+The engine **MUST** identify release blockers. Any non-empty `blockers` array
+or failed mandatory gate **MUST** stop the release and changelog mutation,
+regardless of `decision` or confidence. Missing, stale, or unverifiable
+mandatory gate results **MUST** count as failures. This rule applies to every
+workflow, including manual releases and runs that skip non-critical checks.
+
+**Why**: a recommendation or weighted average cannot negate a failed required
+check. The executable CI guard in the
+[release-manager definition](../../agents/ops/release-manager.md#ci-integration)
+requires `ci`, `tests`, `security`, `reviews`, and `evidence` gate results to
+be explicitly `true` before exposing successful readiness outputs.
+
+```text
+Do:    stop on a failed security gate, even with decision=release and confidence=100
+Don't: publish because the decision says release while blockers is non-empty
+```
 
 #### Blocker Categories
 
@@ -1418,7 +1438,14 @@ changelog:
 
 ## Release Workflows
 
-The agent supports multiple release workflow patterns.
+The agent supports multiple release workflow patterns. Every pattern **MUST**
+enforce `require_no_blockers`, `require_all_checks_pass`, and
+`require_mandatory_gates_pass` before release actions or changelog mutation.
+These conditions are not overridable by confidence, approval, or `skip_checks`.
+Here, "all checks" means all required checks; `skip_checks` applies only to advisory checks.
+
+**Why**: a scheduled or manual release has the same mandatory safety gates as
+a continuous release.
 
 ### Continuous Release
 
@@ -1435,6 +1462,8 @@ conditions:
   min_confidence_score: 90
   require_all_checks_pass: true
   require_no_blockers: true
+  require_mandatory_gates_pass: true
+  fail_on_missing_gate_results: true
 actions:
   - calculate_version
   - generate_changelog
@@ -1455,6 +1484,10 @@ schedule:
 conditions:
   min_changes: 1
   min_confidence_score: 70
+  require_all_checks_pass: true
+  require_no_blockers: true
+  require_mandatory_gates_pass: true
+  fail_on_missing_gate_results: true
 actions:
   - create_release_pr
   - await_approval
@@ -1481,6 +1514,11 @@ trigger:
         description: "Skip non-critical checks"
         required: false
         default: false
+conditions:
+  require_all_checks_pass: true
+  require_no_blockers: true
+  require_mandatory_gates_pass: true
+  fail_on_missing_gate_results: true
 actions:
   - analyze_changes
   - calculate_version
@@ -1496,6 +1534,11 @@ Batched releases with multiple stages.
 
 ```yaml
 workflow: release_train
+conditions:
+  require_all_checks_pass: true
+  require_no_blockers: true
+  require_mandatory_gates_pass: true
+  fail_on_missing_gate_results: true
 stages:
   - name: staging
     auto_deploy: true
@@ -1709,6 +1752,10 @@ signal_collectors:
 
 # Decision engine configuration
 decision:
+  require_all_checks_pass: true
+  require_no_blockers: true
+  require_mandatory_gates_pass: true
+  fail_on_missing_gate_results: true
   # Confidence score thresholds
   thresholds:
     auto_release: 90
@@ -1863,7 +1910,7 @@ set -euo pipefail
 
 # limit defaults to 20; ask for the full list so long lineups are not truncated.
 available="$(curl -sSf 'https://api.anthropic.com/v1/models?limit=1000' \
-  -H "x-api-key: ${ANTHROPIC_API_KEY}" \
+  -H @- <<<"x-api-key: ${ANTHROPIC_API_KEY}" \
   -H 'anthropic-version: 2023-06-01' | jq -r '.data[].id')"
 
 status=0
@@ -1875,6 +1922,9 @@ for id in "$@"; do
 done
 exit "${status}"
 ```
+
+**Why**: the single-line API key header is read from stdin rather than
+appearing in process arguments; shell tracing **MUST NOT** be enabled.
 
 ### Environment Variables
 
