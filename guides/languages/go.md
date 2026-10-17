@@ -28,6 +28,9 @@ Extends [Google Go Style Guide](../../reference/google/go.md). See also
 ## Linting: golangci-lint
 
 Projects **MUST** use golangci-lint[^1] for linting Go code.
+Projects **MUST** enable `misspell` with `locale: US` for US English spelling in code and comments.
+
+**Why**: a fixed locale catches both typos and British spellings before they reach review.
 
 ### Why golangci-lint?
 
@@ -71,6 +74,8 @@ linters:
     - exportloopref    # Loop variable capture
 
 linters-settings:
+  misspell:
+    locale: US
   gocyclo:
     min-complexity: 15
   govet:
@@ -301,7 +306,14 @@ golangci-lint). Functions with complexity over 15 **SHOULD** be refactored.
 Via golangci-lint with gocyclo enabled:
 
 ```yaml
+linters:
+  enable:
+    - gocyclo
+    - misspell
+
 linters-settings:
+  misspell:
+    locale: US
   gocyclo:
     min-complexity: 15  # Report functions with complexity > 15
 ```
@@ -1310,7 +1322,7 @@ func TestCircuitBreaker(t *testing.T) {
         t.Fatalf("got state %v, want %v", state, gobreaker.StateOpen)
     }
 
-    // Only the call after the breaker opened is rejected without dialling out.
+    // Only the call after the breaker opened is rejected without dialing out.
     if _, err := cb.Execute(failingService); !errors.Is(err, gobreaker.ErrOpenState) {
         t.Errorf("got error %v, want ErrOpenState", err)
     }

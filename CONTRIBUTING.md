@@ -64,6 +64,7 @@ These are the rules a reviewer will check. They are not negotiable.
 - **SHOULD** use US English spelling in all human-facing prose, including
   Welsh-named projects. Welsh names, proper nouns, quotations, and upstream
   tool and code spellings stay unchanged.
+  `make typos` enforces this rule; **Why**: spelling drift fails locally and in CI.
 - **MUST** use a serial comma in lists of three or more items joined by
   "and" or "or"; two-item phrases take no serial comma.
 - **MUST** put commas and periods inside closing quotation marks. Colons

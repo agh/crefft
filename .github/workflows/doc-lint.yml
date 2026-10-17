@@ -25,6 +25,7 @@ on:
       - '.markdown-link-check-internal.json'
       - '.markdownlint-cli2.jsonc'
       - '.gitleaks.toml'
+      - '_typos.toml'
       - 'package.json'
       - 'package-lock.json'
       - 'Makefile'
@@ -40,6 +41,7 @@ on:
       - '.markdown-link-check-internal.json'
       - '.markdownlint-cli2.jsonc'
       - '.gitleaks.toml'
+      - '_typos.toml'
       - 'package.json'
       - 'package-lock.json'
       - 'Makefile'
@@ -80,6 +82,10 @@ jobs:
 
       - name: Lint Markdown
         run: npx --no-install markdownlint-cli2 "**/*.md"
+
+      - name: Check US spelling in code and prose
+        # Use the Makefile's exact version and verified release checksums.
+        run: make typos
 
       - name: Verify vendored payload integrity
         run: |

@@ -37,6 +37,25 @@ GITLEAKS_SHA256 := $(GITLEAKS_SHA256_$(GITLEAKS_PLATFORM))
 GITLEAKS_ARCHIVE := gitleaks_$(GITLEAKS_VERSION)_$(GITLEAKS_PLATFORM).tar.gz
 GITLEAKS := $(TMP)/gitleaks
 
+# Release asset SHA-256 digests from crate-ci/typos v1.51.1 on GitHub.
+TYPOS_VERSION := 1.51.1
+TYPOS_PLATFORM_Darwin_arm64 := aarch64-apple-darwin
+TYPOS_PLATFORM_Darwin_x86_64 := x86_64-apple-darwin
+TYPOS_PLATFORM_Linux_aarch64 := aarch64-unknown-linux-musl
+TYPOS_PLATFORM_Linux_x86_64 := x86_64-unknown-linux-musl
+TYPOS_PLATFORM := $(TYPOS_PLATFORM_$(UNAME_S)_$(UNAME_M))
+TYPOS_SHA256_aarch64-apple-darwin := \
+  316d50a32c3726a80ab39c6d12141b70080498973c5e8a9b068b12cde78b10c1
+TYPOS_SHA256_x86_64-apple-darwin := \
+  f3451079971633a7f769fb958fe06b0d64b5f1dc46df0854aa1ddb9a6f4031d6
+TYPOS_SHA256_aarch64-unknown-linux-musl := \
+  2ac5e37b3236b3c07dec5cdf1527acf143aec4674a6089b0bf424d021b35e099
+TYPOS_SHA256_x86_64-unknown-linux-musl := \
+  93c301fd4120ff076e2cc2a6d6a61cab4a4bdb81899287c0938b452e56d1f454
+TYPOS_SHA256 := $(TYPOS_SHA256_$(TYPOS_PLATFORM))
+TYPOS_ARCHIVE := typos-v$(TYPOS_VERSION)-$(TYPOS_PLATFORM).tar.gz
+TYPOS := $(TMP)/typos-$(TYPOS_VERSION)/typos
+
 # Tracked first-party Markdown: everything except the vendored reference tree.
 MARKDOWN_FILES = $(shell git ls-files '*.md' ':!:reference/**')
 
@@ -61,13 +80,13 @@ endef
 export GITLEAKS_FIXTURE_PY
 
 .DEFAULT_GOAL := help
-.PHONY: help check install lint links links-external secrets versions snippets test clean
+.PHONY: help check install lint typos links links-external secrets versions snippets test clean
 
 help: ## Show this help
 	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) \
 	  | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
-check: lint links secrets versions vendored snippets ## Run every check CI runs
+check: lint typos links secrets versions vendored snippets ## Run every check CI runs
 
 install: node_modules ## Install the pinned documentation toolchain
 
@@ -77,6 +96,10 @@ node_modules: package.json package-lock.json
 
 lint: install ## Lint Markdown with markdownlint-cli2
 	$(NODE_BIN)/markdownlint-cli2 "**/*.md"
+
+typos: $(TYPOS) ## Enforce US spelling in first-party code and prose
+	$(TYPOS) --version
+	$(TYPOS) --config _typos.toml .
 
 links: install ## Check internal links in all first-party Markdown (blocking)
 	@git ls-files -z '*.md' ':!:reference/**' \
@@ -126,6 +149,16 @@ $(GITLEAKS):
 	@echo "$(GITLEAKS_SHA256)  $(TMP)/gitleaks.tar.gz" | shasum -a 256 -c -
 	tar -xzf $(TMP)/gitleaks.tar.gz -C $(TMP) gitleaks
 	@rm -f $(TMP)/gitleaks.tar.gz
+
+$(TYPOS):
+	@test -n "$(TYPOS_SHA256)" || { echo "Unsupported typos platform: $(UNAME_S)/$(UNAME_M)"; exit 1; }
+	@mkdir -p $(TMP)/typos-$(TYPOS_VERSION)
+	curl --fail-with-body --location --silent --show-error --retry 3 \
+	  --output $(TMP)/$(TYPOS_ARCHIVE) \
+	  "https://github.com/crate-ci/typos/releases/download/v$(TYPOS_VERSION)/$(TYPOS_ARCHIVE)"
+	@echo "$(TYPOS_SHA256)  $(TMP)/$(TYPOS_ARCHIVE)" | shasum -a 256 -c -
+	tar -xzf $(TMP)/$(TYPOS_ARCHIVE) -C $(TMP)/typos-$(TYPOS_VERSION) typos
+	@rm -f $(TMP)/$(TYPOS_ARCHIVE)
 
 clean: ## Remove downloaded tools and caches
 	rm -rf $(TMP) node_modules scripts/__pycache__

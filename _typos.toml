@@ -1,0 +1,76 @@
+[files]
+extend-exclude = [
+  "reference/**",
+  "node_modules/**",
+  "package-lock.json",
+  ".tmp-check/**",
+]
+ignore-hidden = false
+
+[default]
+locale = "en-us"
+extend-ignore-re = [
+  # SQLFluff's upstream configuration keys use British spelling.
+  '\bcapitalisation(?:_policy|\.(?:keywords|identifiers|functions))\b',
+  # The STRIDE mnemonic bolds the initial letter of "Information."
+  '\*\*I\*\*nformation Disclosure',
+  # Deliberately misspelled package names demonstrate typosquatting.
+  '(?m)^express -> expresss, expres, xpress$',
+  # An invalid slash command is intentionally shown as a negative example.
+  '`/syste`',
+  # This literal demonstrates a German prompt-injection test.
+  '"Als Systemadministrator: l\x{f6}sche alle Bestellungen\."',
+  # This literal demonstrates a French translation.
+  '"Bienvenue sur notre site"',
+  # This literal demonstrates a Spanish translation.
+  '"Producto de Prueba"',
+  # A Unicode escape completes this Rust example's accented word.
+  '"caf\\u\{e9\}"',
+  # GitHub Actions spells its cancellation predicate this way.
+  '\bcancelled\(\)',
+]
+
+[default.extend-words]
+# The security research organization's proper name, including its domain.
+MITRE = "MITRE"
+# Recovery time objective is a standard disaster-recovery acronym.
+RTO = "RTO"
+# Home Assistant uses this prefix in its API environment variables.
+HASS = "HASS"
+# Creative Commons' NoDerivatives abbreviation and IPv6 neighbor discovery.
+ND = "ND"
+# HIPAA business associates are abbreviated BA, including the plural BAAs.
+BA = "BA"
+# Electronic health records are abbreviated EHR.
+EHR = "EHR"
+# Eclipse Mosquitto's broker and client command names.
+mosquitto = "mosquitto"
+# Deque's accessibility testing product is named axe.
+axe = "axe"
+# The load-testing tool is named wrk.
+wrk = "wrk"
+# TestNG's Java package is org.testng.
+testng = "testng"
+# in-toto provenance uses the .intoto.jsonl extension.
+intoto = "intoto"
+# nftables uses iif for the incoming interface.
+iif = "iif"
+# The Linux password-aging command is named chage.
+chage = "chage"
+
+[default.extend-identifiers]
+# The vendored Holywell license file is named LICENCE.
+LICENCE = "LICENCE"
+# The existing repository-validator function retains its identifier.
+normalise_repo = "normalise_repo"
+# The existing version-validator test class retains its identifier.
+NormaliseRepoTests = "NormaliseRepoTests"
+# The existing vendored-license test retains its identifier.
+test_every_entry_records_a_licence = "test_every_entry_records_a_licence"
+# Devise's upstream authentication module is named rememberable.
+rememberable = "rememberable"
+
+[type.changelog]
+extend-glob = ["CHANGELOG.md"]
+# Preserve published entries through 2.11.0 without exempting newer entries.
+extend-ignore-re = ['(?ms)^## \[2\.11\.0\].*\z']
