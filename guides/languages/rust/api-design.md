@@ -1,6 +1,6 @@
 # Rust API Design
 
-> [Doctrine](../../../README.md) > [Languages](../README.md) > [Rust](../rust.md) > Rust API Design
+> [crefft](../../../README.md) > [Languages](../README.md) > [Rust](../rust.md) > Rust API Design
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -185,7 +185,7 @@ pub struct Config {
 
 ## API Design and Documentation
 
-Public APIs **MUST** follow the Rust API Guidelines. Doctrine vendors the full
+Public APIs **MUST** follow the Rust API Guidelines. crefft vendors the full
 text under [`reference/rust/`](../../../reference/rust/checklist.md); this section
 carries the rules that apply to every crate and links to the detailed page for
 each one.

@@ -1,6 +1,6 @@
 # /system Command
 
-Comprehensive infrastructure assessment using the Doctrine System Agent Family.
+Comprehensive infrastructure assessment using the crefft System Agent Family.
 
 ## Usage
 
@@ -84,7 +84,7 @@ Comprehensive infrastructure assessment using the Doctrine System Agent Family.
 
       **Recommended**: [fixed config]
 
-      **Why**: [explanation with Doctrine reference]
+      **Why**: [explanation with crefft reference]
 
     ### Warning (should fix)
 

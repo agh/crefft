@@ -1,6 +1,6 @@
 # Rust API Guidelines — Vendored Snapshot and 2024 Supplement
 
-> [Doctrine](../../README.md) > [Reference material](../../README.md#reference-material) > Rust
+> [crefft](../../README.md) > [Reference material](../../README.md#reference-material) > Rust
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -9,7 +9,7 @@ BCP 14 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)
 [RFC 8174](https://datatracker.ietf.org/doc/html/rfc8174) when, and only
 when, they appear in all capitals, as shown here.
 
-This file is Doctrine-authored. Everything else in this directory is a
+This file is crefft-authored. Everything else in this directory is a
 vendored copy of the upstream [Rust API
 Guidelines](https://github.com/rust-lang/api-guidelines) and **MUST NOT** be
 edited here; report problems upstream.
@@ -69,7 +69,7 @@ One upstream defect is left in place: `checklist.md` defines
 `[C-HTML-ROOT]: documentation.md#c-html-root`, but that anchor no longer
 exists and the label is never referenced, so nothing renders from it.
 
-## Doctrine supplement: Rust 2024 API contracts
+## crefft supplement: Rust 2024 API contracts
 
 Checked against Rust 1.98.1 (2026-09-01) on 2026-09-08.
 

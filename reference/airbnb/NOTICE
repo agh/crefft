@@ -1,4 +1,4 @@
-NOTICE — Airbnb style guides vendored in Doctrine
+NOTICE — Airbnb style guides vendored in crefft
 
 Upstream (javascript.md, react.md, css-in-javascript.md):
   Airbnb JavaScript Style Guide
@@ -17,7 +17,7 @@ Licence text:  ./LICENSE (verbatim copy of the upstream LICENSE.md; the
                airbnb/ruby licence is the same MIT text with the same
                copyright holder and year, differing only in line wrapping)
 
-Modifications by Doctrine
+Modifications by crefft
 -------------------------
 The copies in this directory are NOT byte-identical to upstream: prose has
 been reflowed, some code-sample quoting normalised, and files renamed

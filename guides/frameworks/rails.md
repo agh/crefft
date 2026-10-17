@@ -1,6 +1,6 @@
 # Rails Style Guide
 
-> [Doctrine](../../README.md) > [Frameworks](../README.md) > Rails
+> [crefft](../../README.md) > [Frameworks](../README.md) > Rails
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be

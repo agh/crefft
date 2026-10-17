@@ -1,6 +1,6 @@
 # Vendored Reference Errata
 
-> [Doctrine](../README.md) > Reference errata
+> [crefft](../README.md) > Reference errata
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -22,7 +22,7 @@ the command that demonstrates the defect.
 
 ## Corrections
 
-| Payload | Upstream text | Doctrine text | Defect |
+| Payload | Upstream text | crefft text | Defect |
 | ------- | ------------- | ------------- | ------ |
 | `google/csharp.md` | `int SomeProperty => _someProperty` | `int SomeProperty => _someProperty;` | Does not compile |
 | `google/shell.md` | `=~ foo:(\d+)` | `=~ foo:([0-9]+)` | Matches the wrong strings |

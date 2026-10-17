@@ -1,6 +1,6 @@
 # Rust Style Guide
 
-> [Doctrine](../../README.md) > [Languages](README.md) > Rust
+> [crefft](../../README.md) > [Languages](README.md) > Rust
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -382,7 +382,7 @@ Projects **MUST** copy them from there rather than retyping them.
 **Why**: a hook that differs from the canonical one by a flag produces a
 different verdict locally and in review, and the difference is invisible until
 a commit passes locally and fails in CI. `scripts/validate_versions.py` checks
-that every local hook quoted in Doctrine matches the canonical entry, so drift
+that every local hook quoted in crefft matches the canonical entry, so drift
 fails the repository's own checks.
 
 ```yaml

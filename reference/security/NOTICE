@@ -1,14 +1,14 @@
 NOTICE — third-party terms for reference/security/
 
-The JSON files under reference/security/ are Doctrine-authored summaries,
+The JSON files under reference/security/ are crefft-authored summaries,
 indexes and cross-mappings derived from third-party security publications.
 They are not verbatim upstream data dumps, but most of them are derived works
-and the upstream terms below govern them. Doctrine's MIT licence covers only
-Doctrine's own expression in the files marked "Doctrine-authored summary" in
+and the upstream terms below govern them. crefft's MIT licence covers only
+crefft's own expression in the files marked "crefft-authored summary" in
 manifest.json; it does NOT override any upstream term listed below.
 
 The full per-source record — upstream name, URL, licence, licence URL, what
-Doctrine changed, and the required attribution text — is in
+crefft changed, and the required attribution text — is in
 ../../THIRD_PARTY_NOTICES.md. Licence texts that must travel with the material
 are in ./LICENSES/. Machine-readable licence fields are in ./manifest.json.
 
@@ -31,7 +31,7 @@ Summary of terms in force
   nist/, kev/,     US Government work, not subject to domestic copyright
   crypto/          protection (17 U.S.C. 105); attribution requested
   epss/            Free to use, attribution requested by FIRST
-  compliance/,     Doctrine-authored summaries that name third-party
+  compliance/,     crefft-authored summaries that name third-party
   containers/,     frameworks; the underlying standards (ISO, PCI DSS, CIS
   exploits/        Benchmarks and others) remain under their own terms and
                    are NOT reproduced here

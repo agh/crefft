@@ -1,6 +1,6 @@
 # Code Agent Family Guide
 
-> [Doctrine](../../README.md) > [AI](./README.md) > Code Agents
+> [crefft](../../README.md) > [AI](./README.md) > Code Agents
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
@@ -23,7 +23,7 @@ interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc
 
 ## Overview
 
-The Doctrine Code Agent Family is a coordinated set of specialized AI agents
+The crefft Code Agent Family is a coordinated set of specialized AI agents
 for comprehensive code analysis and generation. Unlike monolithic review tools,
 this family provides:
 
@@ -37,7 +37,7 @@ this family provides:
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       DOCTRINE CODE AGENT FAMILY                            │
+│                        CREFFT  CODE AGENT FAMILY                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │                      ┌────────────────────────────┐                         │
@@ -540,13 +540,13 @@ version-controlled with the code they review:
 
 ```bash
 # Run from the root of the project that will be reviewed.
-# DOCTRINE points at a clone or unpacked release of this repository.
-DOCTRINE="${DOCTRINE:-$HOME/src/doctrine}"
+# CREFFT points at a clone or unpacked release of this repository.
+CREFFT="${CREFFT:-$HOME/src/crefft}"
 
 mkdir -p .claude/agents/code .claude/agents/docs .claude/commands
-cp "$DOCTRINE"/agents/code/*.md .claude/agents/code/
-cp "$DOCTRINE"/agents/docs/writer.md .claude/agents/docs/
-cp "$DOCTRINE"/commands/code.md .claude/commands/code.md
+cp "$CREFFT"/agents/code/*.md .claude/agents/code/
+cp "$CREFFT"/agents/docs/writer.md .claude/agents/docs/
+cp "$CREFFT"/commands/code.md .claude/commands/code.md
 ```
 
 The result:
@@ -601,8 +601,8 @@ trying a definition before committing it:
 ```bash
 claude --agents '{
   "code-reviewer": {
-    "description": "Doctrine standard code review. Use after code changes.",
-    "prompt": "You are the Doctrine code-reviewer agent. Report findings by severity.",
+    "description": "crefft standard code review. Use after code changes.",
+    "prompt": "You are the crefft code-reviewer agent. Report findings by severity.",
     "tools": ["Read", "Grep", "Glob", "Bash"],
     "model": "sonnet"
   }
@@ -636,12 +636,12 @@ deleting the same paths:
 
 ```bash
 # Update: pin an explicit release tag, then re-copy over the installed files.
-git -C "$DOCTRINE" fetch --tags
-git -C "$DOCTRINE" tag --list          # pick the release to pin
-git -C "$DOCTRINE" checkout v2.9.0
-cp "$DOCTRINE"/agents/code/*.md .claude/agents/code/
-cp "$DOCTRINE"/agents/docs/writer.md .claude/agents/docs/
-cp "$DOCTRINE"/commands/code.md .claude/commands/code.md
+git -C "$CREFFT" fetch --tags
+git -C "$CREFFT" tag --list          # pick the release to pin
+git -C "$CREFFT" checkout v2.9.0
+cp "$CREFFT"/agents/code/*.md .claude/agents/code/
+cp "$CREFFT"/agents/docs/writer.md .claude/agents/docs/
+cp "$CREFFT"/commands/code.md .claude/commands/code.md
 
 # Remove.
 rm -rf .claude/agents/code .claude/agents/docs/writer.md .claude/commands/code.md

@@ -1,4 +1,4 @@
-# Doctrine — local checks
+# crefft — local checks
 #
 # `make check` runs the same checks as .github/workflows/doc-lint.yml, in the
 # same order and with the same pinned tool versions, so a green local run

@@ -1,6 +1,6 @@
 # Specification Writing Guide
 
-> [Doctrine](../../README.md) > [Documentation](README.md) > Specifications
+> [crefft](../../README.md) > [Documentation](README.md) > Specifications
 
 The Spec for Specs: Engineering Documentation in the AI Era.
 

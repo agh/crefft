@@ -1,4 +1,4 @@
-NOTICE — Shopify Ruby Style Guide vendored in Doctrine
+NOTICE — Shopify Ruby Style Guide vendored in crefft
 
 Upstream:      Shopify Ruby Style Guide
 Upstream URL:  https://github.com/Shopify/ruby-style-guide
@@ -8,7 +8,7 @@ Licence:       MIT License
 Licence URL:   https://github.com/Shopify/ruby-style-guide/blob/main/LICENSE.md
 Licence text:  ./LICENSE (verbatim copy of the upstream LICENSE.md)
 
-Modifications by Doctrine
+Modifications by crefft
 -------------------------
 reference/shopify/ruby.md is NOT byte-identical to upstream: it has been
 renamed from README.md and reflowed. The upstream revision was not recorded at

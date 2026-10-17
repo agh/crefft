@@ -1,6 +1,6 @@
 # Documentation Lint
 #
-# Doctrine's own CI. Every check here is blocking except the snippet syntax
+# crefft's own CI. Every check here is blocking except the snippet syntax
 # check, which is advisory until the guides' fenced examples are corrected.
 # External URLs are not checked here: that is slow, network-bound and
 # advisory, so it runs weekly in external-links.yml instead.
@@ -167,7 +167,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          # The previous grep-based check failed on Doctrine's own "never do
+          # The previous grep-based check failed on crefft's own "never do
           # this" examples. The allowlist in .gitleaks.toml exempts those, so
           # prove here that it has not been widened into uselessness. The
           # fixture is generated outside the working tree and never committed.

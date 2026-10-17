@@ -1,6 +1,6 @@
 # Documentation Sync — downstream template
 #
-# TEMPLATE. This file does not run in Doctrine itself: Doctrine has no src/,
+# TEMPLATE. This file does not run in crefft itself: crefft has no src/,
 # lib/ or app/ tree, and it lives outside .github/workflows/ so GitHub cannot
 # schedule it here. Copy it into a project that keeps prose documentation
 # alongside code.

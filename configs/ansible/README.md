@@ -1,7 +1,7 @@
 # Ansible Configuration Templates
 
 Ready-to-use configuration files for Ansible projects following
-[Doctrine Ansible Style Guide](../../guides/infrastructure/ansible.md).
+[crefft Ansible Style Guide](../../guides/infrastructure/ansible.md).
 
 ## Files
 

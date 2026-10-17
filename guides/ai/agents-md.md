@@ -1,6 +1,6 @@
 # AGENTS.md Patterns Guide
 
-> [Doctrine](../../README.md) > [AI](../README.md) > AGENTS.md Patterns
+> [crefft](../../README.md) > [AI](../README.md) > AGENTS.md Patterns
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -11,7 +11,7 @@ document are to be interpreted as described in
 
 1. [What is AGENTS.md](#what-is-agentsmd)
 2. [Tool Compatibility via Symlinks](#tool-compatibility-via-symlinks)
-3. [DRY Pattern: Reference Doctrine](#dry-pattern-reference-doctrine)
+3. [DRY Pattern: Reference crefft](#dry-pattern-reference-crefft)
 4. [File Placement Strategies](#file-placement-strategies)
 5. [Essential Sections](#essential-sections)
 6. [Templates by Project Type](#templates-by-project-type)
@@ -134,13 +134,13 @@ the inspection command in the last column before relying on a file.
 
 ---
 
-## DRY Pattern: Reference Doctrine
+## DRY Pattern: Reference crefft
 
 Project AGENTS.md files **MUST** reference
-[Doctrine](https://github.com/agh/doctrine) as the source of
+[crefft](https://github.com/agh/crefft) as the source of
 truth for coding standards. This creates a "DRY for AI" pattern where:
 
-- **Doctrine** contains canonical style guides, tooling choices, and
+- **crefft** contains canonical style guides, tooling choices, and
   conventions
 - **Project AGENTS.md** contains only project-specific context
 
@@ -161,7 +161,7 @@ Every project AGENTS.md **MUST** begin with a Standards section:
 ```markdown
 ## Standards
 
-This project follows [Doctrine](https://github.com/agh/doctrine):
+This project follows [crefft](https://github.com/agh/crefft):
 
 | Concern | Guide |
 | ------- | ----- |
@@ -169,17 +169,17 @@ This project follows [Doctrine](https://github.com/agh/doctrine):
 | Django | [guides/frameworks/django.md][django] |
 | Testing | [guides/process/testing.md][testing] |
 
-[python]: https://github.com/agh/doctrine/blob/main/guides/languages/python.md
-[django]: https://github.com/agh/doctrine/blob/main/guides/frameworks/django.md
-[testing]: https://github.com/agh/doctrine/blob/main/guides/process/testing.md
+[python]: https://github.com/agh/crefft/blob/main/guides/languages/python.md
+[django]: https://github.com/agh/crefft/blob/main/guides/frameworks/django.md
+[testing]: https://github.com/agh/crefft/blob/main/guides/process/testing.md
 
-**Do not duplicate Doctrine guidance here.** This file contains only
+**Do not duplicate crefft guidance here.** This file contains only
 project-specific context.
 ```
 
-### What Belongs in Doctrine vs Project AGENTS.md
+### What Belongs in crefft vs Project AGENTS.md
 
-| In Doctrine | In Project AGENTS.md |
+| In crefft | In Project AGENTS.md |
 | ----------- | -------------------- |
 | Python naming conventions | This project's directory structure |
 | Django architecture patterns | Commands to run this project |
@@ -192,7 +192,7 @@ project-specific context.
 1. **Single source of truth** - Update once, benefit everywhere
 2. **Reduced maintenance** - Project files stay small and focused
 3. **Consistency** - All projects follow identical standards
-4. **AI efficiency** - AI can learn Doctrine once, apply everywhere
+4. **AI efficiency** - AI can learn crefft once, apply everywhere
 
 ---
 
@@ -348,7 +348,7 @@ Document conventions not captured in linters:
 ````markdown
 ## Code Style
 
-Follows [Doctrine TypeScript Guide](../../guides/languages/typescript.md)
+Follows [crefft TypeScript Guide](../../guides/languages/typescript.md)
 
 **Naming:**
 
@@ -476,7 +476,7 @@ src/
 
 ## Code Style
 
-Follows [Doctrine Python Guide](../../guides/languages/python.md)
+Follows [crefft Python Guide](../../guides/languages/python.md)
 
 **Type Hints:** **MUST** use on all functions with
 `from __future__ import annotations`
@@ -528,7 +528,7 @@ src/
 
 ## Code Style
 
-Follows [Doctrine TypeScript Guide](../../guides/languages/typescript.md)
+Follows [crefft TypeScript Guide](../../guides/languages/typescript.md)
 
 **Naming:** Files: `kebab-case.ts`, Classes: `PascalCase`, Functions:
 `camelCase`
@@ -581,7 +581,7 @@ internal/
 
 ## Code Style
 
-Follows [Doctrine Go Guide](../../guides/languages/go.md)
+Follows [crefft Go Guide](../../guides/languages/go.md)
 
 **Error Handling:** Always wrap errors: `fmt.Errorf("get user: %w", err)`
 
@@ -634,7 +634,7 @@ app/
 
 ## Code Style
 
-Follows [Doctrine Rails Guide](../../guides/frameworks/rails.md)
+Follows [crefft Rails Guide](../../guides/frameworks/rails.md)
 
 **Service Objects:** Use for complex business logic outside controllers.
 
@@ -699,7 +699,7 @@ apps/
 
 ## Code Style
 
-Follows [Doctrine Django Guide](../../guides/frameworks/django.md)
+Follows [crefft Django Guide](../../guides/frameworks/django.md)
 
 **Fat Models, Thin Views:** Business logic in services, not views.
 
@@ -768,7 +768,7 @@ tests/
 
 ## Code Style
 
-Follows [Doctrine Flask Guide](../../guides/frameworks/flask.md)
+Follows [crefft Flask Guide](../../guides/frameworks/flask.md)
 
 **Application Factory:** Always use `create_app()` pattern.
 
@@ -845,7 +845,7 @@ tests/                # Integration tests
 
 ## Code Style
 
-Follows [Doctrine Axum Guide](../../guides/frameworks/axum.md)
+Follows [crefft Axum Guide](../../guides/frameworks/axum.md)
 
 **Extractors:** Use typed extractors for request data. Validate with
 `validator` crate.
@@ -935,7 +935,7 @@ lib/
 
 ## Code Style
 
-Follows [Doctrine Next.js Guide](../../guides/frameworks/nextjs.md)
+Follows [crefft Next.js Guide](../../guides/frameworks/nextjs.md)
 
 **Server Components:** Default. Only add `'use client'` when needed.
 
@@ -1379,6 +1379,6 @@ npm run dev:all
 [^7]: [Cursor rules help](https://cursor.com/help/customization/rules) -
     Migration path from the legacy `.cursorrules` file
 [^8]: [Gitleaks](https://github.com/gitleaks/gitleaks) - Secret scanner used
-    by Doctrine's pre-commit configuration
+    by crefft's pre-commit configuration
 [^9]: [AGENTS.md](https://agents.md) - The cross-tool convention this guide
     documents

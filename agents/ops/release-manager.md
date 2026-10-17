@@ -190,7 +190,7 @@ Use historical outcomes to predict release risk:
 
 ## Invocation
 
-Doctrine ships this agent as a subagent definition, **not** as a slash command.
+crefft ships this agent as a subagent definition, **not** as a slash command.
 There is no `/release` command, and `claude` parses anything after the prompt
 that starts with `--` as a CLI flag of its own, so `claude /release --analyze`
 fails with `unknown option '--analyze'` before any analysis runs.

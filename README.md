@@ -1,18 +1,19 @@
-![Doctrine Style Guide](banner.svg)
+![crefft](banner.svg)
 
-# Doctrine Style Guide
+# crefft
 
-**Version: 2.11.0** | [Changelog](CHANGELOG.md) | [AGENTS.md](AGENTS.md)
+**Version: 3.0.0** | [Changelog](CHANGELOG.md) | [AGENTS.md](AGENTS.md)
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
-
-Canonical style guide for all projects. Vendored from
+*crefft* (Welsh: craft, pronounced "kreft") is the canonical style guide for
+all projects. Vendored from
 [Google Style Guides](https://github.com/google/styleguide) with
 project-specific tooling and conventions. Each tool was selected as the
 best available option for its ecosystem as of September 2026, reviewed
 quarterly.
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
 **All projects MUST follow:**
 
@@ -238,14 +239,14 @@ Ready-to-copy configuration files:
 | EditorConfig | [configs/editorconfig/.editorconfig](configs/editorconfig/.editorconfig) | Editor settings |
 | Pre-commit | [configs/pre-commit/.pre-commit-config.yaml](configs/pre-commit/.pre-commit-config.yaml) | Git hooks |
 | Prettier | [configs/prettier/.prettierrc](configs/prettier/.prettierrc) | Code formatting |
-| **Doctrine Sync** | [.github/workflows/sync-doctrine.yml](configs/github/workflows/sync-doctrine.yml) | Auto-sync configs to projects |
+| **crefft Sync** | [.github/workflows/sync-crefft.yml](configs/github/workflows/sync-crefft.yml) | Auto-sync configs to projects |
 
 ---
 
 ## Reference material
 
 `reference/` holds third-party guides vendored verbatim for offline reading and
-comparison. Doctrine does not modify them; report problems upstream. Google
+comparison. crefft does not modify them; report problems upstream. Google
 style guides are licensed under CC-BY 3.0.
 
 | Vendored file | Upstream project |
@@ -276,22 +277,22 @@ Three directories are indexed rather than listed file by file:
 
 | Directory | Contents | Provenance |
 | --------- | -------- | ---------- |
-| [reference/ietf/](reference/ietf/) | RFC 2119 plus a Doctrine-written index | [reference/ietf/README.md](reference/ietf/README.md) |
-| [reference/rust/](reference/rust/) | Rust API Guidelines plus a Doctrine 2024 supplement | [reference/rust/README.md](reference/rust/README.md) |
+| [reference/ietf/](reference/ietf/) | RFC 2119 plus a crefft-written index | [reference/ietf/README.md](reference/ietf/README.md) |
+| [reference/rust/](reference/rust/) | Rust API Guidelines plus a crefft 2024 supplement | [reference/rust/README.md](reference/rust/README.md) |
 | [reference/security/](reference/security/) | Security corpora (MITRE, OWASP, NIST, CIS, CWE, KEV) | [reference/security/manifest.json](reference/security/manifest.json) records the upstream, version and licence of every source |
 
 ---
 
 ## Licence
 
-Doctrine's own guides, configuration files and agent definitions are licensed
+crefft's own guides, configuration files and agent definitions are licensed
 under the [MIT Licence](LICENSE), Copyright (c) 2026 Alex Howells.
 
 Everything under `reference/` is third-party material and is **NOT** covered
 by that grant. Each vendored source keeps its own licence:
 
 - [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) records every source, its
-  licence and licence URL, what Doctrine changed, and the attribution that
+  licence and licence URL, what crefft changed, and the attribution that
   **MUST** travel with the material.
 - Licence texts sit next to the material they cover, in
   `reference/<vendor>/LICENSE*` and `reference/security/LICENSES/`.

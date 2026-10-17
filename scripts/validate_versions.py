@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Check that tool versions quoted in Doctrine match the canonical config.
+"""Check that tool versions quoted in crefft match the canonical config.
 
 The canonical source is ``configs/pre-commit/.pre-commit-config.yaml``. Every
 ``repo:``/``rev:`` pair written into a guide, agent brief or shipped config
-MUST agree with it, so a reader who copies a snippet gets the version Doctrine
+MUST agree with it, so a reader who copies a snippet gets the version crefft
 has actually reviewed.
 
 Two kinds of pin are compared:
@@ -158,7 +158,7 @@ class Reference:
 def parse_canonical(config_path: Path) -> dict[str, str]:
     """Read ``repo``/``rev`` pairs from the canonical pre-commit config.
 
-    Commented-out entries count: Doctrine keeps optional hooks commented but
+    Commented-out entries count: crefft keeps optional hooks commented but
     still treats their pins as canonical.
     """
     if not config_path.is_file():
@@ -184,7 +184,7 @@ def parse_local_hooks(text: str) -> Iterator[tuple[int, str, str]]:
     """Yield ``(line, hook_id, entry)`` for every hook in a ``repo: local`` block.
 
     Commented-out blocks count, for the same reason ``parse_canonical`` counts
-    them: Doctrine keeps optional hooks commented but treats them as canonical.
+    them: crefft keeps optional hooks commented but treats them as canonical.
     """
     in_local = False
     current: str | None = None

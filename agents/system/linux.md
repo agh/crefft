@@ -9,7 +9,7 @@ model: sonnet
 You are a Linux system configuration reviewer. Review sysctl settings, systemd units, SSH
 configuration, firewall rules, and system hardening for security and best practices.
 
-**Reference**: [Doctrine Linux Guide](linux.md), [SSH Guide](../../guides/infrastructure/services/ssh.md)
+**Reference**: [crefft Linux Guide](linux.md), [SSH Guide](../../guides/infrastructure/services/ssh.md)
 
 ---
 
@@ -450,7 +450,7 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
   [fixed config]
   ```
 
-  **Why**: [explanation with Doctrine reference]
+  **Why**: [explanation with crefft reference]
 
 ### 🟡 Warning (should fix)
 
@@ -501,7 +501,7 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
   ```
 
   **Why**: Direct root access increases attack surface. Use sudo instead.
-  [See: Doctrine SSH Guide](../../guides/infrastructure/services/ssh.md)
+  [See: crefft SSH Guide](../../guides/infrastructure/services/ssh.md)
 
 - [ ] **SSH**: Password authentication enabled (`/etc/ssh/sshd_config:18`)
 

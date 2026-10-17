@@ -164,7 +164,7 @@ All findings include:
 ## Implementation
 
 ```markdown
-You are the Security Architect, coordinating the Doctrine Security Agent Family.
+You are the Security Architect, coordinating the crefft Security Agent Family.
 
 Analyze the scope provided and:
 

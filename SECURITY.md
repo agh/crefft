@@ -1,6 +1,6 @@
 # Security Policy
 
-> [Doctrine](README.md) > Security Policy
+> [crefft](README.md) > Security Policy
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -8,9 +8,9 @@ document are to be interpreted as described in [RFC 2119](https://datatracker.ie
 
 ## What This Policy Covers
 
-Doctrine is documentation. It ships no service, no library and no binary, so
+crefft is documentation. It ships no service, no library and no binary, so
 there is nothing here to compromise at runtime. The security surface is the
-material Doctrine tells people to copy into their own projects:
+material crefft tells people to copy into their own projects:
 
 - configuration files under `configs/`
 - GitHub Actions workflows under `.github/workflows/`
@@ -23,7 +23,7 @@ compromised or typo-squatted package name, or a pinned action pointing at a
 malicious revision are all in scope. So is security advice in a guide that is
 wrong in a way that would make a reader's system less safe.
 
-Out of scope: vulnerabilities in the upstream tools Doctrine recommends.
+Out of scope: vulnerabilities in the upstream tools crefft recommends.
 Report those to the tool's own maintainers.
 
 ## Supported Versions
@@ -33,7 +33,7 @@ Report those to the tool's own maintainers.
 | Latest commit on `main` | Yes |
 | Any tagged release older than `main` | No |
 
-Doctrine is a single moving document set. Fixes land on `main`; older tags are
+crefft is a single moving document set. Fixes land on `main`; older tags are
 historical records and are not patched. Pull the current `main` before
 reporting.
 
@@ -43,7 +43,7 @@ reporting.
 
 Report privately through GitHub:
 
-1. Go to <https://github.com/agh/doctrine/security/advisories/new>.
+1. Go to <https://github.com/agh/crefft/security/advisories/new>.
 2. Describe the problem, where it is (file and line), and what an attacker
    could do with it.
 3. Include the steps you took to confirm it.
@@ -57,7 +57,7 @@ open a private channel.
 
 ## What to Expect
 
-Doctrine has one maintainer working on it in their own time. Handling is best
+crefft has one maintainer working on it in their own time. Handling is best
 effort:
 
 - Reports are acknowledged when the maintainer next picks up the repository.
@@ -72,10 +72,10 @@ Coordinated disclosure is expected: please give the maintainer a reasonable
 chance to fix the problem before publishing. No legal action will be taken
 against anyone reporting in good faith.
 
-## Using Doctrine Safely
+## Using crefft Safely
 
 - **MUST** review any configuration, workflow or command before copying it
-  into a project. Doctrine's material is a starting point, not an audited
+  into a project. crefft's material is a starting point, not an audited
   artefact.
 - **MUST** re-pin GitHub Actions to a commit SHA you have verified yourself
   rather than trusting a tag.

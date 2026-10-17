@@ -1,13 +1,13 @@
-# AGENTS.md - Doctrine Style Guide
+# AGENTS.md - crefft Style Guide
 
 This file is the canonical instruction file for every coding agent working on
-Doctrine. OpenAI Codex and GitHub Copilot read `AGENTS.md` natively; Claude Code
+crefft. OpenAI Codex and GitHub Copilot read `AGENTS.md` natively; Claude Code
 reaches it through `CLAUDE.md`, which contains an `@AGENTS.md` import, and
 Gemini CLI through `GEMINI.md`. Edit this file — never the importers.
 
 ## Overview
 
-Doctrine is a comprehensive style guide repository covering 13+ programming
+crefft is a comprehensive style guide repository covering 13+ programming
 languages, frameworks, and AI-assisted development practices. All guides use
 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119) language to clearly
 distinguish requirements from recommendations.
@@ -32,7 +32,7 @@ fails when a guide is missing from `README.md` or from its category
 ## Repository Structure
 
 ```text
-doctrine/
+crefft/
 ├── agents/            # 53 agent definitions, grouped by family
 │   ├── code/          # Review, performance, accessibility, API, tests
 │   ├── docs/          # Documentation planning, writing, review, publishing
@@ -78,7 +78,7 @@ third-party document.
 - **MUST NOT** run markdownlint, prettier or any other formatter or auto-fixer
   over `reference/`; the root `.markdownlint-cli2.jsonc` ignores it and CI lints
   with `#reference/**`
-- **MUST NOT** apply Doctrine house style (breadcrumbs, RFC 2119 boilerplate,
+- **MUST NOT** apply crefft house style (breadcrumbs, RFC 2119 boilerplate,
   `Why` sections) to a payload
 - **MUST** record any deliberate correction to upstream text in
   [`reference/ERRATA.md`](reference/ERRATA.md), with the command that
@@ -130,7 +130,7 @@ separately rather than piecemeal.
 ```markdown
 # {Language/Topic} Style Guide
 
-> [Doctrine](../../README.md) > [{Category}](../README.md) > {Topic}
+> [crefft](../../README.md) > [{Category}](../README.md) > {Topic}
 
 The key words "MUST", "MUST NOT"... [RFC 2119 boilerplate]
 

@@ -257,7 +257,7 @@ spec:
 
 ## Invocation
 
-Doctrine ships this agent as a subagent definition, **not** as a slash command.
+crefft ships this agent as a subagent definition, **not** as a slash command.
 There is no `/deploy-validate` command, and `claude` parses anything after the
 prompt that starts with `--` as one of its own CLI flags, so
 `claude /deploy-validate --pre` fails with `unknown option '--pre'` before any

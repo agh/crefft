@@ -1,12 +1,12 @@
-# Contributing to Doctrine
+# Contributing to crefft
 
-> [Doctrine](README.md) > Contributing
+> [crefft](README.md) > Contributing
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
-Doctrine is a style-guide repository. Contributions are prose, tables, code
+crefft is a style-guide repository. Contributions are prose, tables, code
 examples and configuration files — not application code. This document
 explains how to propose a change and what a change **MUST** satisfy before it
 is merged.
@@ -24,7 +24,7 @@ Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## What Belongs Here
 
-Doctrine covers language guides, framework guides, process guides, AI-assisted
+crefft covers language guides, framework guides, process guides, AI-assisted
 development practices, ready-to-copy configuration files, and vendored
 upstream reference material.
 
@@ -34,7 +34,7 @@ A proposal **SHOULD** fall into one of four shapes:
    command that no longer exists, a broken link.
 2. **Update a version** — a pinned tool version that has moved on, or a tool
    that is now deprecated.
-3. **Add a guide** — a language, framework or topic Doctrine does not cover.
+3. **Add a guide** — a language, framework or topic crefft does not cover.
 4. **Correct provenance** — attribution, licence or notice problems in
    `reference/` or [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
@@ -159,7 +159,7 @@ Use the issue forms:
 - **Bug in a guide** — a rule, example or command that is wrong.
 - **Outdated version** — a pinned version that has moved on. Include the
   current version and the URL you checked.
-- **New guide proposal** — a language, framework or topic Doctrine should
+- **New guide proposal** — a language, framework or topic crefft should
   cover.
 
 Security vulnerabilities **MUST NOT** be reported in public issues. See
@@ -167,6 +167,6 @@ Security vulnerabilities **MUST NOT** be reported in public issues. See
 
 ## Review
 
-Doctrine has one maintainer. Review is best effort, in the maintainer's own
+crefft has one maintainer. Review is best effort, in the maintainer's own
 time. A pull request that follows the house rules, cites its sources and
 passes `make check` will be reviewed faster than one that does not.

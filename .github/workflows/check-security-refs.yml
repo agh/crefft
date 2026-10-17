@@ -1,7 +1,7 @@
 # Security Reference Staleness Check
 #
 # reference/security/manifest.json records the version of every security
-# corpus Doctrine's guidance is built on. This job compares the recorded
+# corpus crefft's guidance is built on. This job compares the recorded
 # version against upstream for each source that has a machine-checkable
 # release channel, writes a step summary, and opens (or updates) a tracking
 # issue when something has drifted.

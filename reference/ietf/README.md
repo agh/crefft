@@ -1,6 +1,6 @@
 # IETF Reference Documents
 
-Vendored copies of IETF standards referenced throughout Doctrine.
+Vendored copies of IETF standards referenced throughout crefft.
 
 ## Contents
 
@@ -15,7 +15,7 @@ See individual RFCs for specific copyright notices.
 
 ## Usage
 
-All Doctrine guides use RFC 2119 keywords. The canonical link format is:
+All crefft guides use RFC 2119 keywords. The canonical link format is:
 
 ```markdown
 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)

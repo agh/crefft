@@ -1,27 +1,27 @@
 # GitHub Workflow Templates
 
-> [Doctrine](../../README.md) > Configs > GitHub
+> [crefft](../../README.md) > Configs > GitHub
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
-Reusable GitHub Actions workflows for projects that adopt Doctrine. These are
+Reusable GitHub Actions workflows for projects that adopt crefft. These are
 **templates**: they live here rather than in `.github/workflows/` so GitHub
-cannot schedule them inside Doctrine itself.
+cannot schedule them inside crefft itself.
 
 ## Quick Reference
 
 | Template | Purpose | Trigger | Needs |
 | -------- | ------- | ------- | ----- |
-| [`workflows/sync-doctrine.yml`](workflows/sync-doctrine.yml) | Mirror Doctrine's agents, commands and Claude settings into your project | Weekly cron, manual | `contents: write`, `pull-requests: write` |
+| [`workflows/sync-crefft.yml`](workflows/sync-crefft.yml) | Mirror crefft's agents, commands and Claude settings into your project | Weekly cron, manual | `contents: write`, `pull-requests: write` |
 | [`workflows/doc-sync.yml`](workflows/doc-sync.yml) | Remind pull-request authors which documents a source change touches | Pull requests touching `src/`, `lib/`, `app/` | `pull-requests: write` |
 
 ## Why these are templates, not live workflows
 
 A workflow placed in `.github/workflows/` runs in the repository that holds
-it. `sync-doctrine.yml` previously sat in Doctrine's own workflow directory
-and therefore ran against Doctrine every Monday, copying `configs/claude/*`
+it. `sync-crefft.yml` previously sat in crefft's own workflow directory
+and therefore ran against crefft every Monday, copying `configs/claude/*`
 into a second `.claude/` tree and attempting a self-referential pull request.
 `doc-sync.yml` triggers on `src/**`, `lib/**` and `app/**`, none of which
 exist in a documentation repository.
@@ -29,22 +29,22 @@ exist in a documentation repository.
 Templates **MUST NOT** be placed in `.github/workflows/` of the repository
 that publishes them. Copy them into the consuming project instead.
 
-## Adopting `sync-doctrine.yml`
+## Adopting `sync-crefft.yml`
 
-Keeps a downstream project's `.claude/` tree in step with Doctrine.
+Keeps a downstream project's `.claude/` tree in step with crefft.
 
 ### Install
 
 ```bash
 mkdir -p .github/workflows
-curl -fsSL -o .github/workflows/sync-doctrine.yml \
-  https://raw.githubusercontent.com/agh/doctrine/main/configs/github/workflows/sync-doctrine.yml
+curl -fsSL -o .github/workflows/sync-crefft.yml \
+  https://raw.githubusercontent.com/agh/crefft/main/configs/github/workflows/sync-crefft.yml
 ```
 
 ### Configure
 
 Edit the `SYNC_PATHS` block. Each line is `source:destination`, where
-`source` is a path inside Doctrine and `destination` a path in your project:
+`source` is a path inside crefft and `destination` a path in your project:
 
 ```yaml
 SYNC_PATHS: |
@@ -64,11 +64,11 @@ The workflow opens a pull request, so the project **MUST** enable
 **Settings → Actions → General → Allow GitHub Actions to create and approve
 pull requests**. Without it `peter-evans/create-pull-request` fails with a
 permissions error — this is what caused all fourteen historical failures of
-this workflow in Doctrine.
+this workflow in crefft.
 
 Pull requests authored with the default `GITHUB_TOKEN` deliberately do not
 trigger further workflow runs. If the sync pull request must run your CI, set
-a `DOCTRINE_SYNC_TOKEN` secret holding a fine-grained personal access token
+a `CREFFT_SYNC_TOKEN` secret holding a fine-grained personal access token
 with `contents: write` and `pull-requests: write` on the project; the
 template prefers it when present.
 
@@ -91,7 +91,7 @@ the changed source files.
 ```bash
 mkdir -p .github/workflows
 curl -fsSL -o .github/workflows/doc-sync.yml \
-  https://raw.githubusercontent.com/agh/doctrine/main/configs/github/workflows/doc-sync.yml
+  https://raw.githubusercontent.com/agh/crefft/main/configs/github/workflows/doc-sync.yml
 ```
 
 ### Configure
@@ -116,7 +116,7 @@ A tag is a mutable pointer; `tj-actions/changed-files` had its tags
 retargeted during the March 2025 supply-chain incident, which a SHA pin would
 have contained.
 
-Doctrine's Dependabot configuration only scans `.github/workflows/`. These
+crefft's Dependabot configuration only scans `.github/workflows/`. These
 templates are **not** updated automatically: when the pins in
 `.github/workflows/` change, update them here in the same commit.
 

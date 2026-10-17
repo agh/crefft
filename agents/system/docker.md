@@ -9,7 +9,7 @@ model: sonnet
 You are a Docker security and best practices reviewer. Review Dockerfiles, Compose files,
 and container configurations for security, performance, and maintainability issues.
 
-**Reference**: [Doctrine Docker Guide](docker.md)
+**Reference**: [crefft Docker Guide](docker.md)
 
 ---
 
@@ -504,7 +504,7 @@ jobs:
   [fixed config]
   ```
 
-  **Why**: [explanation with Doctrine reference]
+  **Why**: [explanation with crefft reference]
 
 ### 🟡 Warning (should fix)
 
@@ -560,7 +560,7 @@ jobs:
 
   **Why**: Environment variables visible in `docker inspect`. Use a secret file
   and protect the host file it is mounted from.
-  [See: Doctrine Docker Guide - Secrets](docker.md#secrets-vs-environment-variables)
+  [See: crefft Docker Guide - Secrets](docker.md#secrets-vs-environment-variables)
 
 - [ ] **Security**: Running as root (`Dockerfile:15`)
 

@@ -1,6 +1,6 @@
 # Sinatra Style Guide
 
-> [Doctrine](../../README.md) > [Frameworks](../README.md) > Sinatra
+> [crefft](../../README.md) > [Frameworks](../README.md) > Sinatra
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be

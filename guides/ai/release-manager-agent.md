@@ -1,6 +1,6 @@
 # Release Manager Agent Specification
 
-> [Doctrine](../../README.md) > [AI](README.md) > **Release Manager Agent**
+> [crefft](../../README.md) > [AI](README.md) > **Release Manager Agent**
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
@@ -1455,7 +1455,7 @@ permissions:
 
 #### GitHub Actions Workflow
 
-The `doctrine/release-manager-agent` action below is **illustrative**: it
+The `crefft/release-manager-agent` action below is **illustrative**: it
 names the interface a conforming implementation would expose, not a published
 action. Substitute your own implementation before running this workflow.
 
@@ -1486,7 +1486,7 @@ jobs:
         run: echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
 
       - name: Run Release Manager Agent
-        uses: doctrine/release-manager-agent@v1  # illustrative
+        uses: crefft/release-manager-agent@v1  # illustrative
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           config_file: .release-manager.yml
@@ -1505,7 +1505,7 @@ collector, and the collectors **MUST** apply the rules in
 
 ### GitLab Integration
 
-The `doctrine/release-manager-agent` image and the `release-manager` CLI below
+The `crefft/release-manager-agent` image and the `release-manager` CLI below
 are **illustrative**: neither is published by this repository. Substitute your
 own image, pinned to a digest, before running this job.
 
@@ -1513,7 +1513,7 @@ own image, pinned to a digest, before running this job.
 # .gitlab-ci.yml
 release:
   stage: release
-  image: doctrine/release-manager-agent:latest  # illustrative
+  image: crefft/release-manager-agent:latest  # illustrative
   script:
     - release-manager analyze
     - release-manager release --if-ready

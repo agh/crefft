@@ -1,6 +1,6 @@
 # Linux (Debian) Style Guide
 
-> [Doctrine](../../../README.md) > [Infrastructure](../README.md) > [OS](README.md) > Linux
+> [crefft](../../../README.md) > [Infrastructure](../README.md) > [OS](README.md) > Linux
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -697,9 +697,9 @@ NAT rules with them. The host **MUST** own exactly one named table and
 #!/usr/sbin/nft -f
 
 # Replace only this file's own table. Never `flush ruleset`.
-destroy table inet doctrine
+destroy table inet crefft
 
-table inet doctrine {
+table inet crefft {
     chain input {
         type filter hook input priority filter; policy drop;
 
@@ -797,12 +797,12 @@ A host that genuinely routes between interfaces and runs no container engine
 
 #### Container and Firewall Manager Variants
 
-| Host | Doctrine table | Forwarding rules |
+| Host | crefft table | Forwarding rules |
 | ---- | -------------- | ---------------- |
-| Native nftables, no containers | `inet doctrine` as above | Optional forward chain |
-| Docker, iptables backend (default) | `inet doctrine`, input chain only | Use the `DOCKER-USER` iptables chain |
-| Docker 29+, nftables backend | `inet doctrine`, input chain only | Own table at the forward hook, plus `--bridge-accept-fwmark` |
-| Docker Swarm | `inet doctrine`, input chain only | iptables backend only; Swarm cannot use nftables |
+| Native nftables, no containers | `inet crefft` as above | Optional forward chain |
+| Docker, iptables backend (default) | `inet crefft`, input chain only | Use the `DOCKER-USER` iptables chain |
+| Docker 29+, nftables backend | `inet crefft`, input chain only | Own table at the forward hook, plus `--bridge-accept-fwmark` |
+| Docker Swarm | `inet crefft`, input chain only | iptables backend only; Swarm cannot use nftables |
 | firewalld | Manage zones with `firewall-cmd` | Do not hand-write `/etc/nftables.conf` |
 
 Docker's nftables backend, introduced in Docker 29.0.0, is **experimental** and
@@ -830,9 +830,9 @@ Projects **MUST** validate before applying, and **MUST** keep a way back in.
 # 1. Syntax and semantic check; makes no change to the running ruleset
 nft --check -f /etc/nftables.conf
 
-# 2. Snapshot the current state of the Doctrine table as a replayable file
-{ echo 'destroy table inet doctrine'
-  nft list table inet doctrine 2>/dev/null || true
+# 2. Snapshot the current state of the crefft table as a replayable file
+{ echo 'destroy table inet crefft'
+  nft list table inet crefft 2>/dev/null || true
 } > /root/nftables-rollback.conf
 
 # 3. Schedule an automatic rollback before applying, in case SSH is cut off
@@ -853,7 +853,7 @@ nft list ruleset
 ```
 
 **Why**: `destroy table` is idempotent, so re-running the file replaces only
-the Doctrine table. Verified on Debian 13: with simulated `ip docker` and
+the crefft table. Verified on Debian 13: with simulated `ip docker` and
 `ip firewalld_sim` tables present, applying a file that begins with
 `flush ruleset` left only `inet filter`, whereas the file above left both
 application tables intact and could be re-applied without error.

@@ -1,4 +1,4 @@
-NOTICE — RuboCop community style guides vendored in Doctrine
+NOTICE — RuboCop community style guides vendored in crefft
 
 Upstream (ruby.adoc):
   Ruby Style Guide
@@ -17,7 +17,7 @@ Licence URL:   https://creativecommons.org/licenses/by/3.0/
 Licence text:  ./LICENSE (CC BY 3.0 Unported legal code, included because
                upstream ships no licence file of its own)
 
-Modifications by Doctrine
+Modifications by crefft
 -------------------------
 The copies in this directory are NOT byte-identical to upstream: content has
 been reflowed and files renamed from README.adoc. The upstream revision was
@@ -28,4 +28,4 @@ Required attribution
 --------------------
 "Ruby Style Guide / Rails Style Guide by Bozhidar Batsov and contributors,
 licensed under CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/).
-Modified by Doctrine."
+Modified by crefft."

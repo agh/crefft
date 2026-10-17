@@ -1,5 +1,5 @@
 name: New guide proposal
-description: Propose a language, framework, process or topic that Doctrine should cover.
+description: Propose a language, framework, process or topic that crefft should cover.
 title: "feat(<scope>): add <topic> guide"
 labels: ["new-guide"]
 body:
@@ -36,7 +36,7 @@ body:
   - type: textarea
     id: rationale
     attributes:
-      label: Why Doctrine should cover this
+      label: Why crefft should cover this
       description: >
         What decisions would this guide settle that are currently unsettled?
         Who is asking?
@@ -69,7 +69,7 @@ body:
     attributes:
       label: Overlap with existing guides
       description: >
-        Which existing Doctrine guides does this touch? Doctrine links rather
+        Which existing crefft guides does this touch? crefft links rather
         than duplicates.
 
   - type: dropdown
