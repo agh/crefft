@@ -81,7 +81,7 @@ You **MUST** keep the local pin and the CI installation identical. Point
 `actions/setup-dotnet` at the same file rather than restating a version:
 
 ```yaml
-- uses: actions/setup-dotnet@v4
+- uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
   with:
     global-json-file: global.json
 ```
@@ -2462,10 +2462,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -2479,7 +2479,7 @@ jobs:
       run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage"
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
       with:
         file: ./coverage.cobertura.xml
 
@@ -2487,10 +2487,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -2506,10 +2506,10 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -2517,7 +2517,7 @@ jobs:
       run: dotnet publish src/MyApi/MyApi.csproj -c Release -o ./publish
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: published-app
         path: ./publish
@@ -2531,7 +2531,9 @@ You SHOULD use multi-stage Docker builds[^23] for optimal image size and securit
 
 ```dockerfile
 # Stage 1: Build
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+# mcr.microsoft.com/dotnet/sdk:10.0; registry manifest digest.
+FROM mcr.microsoft.com/dotnet/sdk@\
+sha256:0d99ebf1ccad15037b5c98c9fe8979d6b8dbac23812feae2277a0b277b5c5ffa AS build
 WORKDIR /src
 
 # Copy csproj and restore dependencies (cached layer)
@@ -2549,7 +2551,9 @@ FROM build AS publish
 RUN dotnet publish "MyApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Stage 3: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+# mcr.microsoft.com/dotnet/aspnet:10.0; registry manifest digest.
+FROM mcr.microsoft.com/dotnet/aspnet@\
+sha256:d5633778c754e89a386882eddf8dbee6942447a8a4b8267c19cf1e1158d0b0ac AS final
 WORKDIR /app
 
 # Create non-root user
@@ -2588,7 +2592,7 @@ ENTRYPOINT ["dotnet", "MyApi.dll"]
 # Build image
 docker build -t myapi:1.0.0 .
 
-# Run container
+# Run the exact local tag built above; this is not a registry image.
 docker run -d -p 8080:8080 \
   -e ASPNETCORE_ENVIRONMENT=Production \
   -e ConnectionStrings__DefaultConnection="Server=db;..." \
@@ -2619,7 +2623,9 @@ services:
     restart: unless-stopped
 
   db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    # mcr.microsoft.com/mssql/server:2022-latest; registry manifest digest.
+    image: "mcr.microsoft.com/mssql/server@\
+      sha256:cf8f0ab2ebe61feec2eed2629061a07d247f791c2a8ddda74a4ac9f06a291718"
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=YourStrong@Passw0rd

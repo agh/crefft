@@ -409,7 +409,7 @@ step :process_records do
   end
 end
 
-# GOOD: reload durable state outside the steps, advance a serialised cursor
+# GOOD: reload durable state outside the steps, advance a serialized cursor
 step :process_records do |step|
   export.records.find_each(start: step.cursor) do |record|
     export.process_record(record)
@@ -1636,8 +1636,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1.329.0
         with:
           bundler-cache: true
       - run: bundle exec standardrb
@@ -1647,12 +1647,13 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:18
+        # postgres:18; registry manifest digest.
+        image: postgres@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
         env:
           POSTGRES_PASSWORD: postgres
     steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1.329.0
         with:
           bundler-cache: true
       - run: bundle exec rails db:setup
@@ -2224,7 +2225,7 @@ strategy:
     ruby: ["3.4", "4.0"]
     rails: ["8.0", "8.1"]
 steps:
-  - uses: ruby/setup-ruby@v1
+  - uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1.329.0
     with:
       ruby-version: ${{ matrix.ruby }}
   - run: bundle exec appraisal rails-${{ matrix.rails }} rspec

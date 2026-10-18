@@ -216,7 +216,7 @@ and this project adheres to calendar versioning (`YYYY.M.N`).
 - Updated the dashboard layout.
 
 ### Deprecated
-- Deprecated the old export format in favour of JSON.
+- Deprecated the old export format in favor of JSON.
 
 ### Removed
 - Removed an unused example file.
@@ -429,9 +429,11 @@ use the same command and working directory:
 
 ```bash
 # Do: the tool reads CHANGELOG.md and .kacl.yml from /workdir.
+# Exact release tag; verified from the container registry.
 docker run --rm -v "$(pwd)":/workdir:ro -w /workdir mschmieder/kacl-cli:0.7.4 verify
 
 # Don't: the tool cannot find CHANGELOG.md in its working directory.
+# Exact release tag; verified from the container registry.
 docker run --rm -v "$(pwd)":/src mschmieder/kacl-cli:0.7.4 verify
 ```
 

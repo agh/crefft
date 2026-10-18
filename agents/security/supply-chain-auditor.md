@@ -391,7 +391,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -424,11 +424,13 @@ gh attestation verify my-package-1.0.0.tgz --repo org/repo \
 # BAD: neither of these steps runs
 steps:
   - name: Generate SLSA provenance
+    # crefft: illustrative -- This nonexistent ref demonstrates a broken SLSA step.
     uses: slsa-framework/slsa-github-generator@v1 # no such ref
     with:
       artifact-path: dist/
 
   - name: Verify provenance
+    # crefft: illustrative -- This CLI repository is not an action and has no v2 ref.
     uses: slsa-framework/slsa-verifier@v2 # no such ref
 ```
 

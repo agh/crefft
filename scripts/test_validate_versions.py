@@ -313,7 +313,7 @@ class ExecutablePinTests(unittest.TestCase):
                       "uses: owner/action@master", "uses: owner/action@HEAD"):
             with self.subTest(value=value):
                 self.assertTrue(self._find(f"```yaml\n{value}\n```"))
-                pinned = value.replace(":latest", ":1.2.3").replace("@master", "@v1.2.3")
+                pinned = value.replace(":latest", ":1.2.3").replace("@master", "@" + "a" * 40)
                 pinned = pinned.replace("@HEAD", "@" + "a" * 40)
                 self.assertEqual(self._find(f"```yaml\n{pinned}\n```"), [])
 
@@ -358,6 +358,12 @@ class ExecutablePinTests(unittest.TestCase):
         self.assertEqual(self._find(
             "```sh\ndocker run --pull always --platform linux/arm64 tool:1.2.3\n```"
         ), [])
+
+    def test_docker_pull_and_podman_commands_are_checked(self):
+        for command in ("docker pull", "podman pull", "podman run --rm"):
+            with self.subTest(command=command):
+                self.assertTrue(self._find(f"```sh\n{command} tool:latest\n```"))
+                self.assertEqual(self._find(f"```sh\n{command} tool:1.2.3\n```"), [])
 
     def test_prose_comments_and_other_fences_are_exempt(self):
         text = (
@@ -450,6 +456,165 @@ class ExecutablePinTests(unittest.TestCase):
                 (configs / filename).write_text(text, encoding="utf-8")
             findings, _ = vv.collect_floating(root)
             self.assertEqual(len(findings), 3)
+
+
+class ActionPinTests(unittest.TestCase):
+    SHA = "a" * 40
+    MARKER = "# crefft: illustrative -- This nonexecuting example demonstrates a moving tag."
+
+    def _scan(self, body: str, relative: str = "guides/example.md"):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / relative
+            path.parent.mkdir(parents=True)
+            path.write_text(body, encoding="utf-8")
+            return vv.collect_floating(root)
+
+    def test_moving_tags_branches_short_shas_and_expressions_fail(self):
+        for ref in ("v7", "v7.0.1", "main", "a" * 39, "a" * 41, "${{ inputs.ref }}"):
+            with self.subTest(ref=ref):
+                findings, _ = self._scan(f"```yaml\n- uses: actions/checkout@{ref}\n```\n")
+                self.assertEqual(len(findings), 1)
+                self.assertEqual(findings[0]["ecosystem"], "action")
+
+    def test_full_sha_with_version_comment_passes(self):
+        findings, exceptions = self._scan(
+            f"```yaml\n- uses: actions/checkout@{self.SHA} # v7.0.1\n```\n"
+        )
+        self.assertEqual((findings, exceptions), ([], []))
+
+    def test_scalar_suffixes_and_malformed_quotes_cannot_hide_invalid_refs(self):
+        for value in (
+            f"actions/checkout@{self.SHA}#suffix",
+            f"'actions/checkout@{self.SHA} # part of the reference'",
+            "'actions/checkout@v7",
+        ):
+            with self.subTest(value=value):
+                findings, _ = self._scan(f"```yaml\n- uses: {value}\n```\n")
+                self.assertEqual(len(findings), 1)
+
+    def test_marked_illustration_passes_and_reports_reason(self):
+        findings, exceptions = self._scan(
+            f"```yaml\n{self.MARKER}\n- uses: actions/checkout@v7\n```\n"
+        )
+        self.assertEqual(findings, [])
+        self.assertEqual(len(exceptions), 1)
+        self.assertIn("nonexecuting", exceptions[0]["reason"])
+
+    def test_marker_only_exempts_one_adjacent_reference(self):
+        findings, exceptions = self._scan(
+            f"```yaml\n{self.MARKER}\n- uses: actions/checkout@v7\n"
+            "- uses: actions/setup-node@v7\n```\n"
+        )
+        self.assertEqual([f["package"] for f in findings], ["actions/setup-node"])
+        self.assertEqual(len(exceptions), 1)
+
+    def test_marker_requires_reason_and_immediate_adjacency(self):
+        for marker in (
+            "# crefft: illustrative -- ",
+            self.MARKER + "\n",
+            self.MARKER + "\n# Another comment",
+            self.MARKER + "\n- name: Checkout",
+        ):
+            with self.subTest(marker=marker):
+                findings, _ = self._scan(
+                    f"```yaml\n{marker}\n- uses: actions/checkout@v7\n```\n"
+                )
+                self.assertEqual(len(findings), 1)
+
+    def test_native_workflows_and_configs_cannot_use_illustrative_marker(self):
+        for relative in (".github/workflows/ci.yml", "configs/workflow.yaml"):
+            with self.subTest(relative=relative):
+                findings, exceptions = self._scan(
+                    f"{self.MARKER}\n- uses: actions/checkout@v7\n", relative
+                )
+                self.assertEqual(len(findings), 1)
+                self.assertEqual(exceptions, [])
+
+    def test_allow_floating_cannot_exempt_an_action(self):
+        findings, exceptions = self._scan(
+            "```yaml\n# crefft: allow-floating -- Negative example.\n"
+            "- uses: actions/checkout@v7\n```\n"
+        )
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(exceptions, [])
+
+    def test_reusable_workflow_reference_is_checked(self):
+        reference = "example/build/.github/workflows/release.yml"
+        for ref in ("v1.2.3", self.SHA):
+            with self.subTest(ref=ref):
+                findings, _ = self._scan(
+                    f"```yaml\njobs:\n  release:\n    uses: {reference}@{ref}\n```\n"
+                )
+                self.assertEqual(len(findings), int(ref != self.SHA))
+
+    def test_quoted_folded_and_flow_references_are_checked(self):
+        for value in (
+            '- "uses": "actions/checkout@v7"',
+            "- uses: >- # reviewed release\n    actions/checkout@v7",
+            "- {name: Checkout, uses: 'actions/checkout@v7'}",
+            "steps: [{uses: actions/checkout@v7}]",
+            "jobs: {build: {uses: 'actions/checkout@v7'}}",
+        ):
+            with self.subTest(value=value):
+                findings, _ = self._scan(f"```yml\n{value}\n```\n")
+                self.assertEqual(len(findings), 1)
+                findings, _ = self._scan(f"```yml\n{value.replace('@v7', '@' + self.SHA)}\n```")
+                self.assertEqual(findings, [])
+
+    def test_generic_fence_skip_marker_cannot_bypass_pin_check(self):
+        findings, _ = self._scan("~~~yaml no-check\n- uses: actions/checkout@v7\n~~~\n")
+        self.assertEqual(len(findings), 1)
+
+    def test_empty_reference_is_rejected(self):
+        findings, _ = self._scan("```yaml\n- uses:\n```\n")
+        self.assertEqual(len(findings), 1)
+
+    def test_action_text_inside_run_body_is_not_an_action(self):
+        findings, _ = self._scan(
+            "```yaml\n- run: |\n    echo 'uses: owner/action@v1'\n"
+            '- {run: "echo \'{uses: owner/action@v1}\'"}\n'
+            "# {uses: owner/action@v1}\n```\n"
+        )
+        self.assertEqual(findings, [])
+
+    def test_flow_marker_exempts_only_one_reference(self):
+        findings, exceptions = self._scan(
+            f"```yaml\n{self.MARKER}\n"
+            "steps: [{uses: actions/checkout@v7}, {uses: actions/setup-node@v7}]\n```\n"
+        )
+        self.assertEqual([f["package"] for f in findings], ["actions/setup-node"])
+        self.assertEqual(len(exceptions), 1)
+
+    def test_all_first_party_surfaces_are_scanned(self):
+        for relative in (
+            ".github/workflows/ci.yml", "guides/example.md", "configs/example.md",
+            "agents/example.md", "commands/example.md",
+        ):
+            with self.subTest(relative=relative):
+                body = "- uses: actions/checkout@v7\n"
+                if relative.endswith(".md"):
+                    body = f"```yaml\n{body}```\n"
+                findings, _ = self._scan(body, relative)
+                self.assertEqual(len(findings), 1)
+
+    def test_image_digest_is_complete_and_tag_is_a_release(self):
+        for version in ("latest", "18", "alpine", "sha256:abc123...", "sha256:" + "a" * 63):
+            with self.subTest(version=version):
+                self.assertFalse(vv.pinned_reference("docker", version))
+        for version in ("16.13", "1.2.3-alpine", "sha256:" + "a" * 64):
+            with self.subTest(version=version):
+                self.assertTrue(vv.pinned_reference("docker", version))
+
+    def test_split_dockerfile_digest_is_one_reference(self):
+        text = "```dockerfile\nFROM gcr.io/distroless/python3-debian12@\\\nsha256:"
+        text += "a" * 64 + "\n```\n"
+        findings, _ = self._scan(text)
+        self.assertEqual(findings, [])
+
+    def test_illustrative_marker_cannot_exempt_a_package_install(self):
+        findings, _ = self._scan(f"```yaml\n{self.MARKER}\n- run: npx tool\n```\n")
+        self.assertEqual(len(findings), 1)
 
 
 class ToolVersionsTests(unittest.TestCase):

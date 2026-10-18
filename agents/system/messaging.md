@@ -497,6 +497,7 @@ schema-registry:
 # ✅ Kafka monitoring with Prometheus
 services:
   kafka-exporter:
+    # Exact release tag; verified from the container registry.
     image: danielqsj/kafka-exporter:v1.10.0
     command:
       - '--kafka.server=kafka1:9092'
@@ -660,7 +661,7 @@ kafka-acls.sh --bootstrap-server kafka1:9092 \
   --operation Describe --topic '*' \
   --operation Describe --group '*'
 
-# Enable authorisation on every broker and controller, then restart:
+# Enable authorization on every broker and controller, then restart:
 # authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
 # allow.everyone.if.no.acl.found=false
 # super.users=User:kafka-admin

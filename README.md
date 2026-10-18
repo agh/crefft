@@ -245,9 +245,13 @@ Ready-to-copy configuration files:
 
 ## Checking executable pins
 
-Copyable tool installs **MUST** name an exact version, and runnable containers
-**MUST NOT** use `:latest` or an implicit latest tag. New pins **MUST** be
-verified against a primary release source and registered in
+Copyable tool installs **MUST** name an exact version. Runnable containers
+**MUST** use complete SHA-256 digests or exact release tags with a registry-verification
+note, never a major-version alias, `:latest`, or an implicit latest tag. Every
+`uses:` reference **MUST** name a full 40-character commit SHA with a trailing
+version comment, including reusable workflows. New pins **MUST** be verified
+against the upstream tag or container registry. Shared tool and action pins
+**MUST** be registered in
 [`configs/tool-versions.json`](configs/tool-versions.json). Existing
 [`pre-commit pins`](configs/pre-commit/.pre-commit-config.yaml) take precedence
 for overlapping tools.
@@ -260,7 +264,22 @@ and CI, without network requests. It scans `guides/`, `agents/`, `commands/`,
 and `configs/`: `bash`, `sh`, `shell`, `console`, and `zsh` fences; Dockerfile
 instructions; YAML `run:` steps, `image:` values, and `uses:` actions; and
 inline spans beginning with a package-manager command. Native shell,
-Dockerfile, and YAML configuration files are checked too.
+Dockerfile, and YAML configuration files are checked too. All `uses:` references
+in `.github/workflows/` are checked, with no exceptions. YAML examples are
+checked even when their fence has a generic syntax-check skip marker.
+
+Action pins **MUST** be resolved with the exact upstream tag, not copied from
+memory. Annotated tags **MUST** use the peeled commit (`^{}`), not the tag
+object. Image digests **MUST** come from the registry manifest.
+
+**Why**: A tag object's SHA is not the commit GitHub Actions runs. Resolving both
+forms also detects a tag that has moved since an earlier review.
+
+```bash
+git ls-remote https://github.com/actions/checkout \
+  refs/tags/v7.0.1 'refs/tags/v7.0.1^{}'
+docker buildx imagetools inspect postgres:16
+```
 
 ```text
 # Don't: a registry alias or missing version resolves again on each launch.
@@ -275,14 +294,16 @@ pip install example-tool==1.2.3
 Prose warnings, comments, and nonexecutable fences are not installs. Local
 builds, dependency-manifest installs such as `npm install` without package
 arguments, and `pip install -r requirements.txt` are left to the project's
-lockfile policy. Versioned image tags remain allowed; this check does not
+lockfile policy. Locally built application images are not registry releases;
+their examples identify the exact local tag produced by the preceding build.
+Exact release image tags remain allowed; this check does not
 replace the [Docker guide's digest-pinning rule][image-pins].
 
 [image-pins]: guides/infrastructure/docker.md#image-digest-pinning
 
 A negative example that must demonstrate floating behavior **MAY** put
 `# crefft: allow-floating -- reason` immediately before the offending command
-or YAML image/action value, inside the same fence or configuration file.
+or YAML image value, inside the same fence or configuration file.
 The nonempty reason **MUST** explain why floating is the point of that example.
 The marker exempts only the next logical instruction, including its shell
 continuations, not a fence, workflow, file, or subsequent command. Every
@@ -290,6 +311,18 @@ exemption is listed in text and JSON output.
 
 **Why**: Teaching the failure requires keeping a few unsafe examples, but an
 exception must not hide a later install or silently disable the gate.
+
+Nonexecuting YAML illustrations **MAY** use
+`# crefft: illustrative -- reason` immediately before one `uses:` or `image:`
+reference in a Markdown fence. The nonempty reason **MUST** explain why the
+reference is deliberately invalid or unpublished. It exempts that reference
+only, not another step, fence, or file, and cannot exempt a native workflow or
+configuration file. `allow-floating` cannot exempt an action.
+
+**Why**: The coverage and Rust pinning anti-patterns need moving refs, the SLSA
+anti-patterns need nonexistent action refs, and the release-manager interface and Docker
+application templates name unpublished components. These are not executable
+recommendations; their individual markers explain each exception in checker output.
 
 ---
 
@@ -342,7 +375,7 @@ records the upstream, version, and license of every source.
 ## License
 
 crefft's own guides, configuration files, and agent definitions are licensed
-under the [MIT Licence](LICENSE), Copyright (c) 2026 Alex Howells.
+under the [MIT License](LICENSE), Copyright (c) 2026 Alex Howells.
 
 Everything under `reference/` is third-party material and is **NOT** covered
 by that grant. Each vendored source keeps its own license:

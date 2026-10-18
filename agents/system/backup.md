@@ -407,6 +407,7 @@ services:
       - ./backup:/backup
 
   backup:
+    # Exact release tag; verified from the container registry.
     image: woblerr/pgbackrest:2.58.0
     volumes:
       - postgres_data:/var/lib/postgresql/data:ro

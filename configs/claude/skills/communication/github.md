@@ -71,6 +71,7 @@ is readable by anything running as that user.
 There is no `--repo` flag. The server rejects it and exits non-zero:
 
 ```console
+# Exact release tag; verified from the container registry.
 $ docker run --rm ghcr.io/github/github-mcp-server:v1.12.0 stdio --repo owner/repo
 Error: unknown flag: --repo
 ```
@@ -351,7 +352,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
@@ -392,11 +393,11 @@ official action and give it credentials; a bare `claude` command fails with
 
 ```yaml
       - name: Draft release notes with Claude
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@9c5ddab2e6d17b83ea679153b31f1d5f023cf636 # v1.0.217
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
-            Summarise the commits in this release into RELEASE_NOTES.md,
+            Summarize the commits in this release into RELEASE_NOTES.md,
             grouped by conventional commit type.
           claude_args: '--allowed-tools Bash(git log:*),Write'
 ```
@@ -418,12 +419,12 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
-      - name: Analyse PR
-        uses: anthropics/claude-code-action@v1
+      - name: Analyze PR
+        uses: anthropics/claude-code-action@9c5ddab2e6d17b83ea679153b31f1d5f023cf636 # v1.0.217
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}

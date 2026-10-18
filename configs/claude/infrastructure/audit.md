@@ -356,7 +356,8 @@ Agents **MUST NOT** apply audit DDL straight to production. Apply it to a
 disposable database first, on the PostgreSQL version you run:
 
 ```bash
-docker run -d --name audit-schema-test -e POSTGRES_PASSWORD=test postgres:18
+docker run -d --name audit-schema-test -e POSTGRES_PASSWORD=test \
+  postgres@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
 docker exec -i audit-schema-test psql -U postgres -v ON_ERROR_STOP=1 \
   < audit-schema.sql
 docker rm -f audit-schema-test

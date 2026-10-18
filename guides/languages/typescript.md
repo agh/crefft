@@ -583,7 +583,7 @@ cover all of them:
 import { expect, test } from 'vitest';
 import { Memoize, Product, Retry } from '../patterns.js';
 
-test('accessor decorator validates assignment, not just initialisation', () => {
+test('accessor decorator validates assignment, not just initialization', () => {
   const p = new Product();
   expect(p.quantity).toBe(10);
   expect(() => {
@@ -1212,8 +1212,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: 'npm'
@@ -1224,8 +1224,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: 'npm'
@@ -1500,7 +1500,7 @@ strategy:
   matrix:
     node-version: [18, 20, 22]
 steps:
-  - uses: actions/setup-node@v4
+  - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
     with:
       node-version: ${{ matrix.node-version }}
 ```

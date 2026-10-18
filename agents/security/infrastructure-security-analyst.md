@@ -205,7 +205,8 @@ RUN apt-get update && \
     apt-get install curl    # No version pinning
 
 # GOOD
-FROM ubuntu:22.04@sha256:abc123...  # Pinned with digest
+# ubuntu:22.04; registry manifest digest.
+FROM ubuntu@sha256:0a9887931b0e38af2e3487ed39e29436b0535c4f3f52e57745baaf79d1898956
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     curl=7.81.0-1 && \
@@ -303,7 +304,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2  # Unpinned
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     - run: curl ${{ inputs.url }} | bash  # Command injection
 ```
 

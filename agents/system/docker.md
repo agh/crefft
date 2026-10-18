@@ -37,24 +37,30 @@ RUN pip install -r requirements.txt   # Cache invalidated every change
 USER root                             # Running as root
 
 # ❌ Dependencies stay behind in the builder stage
-FROM python:3.12-slim AS builder
+# python:3.12-slim; registry manifest digest.
+FROM python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS builder
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt  # Builder's environment only
 
-FROM gcr.io/distroless/python3-debian12:nonroot
+# gcr.io/distroless/python3-debian12:nonroot; registry manifest digest.
+FROM gcr.io/distroless/python3-debian12@\
+sha256:7d1042ce588ab97019fe95c24ffca7bc5a82ccdac572511d5e09bda4435c89c5
 COPY --from=builder /app /app  # Source only: ModuleNotFoundError at runtime
 
 # ✅ Correct pattern
 # Build with the interpreter the runtime image ships: distroless
 # python3-debian13 provides CPython 3.13 at /usr/bin/python3.13.
-FROM python:3.13-slim-trixie AS builder
+# python:3.13-slim-trixie; registry manifest digest.
+FROM python@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f AS builder
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir --target=/deps -r requirements.txt
 COPY . .
 
-FROM gcr.io/distroless/python3-debian13:nonroot
+# gcr.io/distroless/python3-debian13:nonroot; registry manifest digest.
+FROM gcr.io/distroless/python3-debian13@\
+sha256:f47f5807043391605425f2bd162b25f50cebdc90640bacc804e0177608fe5c65
 WORKDIR /app
 COPY --from=builder /deps /deps
 COPY --from=builder /app /app
@@ -96,13 +102,12 @@ services:
   api:
     # crefft: allow-floating -- Negative example contrasts a mutable tag with the digest below.
     image: nginx:latest
-    image: nginx:1.25
 
 # ✅ Digest pinning
 services:
   api:
-    # nginx:1.25.3, pinned 2024-11
-    image: nginx@sha256:4c0fdaa8b6341bfdeca5f18f7837462c80cff90527ee35ef185571e1c327beac
+    # nginx:1.25.3; registry manifest digest.
+    image: nginx@sha256:c7a6ad68be85142c7fe1089e48faa1e7c7166a194caa9180ddea66345876b9d2
 ```
 
 **Multi-Architecture Pattern**:
@@ -112,10 +117,10 @@ services:
 images:
   traefik:
     version: "3.6.5"
-    pinned_at: "2025-12-24"
+    pinned_at: "2026-10-18"
     digests:
-      amd64: "sha256:d944e3693bbf5a..."
-      arm64: "sha256:088e42947073..."
+      amd64: "sha256:d944e3693bbf5a361ddd2e411bb713049cfb4f5ff3da200b30ee7a347dbd6abd"
+      arm64: "sha256:4df45c2d1101f440d989afb8d54ce557fda8c1028c63b4edb46e1387f20e252d"
 ```
 
 **Severity**:
@@ -442,7 +447,7 @@ Third-party Actions run with access to the workflow token and secrets, so they
 branches are mutable and can be repointed at new code without warning.
 
 ```yaml
-# ❌ Mutable reference - the action's code can change under you
+# ✅ Reviewed action reference, not a moving tag
 - name: Scan image
   uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
 
@@ -456,9 +461,9 @@ jobs:
     steps:
       - name: Scan image
         # aquasecurity/trivy-action v0.36.0, released 2026-04-22
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
-          image-ref: myapp:1.0
+          image-ref: myapp:1.0.0  # Exact local tag from the preceding image build
           severity: CRITICAL,HIGH
           exit-code: 1
 
@@ -569,7 +574,8 @@ jobs:
   **Before**:
 
   ```dockerfile
-  FROM python:3.12-slim
+  # python:3.12-slim; registry manifest digest.
+  FROM python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
   COPY . /app
   CMD ["python", "app.py"]
   ```
@@ -577,7 +583,8 @@ jobs:
   **After**:
 
   ```dockerfile
-  FROM python:3.12-slim
+  # python:3.12-slim; registry manifest digest.
+  FROM python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
   RUN adduser --disabled-password --gecos "" appuser
   COPY --chown=appuser . /app
   USER appuser

@@ -221,7 +221,7 @@ jobs:
           fi
 
   versions:
-    name: Tool version drift
+    name: Tool version drift and executable pins
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -235,7 +235,7 @@ jobs:
       - name: Unit tests
         run: python3 -m unittest discover scripts
 
-      - name: Validate versions against the canonical pre-commit config
+      - name: Validate tool versions, action SHAs, and image pins
         run: python3 scripts/validate_versions.py
 
   vendored:

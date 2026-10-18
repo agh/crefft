@@ -365,7 +365,9 @@ services:
 # ✅ Secure outpost container
 services:
   authentik-proxy:
-    image: ghcr.io/goauthentik/proxy:2024.2.2@sha256:abc...  # Pinned
+    # ghcr.io/goauthentik/proxy:2024.2.2; registry manifest digest.
+    image: "ghcr.io/goauthentik/proxy@\
+      sha256:4c1e407a38588db8b7e49039a6b500de6088b044a4d528df37c31fe5e6599a11"
     environment:
       AUTHENTIK_HOST: "https://authentik:9443"
       AUTHENTIK_INSECURE: "false"

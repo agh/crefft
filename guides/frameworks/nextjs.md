@@ -675,7 +675,7 @@ export async function createPost(
     return { ok: false, error: 'Unauthorized' };
   }
 
-  // 2. Authorise this specific operation
+  // 2. Authorize this specific operation
   if (!user.permissions.includes('post:create')) {
     return { ok: false, error: 'Forbidden' };
   }
@@ -1576,7 +1576,8 @@ const config: NextConfig = {
 
 ```dockerfile
 # Dockerfile
-FROM node:20-alpine AS base
+# node:20-alpine; registry manifest digest.
+FROM node@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 AS base
 
 # Dependencies
 FROM base AS deps
@@ -1627,7 +1628,8 @@ services:
       - db
 
   db:
-    image: postgres:17
+    # postgres:17; registry manifest digest.
+    image: postgres@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
     environment:
       POSTGRES_PASSWORD: pass
       POSTGRES_USER: user

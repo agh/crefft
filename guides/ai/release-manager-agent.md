@@ -330,7 +330,7 @@ signal_collectors:
     # Reject evidence produced from a different tree or too long ago
     require_exact_sha: true
     max_signal_age: 24h
-    # Record the digest of every artefact the runs produced
+    # Record the digest of every artifact the runs produced
     record_artifact_digests: true
     # Minimum coverage threshold
     coverage_threshold: 80
@@ -369,7 +369,7 @@ LOW       → Informational only
 signal_collectors:
   security:
     enabled: true
-    # Scans MUST have been produced from the release commit and artefact
+    # Scans MUST have been produced from the release commit and artifact
     scanned_sha: ${RELEASE_SHA}
     require_exact_sha: true
     require_artifact_digest: true
@@ -624,7 +624,7 @@ outcome_tracking:
       # Read APIs are authenticated with a bearer auth token, never a DSN
       base_url: https://sentry.io/api/0
       auth_token: ${SENTRY_AUTH_TOKEN}
-      organization: my-org       # organisation slug or ID
+      organization: my-org       # organization slug or ID
       projects: [my-project]     # project slugs read for this release
       scopes: [org:read, project:read, event:read]
       pagination: link_header    # follow rel="next" while results="true"
@@ -1613,7 +1613,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0  # Full history for changelog
           ref: ${{ github.sha }}  # Pin the tree; do not follow the branch
@@ -1623,6 +1623,7 @@ jobs:
         run: echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
 
       - name: Run Release Manager Agent
+        # crefft: illustrative -- This unpublished action only specifies an interface.
         uses: crefft/release-manager-agent@v1  # illustrative
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -1650,7 +1651,8 @@ own image, pinned to a digest, before running this job.
 # .gitlab-ci.yml
 release:
   stage: release
-  image: crefft/release-manager-agent:2026.10.0  # Illustrative, locally built release
+  # crefft: illustrative -- This unpublished image only specifies an interface.
+  image: crefft/release-manager-agent@sha256:REPLACE_WITH_REVIEWED_DIGEST
   script:
     - release-manager analyze
     - release-manager release --if-ready

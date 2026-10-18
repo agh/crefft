@@ -21,16 +21,20 @@ Scanned surfaces:
     commands/**  slash-command definitions
     configs/**   shipped configuration, excluding the canonical file itself
 
-Executable package pins are registered in ``configs/tool-versions.json``.
+Executable package and action pins are registered in ``configs/tool-versions.json``.
 Shell-like fences, Dockerfiles, YAML run steps/images/actions, and inline
-package-manager commands are checked, not surrounding prose. A comment
+package-manager commands are checked, not surrounding prose. Workflows under
+``.github/workflows`` are checked too. Actions require full commit SHAs;
+images require complete SHA-256 digests or exact release tags. A comment
 ``# crefft: allow-floating -- reason`` exempts only the next logical command
-and is reported separately. See the contributing checks in ``README.md``.
+and is reported separately. Actions only accept the narrower
+``# crefft: illustrative -- reason`` marker in Markdown examples, never in
+native workflows. See the contributing checks in ``README.md``.
 
 Exit codes:
     0   every comparable reference agrees with the canonical config
     1   a mismatch, a floating install, or --strict with an undocumented tool
-    2   the canonical config is missing or unparseable
+    2   the canonical config is missing or unparsable
 
 Usage:
     python3 scripts/validate_versions.py
@@ -54,7 +58,7 @@ CONFIG_FILE = PROJECT_ROOT / "configs/pre-commit/.pre-commit-config.yaml"
 TOOL_VERSIONS_FILE = PROJECT_ROOT / "configs/tool-versions.json"
 
 # Every tree that may quote a pinned tool version.
-SCAN_DIRS = ("guides", "agents", "commands", "configs")
+SCAN_DIRS = ("guides", "agents", "commands", "configs", ".github/workflows")
 
 # Directories never scanned: vendored upstream text and generated output.
 EXCLUDED_DIRS = {".git", "node_modules", "reference", ".venv", "venv", "dist", "build"}
@@ -122,13 +126,17 @@ FENCE_RE = re.compile(r"^\s*(?:>\s*)?(?P<fence>`{3,}|~{3,})(?P<info>[^`]*)$")
 INLINE_RE = re.compile(r"(?<!`)(`+)(?!`)(.+?)(?<!`)\1(?!`)", re.DOTALL)
 COMMAND_RE = re.compile(
     r"^(?:go (?:install|get)|npx|npm install|pnpm dlx|pip3? install|"
-    r"pipx install|uv (?:tool|pip) install|uvx|cargo install|docker run)(?:\s|$)"
+    r"pipx install|uv (?:tool|pip) install|uvx|cargo install|"
+    r"(?:docker|podman) (?:run|pull))(?:\s|$)"
 )
 EXCEPTION_RE = re.compile(r"^\s*# crefft: allow-floating -- (?P<reason>\S.*)$")
+ILLUSTRATIVE_RE = re.compile(r"^\s*# crefft: illustrative -- (?P<reason>\S.*)$")
 EXACT_VERSION_RE = re.compile(
     r"v?\d+\.\d+\.\d+(?:[a-z]\d+)?(?:[-+][0-9A-Za-z.-]+)?"
 )
 COMMIT_RE = re.compile(r"[0-9a-f]{40}")
+DIGEST_RE = re.compile(r"sha256:[0-9a-f]{64}")
+IMAGE_VERSION_RE = re.compile(r"v?\d+\.\d+(?:\.\d+)?(?:[-+][0-9A-Za-z.-]+)?")
 
 
 @dataclass(frozen=True)
@@ -137,6 +145,7 @@ class Executable:
     command: str
     language: str
     exception: str = ""
+    illustrative: bool = False
 
 
 def shell_executables(
@@ -173,7 +182,7 @@ def logical_lines(lines: Sequence[tuple[int, str]]) -> Iterator[tuple[int, str, 
             continue
         if not pending:
             start = number
-        pending += raw.rstrip().removesuffix("\\") + " "
+        pending += raw.rstrip().removesuffix("\\")
         if raw.rstrip().endswith("\\"):
             continue
         yield start, pending.strip(), reason
@@ -209,18 +218,37 @@ def block_executables(
     if language not in {"yaml", "yml"}:
         return
     reason = ""
+    illustrative = False
     position = 0
     while position < len(lines):
         number, raw = lines[position]
         position += 1
-        marker = EXCEPTION_RE.fullmatch(raw)
+        marker = EXCEPTION_RE.fullmatch(raw) or ILLUSTRATIVE_RE.fullmatch(raw)
         if marker:
             reason = marker.group("reason")
+            illustrative = bool(ILLUSTRATIVE_RE.fullmatch(raw))
             continue
         indent = len(raw) - len(raw.lstrip())
-        match = re.match(r"^\s*(?:-\s*)?(run|image|uses):\s*(.*)$", raw)
+        match = re.match(r"""^\s*(?:-\s*)?["']?(run|image|uses)["']?:\s*(.*)$""", raw)
+        if not match and not raw.lstrip().startswith("#"):
+            for flow in re.finditer(
+                r"""(?:\{|,)\s*["']?(?P<kind>uses|image)["']?:\s*"""
+                r"""(?P<value>"[^"]*"|'[^']*'|[^,}]*)(?=,|})"""
+                r"""|"(?:\\.|[^"\\])*"|'(?:''|[^'])*'|(?:^|\s)#.*$""", raw
+            ):
+                kind, value = flow.group("kind", "value")
+                if kind is None:
+                    continue
+                value = value.strip()
+                yield Executable(
+                    number, f"{kind}: {value}",
+                    "yaml", reason, illustrative,
+                )
+                reason, illustrative = "", False
         if match:
             kind, value = match.groups()
+            if kind == "run" and illustrative:
+                reason = ""
             if value.startswith(("'", '"')) and not value.endswith(value[0]):
                 quote = value[0]
                 while position < len(lines):
@@ -249,16 +277,16 @@ def block_executables(
                     if kind == "run":
                         yield from shell_executables(number, command, reason=reason)
                     else:
-                        yield Executable(number, command, "yaml", reason)
+                        yield Executable(number, command, "yaml", reason, illustrative)
             else:
-                if value.startswith(("'", '"')) and value.endswith(value[0]):
+                if kind == "run" and value.startswith(("'", '"')) and value.endswith(value[0]):
                     value = value[1:-1]
                 command = value if kind == "run" else f"{kind}: {value}"
                 if kind == "run":
                     yield from shell_executables(number, command, reason=reason)
                 else:
-                    yield Executable(number, command, "yaml", reason)
-        reason = ""
+                    yield Executable(number, command, "yaml", reason, illustrative)
+        reason, illustrative = "", False
 
 
 def iter_executables(text: str, suffix: str = ".md") -> Iterator[Executable]:
@@ -289,7 +317,8 @@ def iter_executables(text: str, suffix: str = ".md") -> Iterator[Executable]:
             continue
         if match:
             fence = match.group("fence")
-            language = match.group("info").strip().lower()
+            info = match.group("info").strip().lower().split()
+            language = info[0] if info else ""
             continue
         prose[number - 1] = raw
     if fence:
@@ -400,15 +429,22 @@ def install_references(command: str) -> Iterator[tuple[str, str, str]]:
 def executable_references(executable: Executable) -> Iterator[tuple[str, str, str]]:
     """Read install specs plus image and action selectors in runnable contexts."""
     command = executable.command
-    yield from install_references(command)
+    if executable.language != "yaml" or not re.match(r"^(?:image|uses):", command):
+        yield from install_references(command)
     if executable.language == "yaml":
-        match = re.match(r"(?:-\s*)?(image|uses):\s*[\"']?([^\s\"'#]+)", command)
+        match = re.match(r"(?:-\s*)?(image|uses):\s*(.*)$", command)
         if not match:
             return
         kind, spec = match.groups()
-        if kind == "uses":
-            if spec.startswith("./"):
+        if spec.startswith(("'", '"')):
+            quoted = re.fullmatch(r"""(["'])(.*?)\1(?:\s+#.*)?""", spec)
+            if not quoted:
+                yield "action" if kind == "uses" else "docker", spec, ""
                 return
+            spec = quoted[2]
+        else:
+            spec = re.split(r"\s+#", spec, maxsplit=1)[0].strip()
+        if kind == "uses":
             name, _, version = spec.partition("@")
             yield "action", name, version
             return
@@ -417,7 +453,7 @@ def executable_references(executable: Executable) -> Iterator[tuple[str, str, st
         images = [arg for arg in shlex.split(command)[1:] if not arg.startswith("--")][:1]
     else:
         images = []
-        match = re.search(r"\bdocker\s+run\s+(.+)", command)
+        match = re.search(r"\b(?:docker|podman)\s+(?:run|pull)\s+(.+)", command)
         if match:
             args = shlex.split(match.group(1), comments=True)
             position = 0
@@ -452,12 +488,9 @@ def executable_references(executable: Executable) -> Iterator[tuple[str, str, st
 
 def pinned_reference(ecosystem: str, version: str) -> bool:
     if ecosystem == "action":
-        return bool(version and version not in {"latest", "main", "master", "HEAD"})
+        return bool(COMMIT_RE.fullmatch(version))
     if ecosystem == "docker":
-        # Tag/digest validity is a separate check; reject floating selectors here.
-        return bool(version and version not in {
-            "latest", "stable", "main", "master", "HEAD", "edge", "nightly",
-        })
+        return bool(DIGEST_RE.fullmatch(version) or IMAGE_VERSION_RE.fullmatch(version))
     return exact_version(version)
 
 
@@ -476,6 +509,10 @@ def collect_floating(
         content = path.read_text(encoding="utf-8")
         suffix = "dockerfile" if path.name.lower().startswith("dockerfile") else path.suffix
         for executable in iter_executables(content, suffix):
+            if path.relative_to(root).parts[0] == ".github" and not re.match(
+                r"^uses:", executable.command
+            ):
+                continue
             try:
                 refs = list(floating_references(executable))
             except ValueError as error:
@@ -491,7 +528,12 @@ def collect_floating(
                     "package": name,
                     "version": version,
                 }
-                if executable.exception:
+                allowed = bool(executable.exception)
+                if ecosystem == "action":
+                    allowed = executable.illustrative and suffix in {".md", ".template"}
+                elif executable.illustrative:
+                    allowed = suffix in {".md", ".template"} and ecosystem == "docker"
+                if allowed:
                     item["reason"] = executable.exception
                     exceptions.append(item)
                 else:
@@ -548,6 +590,8 @@ def collect_install_mismatches(
                 # collect_floating reports malformed executable install syntax.
                 continue
             for ecosystem, name, version in refs:
+                if path.relative_to(root).parts[0] == ".github" and ecosystem != "action":
+                    continue
                 expected = pins.get(ecosystem, {}).get(name)
                 if (
                     expected is not None
