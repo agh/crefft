@@ -7,6 +7,8 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+## [2026.10.3] - 2026-10-18
+
 ### Added
 
 - `Crefft`, a Vale 3.24.0 package for US spellings, direct prose, and code
@@ -638,7 +640,8 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 - Vendored Google style guides (Python, Markdown, Shell, C#, HTML/CSS, Go,
   TypeScript)
 
-[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.2...HEAD
+[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.3...HEAD
+[2026.10.3]: https://github.com/agh/crefft/compare/v2026.10.2...v2026.10.3
 [2026.10.2]: https://github.com/agh/crefft/compare/v2026.10.1...v2026.10.2
 [2026.10.1]: https://github.com/agh/crefft/compare/v2026.10.0...v2026.10.1
 [2026.10.0]: https://github.com/agh/crefft/compare/v2.11.0...v2026.10.0
