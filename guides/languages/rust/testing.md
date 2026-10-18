@@ -142,7 +142,7 @@ jobs:
     runs-on: ubuntu-latest   # libFuzzer does not support Windows
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
           toolchain: nightly-2026-09-01
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -255,7 +255,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
           toolchain: stable
       - run: cargo install cargo-semver-checks --version 0.50.0 --locked
@@ -336,7 +336,7 @@ cargo nextest run --all-features
 # Reduce interference for a flaky test, not a performance measurement
 cargo test -- --test-threads=1
 
-# Optimised build: relevant when the code under test is compute-bound
+# Optimized build: relevant when the code under test is compute-bound
 cargo test --release
 
 # Compile tests without running them

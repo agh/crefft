@@ -28,6 +28,9 @@ Extends [Google Go Style Guide](../../reference/google/go.md). See also
 ## Linting: golangci-lint
 
 Projects **MUST** use golangci-lint[^1] for linting Go code.
+Projects **MUST** enable `misspell` with `locale: US` for US English spelling in code and comments.
+
+**Why**: a fixed locale catches both typos and British spellings before they reach review.
 
 ### Why golangci-lint?
 
@@ -39,7 +42,7 @@ Projects **MUST** use golangci-lint[^1] for linting Go code.
 
 ```bash
 # Install
-go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.0
 
 # Run
 golangci-lint run
@@ -71,6 +74,8 @@ linters:
     - exportloopref    # Loop variable capture
 
 linters-settings:
+  misspell:
+    locale: US
   gocyclo:
     min-complexity: 15
   govet:
@@ -263,7 +268,7 @@ Projects **SHOULD** use deadcode[^5] to identify unused functions and methods.
 
 ```bash
 # Install
-go install golang.org/x/tools/cmd/deadcode@latest
+go install golang.org/x/tools/cmd/deadcode@v0.52.0
 
 # Run
 deadcode ./...
@@ -301,7 +306,14 @@ golangci-lint). Functions with complexity over 15 **SHOULD** be refactored.
 Via golangci-lint with gocyclo enabled:
 
 ```yaml
+linters:
+  enable:
+    - gocyclo
+    - misspell
+
 linters-settings:
+  misspell:
+    locale: US
   gocyclo:
     min-complexity: 15  # Report functions with complexity > 15
 ```
@@ -309,7 +321,7 @@ linters-settings:
 Or standalone:
 
 ```bash
-go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.6.0
 gocyclo -over 15 .
 ```
 
@@ -424,7 +436,7 @@ go test -bench=. -benchtime=10s ./...
 go test -bench=. -count=5 ./...
 
 # Compare benchmarks with benchstat
-go install golang.org/x/perf/cmd/benchstat@latest
+go install golang.org/x/perf/cmd/benchstat@v0.0.0-20261009192801-be2c69fb417e
 go test -bench=. -count=10 > old.txt
 # Make changes...
 go test -bench=. -count=10 > new.txt
@@ -527,17 +539,17 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: '1.23'
-      - uses: golangci/golangci-lint-action@v6
+      - uses: golangci/golangci-lint-action@55c2c1448f86e01eaae002a5a3a9624417608d84 # v6.5.2
 
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: '1.23'
       - run: go test -race -coverprofile=coverage.out ./...
@@ -557,15 +569,21 @@ Projects **MUST** commit both `go.mod` and `go.sum` to version control.
 - **Version selection**: Automatic minimum version selection prevents dependency conflicts
 - **No external tools**: Built into the Go toolchain
 
+`github.com/pkg/errors` is in upstream
+[maintenance mode](https://github.com/pkg/errors#roadmap), with `v0.9.1` its final
+published release; new code **SHOULD** use
+[standard-library error wrapping](https://go.dev/blog/go1.13-errors) instead.
+**Why**: `fmt.Errorf` with `%w`, `errors.Is`, and `errors.As` need no legacy dependency.
+
 ```bash
 # Initialize a new module
 go mod init github.com/user/repo
 
 # Add dependencies (automatically updates go.mod)
-go get github.com/pkg/errors@latest
 go get github.com/pkg/errors@v0.9.1
 
 # Update dependencies
+# crefft: allow-floating -- Deliberately refresh dependencies for review, not a repeatable install.
 go get -u ./...
 
 # Tidy up (remove unused, add missing)
@@ -616,7 +634,7 @@ Projects **SHOULD** run vulnerability scans in CI.
 
 ```bash
 # Install govulncheck
-go install golang.org/x/vuln/cmd/govulncheck@latest
+go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
 
 # Scan for vulnerabilities
 govulncheck ./...
@@ -755,7 +773,7 @@ interfaces in unit tests.
 
 ```bash
 # Install mockgen
-go install go.uber.org/mock/mockgen@latest
+go install go.uber.org/mock/mockgen@v0.6.0
 
 # Generate mocks from interface (source mode)
 mockgen -source=repository.go -destination=mocks/repository_mock.go -package=mocks
@@ -1304,7 +1322,7 @@ func TestCircuitBreaker(t *testing.T) {
         t.Fatalf("got state %v, want %v", state, gobreaker.StateOpen)
     }
 
-    // Only the call after the breaker opened is rejected without dialling out.
+    // Only the call after the breaker opened is rejected without dialing out.
     if _, err := cb.Execute(failingService); !errors.Is(err, gobreaker.ErrOpenState) {
         t.Errorf("got error %v, want ErrOpenState", err)
     }
@@ -1325,8 +1343,8 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: ${{ matrix.go-version }}
       - run: go test ./...

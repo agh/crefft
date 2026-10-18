@@ -1,4 +1,7 @@
 {
+  "license": "LicenseRef-US-Government-Work",
+  "license_url": "THIRD_PARTY_NOTICES.md#nist",
+  "restrictions": [],
   "name": "Cryptographic Standards Reference",
   "version": "2025.01",
   "sources": [

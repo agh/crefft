@@ -64,7 +64,7 @@ tokio = { version = "1.53.1", features = ["full"] }
 tokio-util = { version = "0.7.19", features = ["rt"] }
 futures-util = "0.3.34"
 
-# Serialisation
+# Serialization
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
 
@@ -77,7 +77,7 @@ sqlx = { version = "0.8.6", features = [
     "runtime-tokio", "tls-rustls-ring", "postgres", "chrono", "macros", "migrate",
 ] }
 
-# Authentication and authorisation
+# Authentication and authorization
 axum-login = "0.18.0"
 tower-sessions = "0.14.0"
 tower-sessions-sqlx-store = { version = "0.15.0", features = ["postgres"] }
@@ -447,7 +447,7 @@ them, is a compile error rather than a style problem.
 
 Parts extractors still run left to right, so ordering does decide *which*
 rejection a bad request receives: a handler with `Path` before `TypedHeader`
-answers `400` for an unparseable path parameter even when the `Authorization`
+answers `400` for an unparsable path parameter even when the `Authorization`
 header is also missing. Order for readability, and let the tests in
 [Testing](#testing) pin down the rejection each case produces.
 
@@ -623,7 +623,7 @@ impl IntoResponse for AppError {
         let (status, code, message) = self.parts();
 
         // Log the full error, including its source chain, at the boundary; send
-        // the caller only the sanitised message.
+        // the caller only the sanitized message.
         if status.is_server_error() {
             tracing::error!(error = ?self, "request failed");
         } else {
@@ -662,7 +662,7 @@ let user = sqlx::query_as!(User, "SELECT * FROM users WHERE id = $1", id)
 **Do**:
 
 ```rust
-// One variant per failure mode; sources kept, public message sanitised
+// One variant per failure mode; sources kept, public message sanitized
 Self::Database(_) => (StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL",
                       "Internal server error".into()),
 ```
@@ -2212,7 +2212,7 @@ pub async fn require_permission(
     };
 
     // `?` propagates an enforcement failure as 503; only `Ok(false)` is a
-    // genuine authorisation denial.
+    // genuine authorization denial.
     if !check_permission(&state.enforcer, &auth.user_id, &path, action).await? {
         return Err(AppError::Forbidden("Insufficient permissions".into()));
     }
@@ -2281,7 +2281,7 @@ let admin_routes = Router::new()
         &config.internal_api_key,
     )?);
 
-// Real authorisation: validate the presented token against application state.
+// Real authorization: validate the presented token against application state.
 let keys = Arc::clone(&state.jwt_keys);
 let api_routes = Router::new()
     .route("/api/data", get(get_data))
@@ -2374,9 +2374,9 @@ async fn handle_socket(socket: WebSocket, state: AppState, cancel: CancellationT
                     }
                 }
                 Err(RecvError::Lagged(skipped)) => {
-                    // The consumer fell behind. Tell the client to resynchronise
+                    // The consumer fell behind. Tell the client to resynchronize
                     // rather than silently dropping the connection.
-                    tracing::warn!(skipped, "websocket consumer lagged; resynchronising");
+                    tracing::warn!(skipped, "websocket consumer lagged; resynchronizing");
                     let notice = Utf8Bytes::from_static(r#"{"type":"resync"}"#);
                     if sender.send(Message::Text(notice)).await.is_err() {
                         break;
@@ -2929,7 +2929,7 @@ use apalis::prelude::*;
 use apalis_redis::{Config as RedisConfig, RedisStorage};
 use serde::{Deserialize, Serialize};
 
-/// Apalis 0.7 needs no `Job` trait: a task is an ordinary serialisable struct,
+/// Apalis 0.7 needs no `Job` trait: a task is an ordinary serializable struct,
 /// and the queue namespace comes from the storage configuration.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendEmail {
@@ -4440,7 +4440,7 @@ the API does not apply.
 
 The rule and its enforcement **MUST** therefore live in one place. Projects
 **MUST** parse the password into a validated type at the edge, and **MUST NOT**
-carry an unvalidated `String` past the deserialiser:
+carry an unvalidated `String` past the deserializer:
 
 ```rust
 // src/shared/password.rs
@@ -4561,7 +4561,7 @@ pub struct CreateUserRequest {
 **Don't**:
 
 ```rust
-// The annotation is documentation. `"short"` deserialises and is persisted.
+// The annotation is documentation. `"short"` deserializes and is persisted.
 pub struct CreateUserRequest {
     #[schema(min_length = 15)]
     pub password: String,
@@ -4592,7 +4592,7 @@ fn five_character_password_is_rejected() {
 
     let result: Result<CreateUserRequest, _> = serde_json::from_str(body);
 
-    assert!(result.is_err(), "five-character password still deserialised");
+    assert!(result.is_err(), "five-character password still deserialized");
 }
 
 #[test]

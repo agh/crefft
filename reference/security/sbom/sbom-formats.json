@@ -1,4 +1,19 @@
 {
+  "license": "Apache-2.0 AND Community-Spec-1.0 AND CC-BY-3.0",
+  "license_url": "THIRD_PARTY_NOTICES.md#sbom-formats",
+  "restrictions": [],
+  "license_parts": {
+    "cyclonedx": {
+      "license": "Apache-2.0",
+      "license_url": "reference/security/LICENSES/Apache-2.0.txt",
+      "restrictions": []
+    },
+    "spdx": {
+      "license": "Community-Spec-1.0 AND CC-BY-3.0",
+      "license_url": "THIRD_PARTY_NOTICES.md#sbom-formats",
+      "restrictions": []
+    }
+  },
   "name": "Software Bill of Materials (SBOM) Formats",
   "version": "2025.01",
   "updated": "2025-01-02",
@@ -26,6 +41,8 @@
       "released": "2024-11-13",
       "organization": "OWASP",
       "license": "Apache-2.0",
+      "license_url": "reference/security/LICENSES/Apache-2.0.txt",
+      "restrictions": [],
       "specification": "https://cyclonedx.org/specification/overview/",
       "description": "Lightweight SBOM standard designed for application security",
       "features": [
@@ -115,7 +132,9 @@
       "version": "3.0.1",
       "released": "2024-10-10",
       "organization": "Linux Foundation",
-      "license": "CC0-1.0",
+      "license": "Community-Spec-1.0 AND CC-BY-3.0",
+      "license_url": "THIRD_PARTY_NOTICES.md#sbom-formats",
+      "restrictions": [],
       "iso_standard": "ISO/IEC 5962:2021",
       "specification": "https://spdx.github.io/spdx-spec/v3.0.1/",
       "description": "ISO standard for communicating software bill of materials",

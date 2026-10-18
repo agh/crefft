@@ -12,11 +12,11 @@ Extends [Google HTML/CSS Style Guide](../../reference/google/htmlcss.html).
 
 | Task | Tool | Command |
 | ---- | ---- | ------- |
-| Lint | Stylelint[^1] | `npx stylelint "**/*.css"` |
-| Format | Prettier[^2] | `npx prettier --write "**/*.css"` |
+| Lint | Stylelint[^1] | `npx stylelint@16.0.0 "**/*.css"` |
+| Format | Prettier[^2] | `npx prettier@4.0.0-alpha.8 --write "**/*.css"` |
 | Type check | - | - |
 | Semantic | - | - |
-| Dead code | PurgeCSS[^3] (optional) | `npx purgecss --config purgecss.config.js` |
+| Dead code | PurgeCSS[^3] (optional) | `npx purgecss@8.0.0 --config purgecss.config.js` |
 | Coverage | - | - |
 | Complexity | - | - |
 | Fuzz | - | - |
@@ -80,7 +80,7 @@ project root:
 Build the stylesheet:
 
 ```bash
-npx @tailwindcss/cli -i src/input.css -o dist/output.css --minify
+npx @tailwindcss/cli@4.3.3 -i src/input.css -o dist/output.css --minify
 ```
 
 For Vite[^13] projects you **SHOULD** use the Vite plugin instead of the CLI,
@@ -101,14 +101,14 @@ export default defineConfig({
 ```
 
 You **MUST NOT** use the Tailwind 3 setup. Installing `tailwindcss` alone
-creates no `node_modules/.bin/tailwindcss`, so `npx tailwindcss init` fails
+creates no `node_modules/.bin/tailwindcss`, so `npx tailwindcss@4.3.3 init` fails
 with `could not determine executable to run`, and the CLI that does exist
 rejects the subcommand with `Invalid command: init`:
 
 ```bash
 # Don't: installs no binary, and `init` was removed in Tailwind 4
-npm install -D tailwindcss
-npx tailwindcss init
+npm install -D tailwindcss@4.3.3
+npx tailwindcss@4.3.3 init
 ```
 
 See the [Tailwind CSS guide](../frameworks/tailwind.md) for theme tokens,
@@ -124,7 +124,7 @@ For projects requiring traditional CSS or component libraries, consider:
 You **MUST** use Stylelint[^1] for CSS linting.
 
 ```bash
-npm install --save-dev stylelint stylelint-config-standard
+npm install --save-dev stylelint@16.0.0 stylelint-config-standard@36.0.0
 ```
 
 ### Why Stylelint
@@ -159,7 +159,7 @@ Stylelint[^1] is the industry-standard CSS linter because:
 ### For Tailwind
 
 ```bash
-npm install --save-dev stylelint-config-tailwindcss
+npm install --save-dev stylelint-config-tailwindcss@1.0.1
 ```
 
 ```json
@@ -299,7 +299,7 @@ You **MUST** run PurgeCSS in report mode before you let it write any files.
 `--rejected` lists what it would remove and writes nothing:
 
 ```bash
-npx purgecss --css src/app.css --content 'src/**/*.html' 'src/**/*.js' --rejected
+npx purgecss@8.0.0 --css src/app.css --content 'src/**/*.html' 'src/**/*.js' --rejected
 ```
 
 ```json
@@ -447,14 +447,14 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
-      - run: npx stylelint "**/*.css"
-      - run: npx prettier --check "**/*.css"
+      - run: npx stylelint@16.0.0 "**/*.css"
+      - run: npx prettier@4.0.0-alpha.8 --check "**/*.css"
 ```
 
 ## References

@@ -121,7 +121,7 @@ class ManifestTests(unittest.TestCase):
                 with self.subTest(path=entry["path"]):
                     self.assertIn("upstream_sha256", entry)
 
-    def test_every_entry_records_a_licence(self):
+    def test_every_entry_records_a_license(self):
         for entry in self.entries:
             with self.subTest(path=entry["path"]):
                 self.assertTrue(entry.get("license"))

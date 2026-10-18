@@ -3,6 +3,8 @@
   "version": "2025",
   "source": "https://genai.owasp.org/",
   "license": "CC-BY-SA-4.0",
+  "license_url": "reference/security/LICENSES/CC-BY-SA-4.0.txt",
+  "restrictions": ["share-alike"],
   "description": "Security risks for LLM-integrated applications",
   "risks": [
     {

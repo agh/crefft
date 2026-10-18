@@ -5,7 +5,11 @@ learning.
 
 ## Overview
 
-Every agent action **MUST** be logged:
+Every agent action **MUST** be logged as metadata, never as copied input,
+output, error text, or decision prose.
+
+**Why**: audit destinations are additional disclosure boundaries; a useful
+execution trail does not require commands, query text, or returned content.
 
 ```text
 +---------------------------------------------------------------------------+
@@ -17,9 +21,9 @@ Every agent action **MUST** be logged:
 |   - Tool invocations (read, write, bash, etc.)                            |
 |   - Skill usage (postgres queries, github API calls)                      |
 |   - External calls (web search, web fetch)                                |
-|   - Decisions made (why agent chose action X)                             |
-|   - Outcomes (did action succeed, what was result)                        |
-|   - Errors (what failed, why)                                             |
+|   - Decision identifiers and selected action                              |
+|   - Outcome status and duration                                          |
+|   - Failure status, without exception or error text                        |
 |                                                                           |
 |   WHY LOG                                                                 |
 |   -------                                                                 |
@@ -35,6 +39,14 @@ Every agent action **MUST** be logged:
 ## Log Schema
 
 ### Standard Log Entry
+
+This is a metadata schema for multiple producers, not the hook's wire format.
+The hook emits only the exact allowlist in [Data Minimization](#data-minimization).
+Other producers **MUST** define their own metadata allowlists before adding
+fields; generic JSON storage is not permission to copy arbitrary content.
+
+**Why**: tool parameters and summarized results can contain the same secrets
+as the original content.
 
 ```yaml
 log_entry:
@@ -56,29 +68,24 @@ log_entry:
     # For tool invocations
     tool:
       name: "Bash" | "Read" | "Write" | "Edit" | "Grep" | etc.
-      parameters:
-        # Tool-specific parameters
+      tool_use_id: uuid
 
     # For skill usage
     skill:
       name: "postgres" | "github" | "discord" | etc.
       operation: string
-      parameters:
-        # Skill-specific parameters
+      request_id: uuid
 
     # For external calls
     external:
       type: "web_search" | "web_fetch" | "api_call"
-      target: url | query
-      parameters:
-        # Call-specific parameters
+      request_id: uuid
 
     # For decisions
     decision:
-      question: string
+      policy_id: string
       options_considered:
         - option: string
-          reasoning: string
           score: float
       chosen: string
       confidence: float
@@ -87,10 +94,9 @@ log_entry:
   outcome:
     status: "success" | "failure" | "partial"
     result:
-      # Summarized result (not full content for privacy)
+      # Explicitly allowlisted numeric counts only, never content or excerpts
     error:
-      type: string
-      message: string
+      type: string  # Fixed classification code, never exception text
 
   # Resource usage
   resources:
@@ -103,8 +109,7 @@ log_entry:
   security:
     permission_level: "readonly" | "read-write" | "admin"
     resources_accessed:
-      - type: string
-        identifier: string
+      - type: string  # Resource class only; no paths, URLs, or query text
     sensitive_data_accessed: boolean
 ```
 
@@ -126,18 +131,14 @@ log_entry:
     "name": "Bash",
     "tool": {
       "name": "Bash",
-      "parameters": {
-        "command": "git log --oneline -10",
-        "description": "List recent commits"
-      }
+      "tool_use_id": "tool-123"
     }
   },
   "outcome": {
     "status": "success",
     "result": {
       "exit_code": 0,
-      "output_lines": 10,
-      "output_preview": "abc123 feat: add user profile..."
+      "output_lines": 10
     }
   },
   "resources": {
@@ -146,7 +147,7 @@ log_entry:
   "security": {
     "permission_level": "readonly",
     "resources_accessed": [
-      {"type": "git_repository", "identifier": "/path/to/repo"}
+      {"type": "git_repository"}
     ]
   }
 }
@@ -169,11 +170,7 @@ log_entry:
     "skill": {
       "name": "postgres",
       "operation": "query",
-      "parameters": {
-        "query_hash": "sha256:abc123...",
-        "query_preview": "SELECT version, deployed_at FROM deployments...",
-        "tables_accessed": ["deployments"]
-      }
+      "request_id": "request-123"
     }
   },
   "outcome": {
@@ -189,7 +186,7 @@ log_entry:
   "security": {
     "permission_level": "readonly",
     "resources_accessed": [
-      {"type": "database_table", "identifier": "public.deployments"}
+      {"type": "database_table"}
     ],
     "sensitive_data_accessed": false
   }
@@ -212,17 +209,13 @@ log_entry:
     "name": "web_search",
     "external": {
       "type": "web_search",
-      "target": "kubernetes pod restart loop causes",
-      "parameters": {
-        "result_count": 10
-      }
+      "request_id": "request-456"
     }
   },
   "outcome": {
     "status": "success",
     "result": {
-      "results_returned": 10,
-      "domains": ["kubernetes.io", "stackoverflow.com", "github.com"]
+      "results_returned": 10
     }
   },
   "resources": {
@@ -250,21 +243,18 @@ log_entry:
     "type": "decision",
     "name": "rollback_recommendation",
     "decision": {
-      "question": "Should we rollback deployment v1.2.3?",
+      "policy_id": "rollback-readiness",
       "options_considered": [
         {
           "option": "rollback",
-          "reasoning": "Error rate 5x baseline, affecting 15% of users",
           "score": 0.85
         },
         {
           "option": "hotfix",
-          "reasoning": "Root cause identified, fix is simple",
           "score": 0.60
         },
         {
           "option": "monitor",
-          "reasoning": "Errors may be transient",
           "score": 0.20
         }
       ],
@@ -273,11 +263,7 @@ log_entry:
     }
   },
   "outcome": {
-    "status": "success",
-    "result": {
-      "recommendation": "rollback",
-      "awaiting_approval": true
-    }
+    "status": "success"
   }
 }
 ```
@@ -370,7 +356,8 @@ Agents **MUST NOT** apply audit DDL straight to production. Apply it to a
 disposable database first, on the PostgreSQL version you run:
 
 ```bash
-docker run -d --name audit-schema-test -e POSTGRES_PASSWORD=test postgres:18
+docker run -d --name audit-schema-test -e POSTGRES_PASSWORD=test \
+  postgres@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
 docker exec -i audit-schema-test psql -U postgres -v ON_ERROR_STOP=1 \
   < audit-schema.sql
 docker rm -f audit-schema-test
@@ -508,51 +495,27 @@ seconds, not milliseconds. Setting `args` selects exec form, which substitutes
 
 The handler reads one JSON object on stdin. `PostToolUse` supplies
 `tool_response`; `PostToolUseFailure` supplies `error` instead, so the outcome
-**MUST** be derived from `hook_event_name` rather than hard-coded:
+**MUST** be derived from `hook_event_name` rather than hard-coded. Install the
+executable [metadata-only hook](audit-hook.sh) from the repository root:
 
 ```bash
-#!/usr/bin/env bash
-# agent-audit-log - PostToolUse / PostToolUseFailure hook
-set -euo pipefail
-
-EVENT=$(cat)
-
-case "$(jq -r '.hook_event_name' <<<"$EVENT")" in
-  PostToolUse)        STATUS=success ;;
-  PostToolUseFailure) STATUS=failure ;;
-  *)                  exit 0 ;;
-esac
-
-# Fields absent from an event serialise as null, not as missing keys
-jq -c --arg status "$STATUS" '{
-  timestamp: (now | todate),
-  agent: {
-    session_id: .session_id,
-    cwd: .cwd,
-    permission_mode: .permission_mode
-  },
-  action: {
-    type: "tool",
-    name: .tool_name,
-    tool_use_id: .tool_use_id,
-    input: .tool_input
-  },
-  outcome: {
-    status: $status,
-    duration_ms: .duration_ms,
-    result: .tool_response,
-    error: .error
-  }
-}' <<<"$EVENT" |
-  curl -sS --fail-with-body -X POST "${AUDIT_LOG_URL}/log" \
-    -H "Content-Type: application/json" \
-    --data-binary @-
+mkdir -p .claude/hooks
+install -m 755 configs/claude/infrastructure/audit-hook.sh .claude/hooks/agent-audit-log
 ```
 
-A failed POST leaves the script with a non-zero status, which Claude Code
-reports as a non-blocking hook error in the transcript instead of silently
-dropping the audit record. Only exit code 2 blocks, and a `PostToolUse` hook
-**MUST NOT** exit 2 for a logging failure: the tool has already run.
+The hook requires Bash, `jq`, `curl`, and `AUDIT_LOG_URL` in its environment.
+It **MUST** send only the allowlisted metadata described in
+[Data Minimization](#data-minimization), never tool input, output, or errors.
+
+**Why**: commands, query results, and error messages can all carry credentials.
+Redacting known patterns or truncating text cannot prevent content disclosure.
+
+A failed POST exits 1, which Claude Code reports as a non-blocking hook error
+instead of silently dropping the record. Invalid events also exit 1 with a
+fixed diagnostic that contains no event content. All delivery failures,
+including `curl` exit 2, are mapped to 1: only exit code 2 blocks, and a
+`PostToolUse` hook **MUST NOT** block for a logging failure after the tool ran.
+The request has a four-second deadline, and response bodies are discarded.
 
 ### Validating Hook Configuration in CI
 
@@ -594,22 +557,32 @@ fi
 
 ### Data Minimization
 
-```yaml
-audit:
-  # Don't log full content, just metadata
-  content_logging:
-    file_contents: false  # Log file path, not contents
-    query_results: false  # Log row count, not data
-    bash_output: truncate # First 500 chars only
+The [hook](audit-hook.sh) constructs a new JSON object with exactly these fields;
+this is its implemented policy, not a separate YAML setting:
 
-  # Redact sensitive patterns
-  redaction:
-    patterns:
-      - "password[=:]\\S+"
-      - "api[_-]?key[=:]\\S+"
-      - "secret[=:]\\S+"
-      - "token[=:]\\S+"
-    replacement: "[REDACTED]"
+| Field | Source |
+| ----- | ------ |
+| `timestamp` | Hook-generated UTC timestamp |
+| `hook_event_name` | `PostToolUse` or `PostToolUseFailure` |
+| `agent.session_id` | Session identifier |
+| `action.type` | Constant `tool` |
+| `action.name` | Tool name |
+| `action.tool_use_id` | Tool invocation identifier |
+| `outcome.status` | `success` or `failure`, derived from the event name |
+| `outcome.duration_ms` | Nonnegative numeric duration, or `null` when absent |
+
+Identifiers **MUST** be 1-256 ASCII letters, digits, underscores, periods,
+colons, or hyphens. Unknown events and malformed metadata are rejected before
+any POST. The hook omits working directories, paths, permission modes, input,
+output, error text, and every unrecognized field. It does not truncate,
+redact, hash, or copy content.
+
+**Why**: an allowlist remains safe when event schemas gain new fields; a
+denylist can forward a new secret-bearing field without any code change.
+
+```text
+Do:    record tool name, invocation ID, outcome status, and duration
+Don't: record a command, a result row, an error message, or a content excerpt
 ```
 
 ### Retention Policy
@@ -617,7 +590,7 @@ audit:
 ```yaml
 audit:
   retention:
-    hot: 7d      # Full detail, fast queries
+    hot: 7d      # Complete metadata records, fast queries
     warm: 30d    # Aggregated, slower queries
     cold: 365d   # Archived, compliance only
 

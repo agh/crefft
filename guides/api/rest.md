@@ -1061,7 +1061,7 @@ def get_order_unsafe(order_id, actor):
     return db.orders[order_id]
 
 
-# Do: authorise the object itself, and do not confirm that it exists
+# Do: authorize the object itself, and do not confirm that it exists
 def get_order(order_id, actor):
     order = db.orders.get(order_id)
     if order is None or order.owner_id != actor.id:
@@ -1093,7 +1093,7 @@ def update_user(user_id, body, actor):
     return db.users.update_row(user_id, **body)
 
 
-def serialise_user(user, actor):
+def serialize_user(user, actor):
     fields = set(READABLE_BY_OWNER)
     if actor.is_admin:
         fields |= {"credit_limit"}
@@ -1117,7 +1117,7 @@ ROUTE_PERMISSIONS = {
 }
 
 
-def authorise_route(method, route, actor):
+def authorize_route(method, route, actor):
     required = ROUTE_PERMISSIONS.get((method, route))
     if required is None or required not in granted_permissions(actor):
         raise Forbidden()

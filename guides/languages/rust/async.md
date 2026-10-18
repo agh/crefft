@@ -277,7 +277,7 @@ wall-clock time, and both outcomes are exercised deterministically:
 ```
 
 ```rust
-// BAD: labelled runtime-agnostic, but it names two runtimes and links one.
+// BAD: labeled runtime-agnostic, but it names two runtimes and links one.
 // A caller on async-global-executor or glommio cannot use it, and with no
 // feature enabled it does not build.
 #[cfg(feature = "tokio")]

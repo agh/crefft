@@ -3,7 +3,9 @@
   "version": "1.2",
   "released": "2025-11-24",
   "source": "https://slsa.dev/",
-  "license": "Apache-2.0",
+  "license": "Community-Spec-1.0",
+  "license_url": "reference/security/LICENSES/Community-Specification-1.0.md",
+  "restrictions": [],
   "description": "Framework for supply chain integrity, assessing build and source security",
   "changelog": {
     "v1_2": {

@@ -2546,7 +2546,8 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:18
+        # postgres:18; registry manifest digest.
+        image: postgres@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -2560,8 +2561,8 @@ jobs:
           - 5432:5432
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
       - run: uv sync
       - run: uv run ruff check .
       - run: uv run mypy .
@@ -2864,7 +2865,7 @@ def test_every_configured_language_has_a_catalogue():
                     f"missing catalogue entry for {language_name}"
                 )
 
-# Pluralisation, interpolation and lazy translation
+# Pluralization, interpolation and lazy translation
 def test_plural_forms():
     from django.utils.translation import ngettext
 

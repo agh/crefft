@@ -4,12 +4,11 @@
 
 **Version: 2026.10.0** | [Changelog](CHANGELOG.md) | [AGENTS.md](AGENTS.md)
 
-*crefft* (Welsh: craft, pronounced "kreft") is the canonical style guide for
+*crefft* (Welsh: craft) is the canonical style guide for
 all projects. Vendored from
 [Google Style Guides](https://github.com/google/styleguide) with
-project-specific tooling and conventions. Each tool was selected as the
-best available option for its ecosystem as of September 2026, reviewed
-quarterly.
+project-specific tooling and conventions. The guides record crefft's tool
+choices; read each pin alongside its review evidence.
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -185,14 +184,14 @@ Every language guide **MUST** include:
 
 Ruff is a Python linter and formatter written in Rust, 10-100x faster than
 alternatives. It replaces Flake8, isort, Black, and many other tools with a
-single binary. Combined with uv for package management, this is the modern
-Python toolchain.
+single binary. The Python guide uses uv for package management and Ruff for
+linting and formatting.
 
 ### Ruby: StandardRB
 
-StandardRB provides zero-config linting built on RuboCop. It eliminates
-bikeshedding debates and provides sensible defaults. For teams needing custom
-rules, use RuboCop directly with StandardRB's config as a base.
+StandardRB provides zero-config linting built on RuboCop. The Ruby guide uses
+StandardRB's shared style. For teams needing custom rules, use RuboCop directly
+with StandardRB's config as a base.
 
 ### Go: golangci-lint
 
@@ -203,8 +202,8 @@ de facto standard used by Kubernetes, Prometheus, and Terraform.
 ### Rust: Clippy + rustfmt
 
 Clippy is the official Rust linter with 750+ lints. rustfmt is the official
-formatter. Both are included with the Rust toolchain. No alternatives come
-close.
+formatter. Both are included with the Rust toolchain. The Rust guide requires
+Clippy and rustfmt.
 
 ### C#/.NET: Roslynator + dotnet format
 
@@ -241,6 +240,89 @@ Ready-to-copy configuration files:
 | Pre-commit | [configs/pre-commit/.pre-commit-config.yaml](configs/pre-commit/.pre-commit-config.yaml) | Git hooks |
 | Prettier | [configs/prettier/.prettierrc](configs/prettier/.prettierrc) | Code formatting |
 | **crefft Sync** | [.github/workflows/sync-crefft.yml](configs/github/workflows/sync-crefft.yml) | Auto-sync configs to projects |
+
+---
+
+## Checking executable pins
+
+Copyable tool installs **MUST** name an exact version. Runnable containers
+**MUST** use complete SHA-256 digests or exact release tags with a registry-verification
+note, never a major-version alias, `:latest`, or an implicit latest tag. Every
+`uses:` reference **MUST** name a full 40-character commit SHA with a trailing
+version comment, including reusable workflows. New pins **MUST** be verified
+against the upstream tag or container registry. Shared tool and action pins
+**MUST** be registered in
+[`configs/tool-versions.json`](configs/tool-versions.json). Existing
+[`pre-commit pins`](configs/pre-commit/.pre-commit-config.yaml) take precedence
+for overlapping tools.
+
+**Why**: A floating install can change the copied command's behavior without
+any change to the guide or pipeline.
+
+`python3 scripts/validate_versions.py` checks these rules during `make check`
+and CI, without network requests. It scans `guides/`, `agents/`, `commands/`,
+and `configs/`: `bash`, `sh`, `shell`, `console`, and `zsh` fences; Dockerfile
+instructions; YAML `run:` steps, `image:` values, and `uses:` actions; and
+inline spans beginning with a package-manager command. Native shell,
+Dockerfile, and YAML configuration files are checked too. All `uses:` references
+in `.github/workflows/` are checked, with no exceptions. YAML examples are
+checked even when their fence has a generic syntax-check skip marker.
+
+Action pins **MUST** be resolved with the exact upstream tag, not copied from
+memory. Annotated tags **MUST** use the peeled commit (`^{}`), not the tag
+object. Image digests **MUST** come from the registry manifest.
+
+**Why**: A tag object's SHA is not the commit GitHub Actions runs. Resolving both
+forms also detects a tag that has moved since an earlier review.
+
+```bash
+git ls-remote https://github.com/actions/checkout \
+  refs/tags/v7.0.1 'refs/tags/v7.0.1^{}'
+docker buildx imagetools inspect postgres:16
+```
+
+```text
+# Don't: a registry alias or missing version resolves again on each launch.
+npx example-tool@latest
+pip install example-tool
+
+# Do: name the exact release.
+npx example-tool@1.2.3
+pip install example-tool==1.2.3
+```
+
+Prose warnings, comments, and nonexecutable fences are not installs. Local
+builds, dependency-manifest installs such as `npm install` without package
+arguments, and `pip install -r requirements.txt` are left to the project's
+lockfile policy. Locally built application images are not registry releases;
+their examples identify the exact local tag produced by the preceding build.
+Exact release image tags remain allowed; this check does not
+replace the [Docker guide's digest-pinning rule][image-pins].
+
+[image-pins]: guides/infrastructure/docker.md#image-digest-pinning
+
+A negative example that must demonstrate floating behavior **MAY** put
+`# crefft: allow-floating -- reason` immediately before the offending command
+or YAML image value, inside the same fence or configuration file.
+The nonempty reason **MUST** explain why floating is the point of that example.
+The marker exempts only the next logical instruction, including its shell
+continuations, not a fence, workflow, file, or subsequent command. Every
+exemption is listed in text and JSON output.
+
+**Why**: Teaching the failure requires keeping a few unsafe examples, but an
+exception must not hide a later install or silently disable the gate.
+
+Nonexecuting YAML illustrations **MAY** use
+`# crefft: illustrative -- reason` immediately before one `uses:` or `image:`
+reference in a Markdown fence. The nonempty reason **MUST** explain why the
+reference is deliberately invalid or unpublished. It exempts that reference
+only, not another step, fence, or file, and cannot exempt a native workflow or
+configuration file. `allow-floating` cannot exempt an action.
+
+**Why**: The coverage and Rust pinning anti-patterns need moving refs, the SLSA
+anti-patterns need nonexistent action refs, and the release-manager interface and Docker
+application templates name unpublished components. These are not executable
+recommendations; their individual markers explain each exception in checker output.
 
 ---
 
@@ -290,10 +372,177 @@ records the upstream, version, and license of every source.
 
 ---
 
+## Contributing and support
+
+Contribute by opening an [issue form](https://github.com/agh/crefft/issues/new/choose):
+**Bug in a guide** for incorrect content, configuration, or provenance;
+**Outdated version** for stale pins; and **New guide proposal** for missing
+coverage. Search existing issues first, identify the latest crefft release
+and affected file and section, and include reproduction steps, expected and
+actual behavior, and primary-source evidence. Include the date checked for
+version claims.
+
+crefft does not accept external pull requests. Pull requests from anyone
+other than the maintainer are closed with a pointer to the issue forms;
+the maintainer makes the changes. Dependabot pull requests continue.
+
+**Why**: issues let the maintainer verify the evidence and scope before
+implementing a consistent change across the guides.
+
+The [house style and checks](CONTRIBUTING.md) still bind the maintainer's
+changes; `make check` **MUST** pass before every commit.
+
+**Why**: restricting contribution channels does not lower release standards.
+
+Support is best effort, for the latest release only, with no service levels,
+promised response times, or guaranteed fixes. Security reports **MUST** use
+[GitHub's private vulnerability reporting](https://github.com/agh/crefft/security/advisories/new),
+not public issues. See [SECURITY.md](SECURITY.md) for the policy, including
+reports about other projects.
+
+**Why**: crefft does not provide a support service, and private reports protect
+readers while a security fix is prepared.
+
+## Network access
+
+crefft's own tooling has no telemetry and sends nothing unasked. Reading the
+guides and running `scripts/sync-claude-config.sh` do not contact the network.
+Running the following commands, or enabling the checked-in workflows and
+their schedules, requests only these network operations:
+
+- `npm ci` contacts `registry.npmjs.org` for locked packages and npm's
+  dependency audit. `make check` installs dependencies only when needed.
+- The Makefile and documentation CI download pinned Gitleaks and typos
+  binaries from `github.com`, following GitHub's asset redirects to
+  `release-assets.githubusercontent.com` or `objects.githubusercontent.com`.
+- Workflow checkout, action downloads, runtime setup, and cache access use
+  `github.com`, `api.github.com`, `codeload.github.com`,
+  `raw.githubusercontent.com`, and GitHub's release asset hosts.
+  Runtime download fallbacks use `nodejs.org`, `go.dev`, `storage.googleapis.com`,
+  and `dl.google.com`. GitHub manages the runner's own
+  [service endpoints][runner-network], including `*.actions.githubusercontent.com`
+  and `*.blob.core.windows.net`.
+- Workflow Python package installs contact `pypi.org` and
+  `files.pythonhosted.org`. Config validation downloads collections from
+  `galaxy.ansible.com`; the exercised Ruby pre-commit hook uses local tools
+  and does not install gems.
+- `python3 scripts/check_vendored.py --refresh` explicitly downloads the
+  upstream URLs in `reference/UPSTREAM.json` from `raw.githubusercontent.com`
+  and queries commit metadata at `api.github.com`. Normal verification is offline.
+- The scheduled security-reference workflow queries `api.github.com` and
+  `cwe-api.mitre.org`. It creates or updates a GitHub tracking issue through
+  `api.github.com`; the external-pull-request workflow uses that same API
+  to comment on and close external pull requests.
+- `make links-external` and the scheduled external-link workflow request the
+  HTTP(S) links in tracked first-party Markdown, subject to the exclusions
+  in `.markdown-link-check.json`, and follow the sites' redirects. The complete
+  set of configured destination hosts is below; redirect destinations depend
+  on each site's response.
+
+No other network requests are configured by crefft. The ordinary lint,
+internal-link, version, vendored-integrity, and unit-test checks are offline
+once their tools are installed. Syntax checks do not execute the examples.
+
+**Why**: network access is limited to the operation requested, rather than
+background reporting or usage collection.
+
+[runner-network]: https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+
+<details>
+<summary>External-link destination hosts</summary>
+
+This inventory follows the actual link checker's extraction, disable comments,
+and ignore patterns. It excludes `reference/`, code examples, and ignored
+placeholder URLs. Changes to checked links **MUST** update this list.
+
+**Why**: readers can inspect the network destinations without running a link check.
+
+```text
+ably.com about.codecov.io actix.rs agents.md ai.google.dev aider.chat
+aiocache.readthedocs.io aistudio.google.com angular.io ansible-lint.readthedocs.io
+ansible.readthedocs.io api.webstatus.dev arc42.org argo-rollouts.readthedocs.io
+argon2-cffi.readthedocs.io arq-docs.helpmanual.io arxiv.org astro.build atlas.mitre.org
+attack.mitre.org authjs.dev authlib.org aws.amazon.com bandit.readthedocs.io
+benchmarkdotnet.org biomejs.dev blog.bytescrum.com blog.gitguardian.com blog.rust-lang.org
+brakemanscanner.org bullmq.io bulma.io bundler.io c4model.com cachetools.readthedocs.io
+calver.org candrews.integralblue.com caniuse.com capec.mitre.org casbin.org
+channels.readthedocs.io cheatsheetseries.owasp.org clang.llvm.org cloud.google.com
+cloudnativenow.com code.claude.com code.visualstudio.com commonmark.org confidentialcomputing.io
+cookbook.openai.com coverage.readthedocs.io crates.io creativecommons.org cryptography.io
+csrc.nist.gov cucumber.io cursor.com cwe.mitre.org cyclonedx.org d3fend.mitre.org dannorth.net
+datatracker.ietf.org debian-handbook.info detectionengineering.substack.com dev.mysql.com
+develop.sentry.dev developer.mozilla.org developers.openai.com devguide.python.org dgraph.io
+discord.com discord.gg django-celery-beat.readthedocs.io django-guardian.readthedocs.io
+django-ratelimit.readthedocs.io django-rest-framework-simplejwt.readthedocs.io doc.rust-lang.org
+docs.allauth.org docs.ansible.com docs.anthropic.com docs.astral.sh docs.authlib.org
+docs.celeryq.dev docs.cloud.google.com docs.cypress.io docs.djangoproject.com docs.docker.com
+docs.fluentvalidation.net docs.getunleash.io docs.github.com docs.nunit.org docs.pydantic.dev
+docs.python.org docs.renovatebot.com docs.rs docs.ruby-lang.org docs.semgrep.dev docs.stripe.com
+docs.vllm.ai dora.dev dotnetcli.blob.core.windows.net drafts.csswg.org echo.labstack.com
+en.wikipedia.org eslint.org eur-lex.europa.eu excalidraw.com faker.readthedocs.io fakerjs.dev
+fast-check.dev fastapi.tiangolo.com flagsmith.com flask-caching.readthedocs.io
+flask-cors.readthedocs.io flask-featureflags.readthedocs.io flask-limiter.readthedocs.io
+flask-login.readthedocs.io flask-migrate.readthedocs.io flask-socketio.readthedocs.io
+flask-sqlalchemy.palletsprojects.com flask-wtf.readthedocs.io flask.palletsprojects.com
+fluentassertions.com gatling.io gdpr.eu geminicli.com genai.owasp.org getbem.com getbootstrap.com
+gin-gonic.com git-scm.com github.com github.github.com gitignore.io gitlab.com go.dev gofiber.io
+golangci-lint.run google.github.io grantjenks.com guides.rubyonrails.org hanamirb.org
+haveibeenpwned.com help.openai.com hotwired.dev huey.readthedocs.io huggingface.co hyper.rs
+hypothesis.readthedocs.io hypothesis.works ico.org.uk ics.uci.edu infosec.mozilla.org jestjs.io
+jinja.palletsprojects.com jotai.org jqwik.net k6.io keepachangelog.com kubernetes.io
+launchdarkly.com learn.microsoft.com lesscss.org lightningcss.dev limits.readthedocs.io
+llms-txt.io llvm.org locust.io martinfowler.com mermaid.js.org mermaid.live
+mitogen.networkgenomics.com mitre-attack.github.io modelcontextprotocol.io molecule.readthedocs.io
+mozilla.github.io mswjs.io mypy.readthedocs.io nestjs.com netflixtechblog.com
+newsletter.pragmaticengineer.com next-intl.dev nexte.st nextjs.org nvlpubs.nist.gov ollama.com
+openai.com openfontlicense.org opensource.org opentelemetry.io owasp.org pages.nist.gov
+peps.python.org pkg.go.dev planetscale.com platform.claude.com platform.openai.com playwright.dev
+pnpm.io postcss.org posthog.com pre-commit.com prettier.io principlesofchaos.org prometheus.io
+puma.io purgecss.com pusher.com pyjwt.readthedocs.io pypi.org pytest-bdd.readthedocs.io
+pytest-benchmark.readthedocs.io pytest-cov.readthedocs.io pytest-django.readthedocs.io
+pytest-xdist.readthedocs.io python-rq.org pythonhosted.org pytorch.org quart.palletsprojects.com
+radon.readthedocs.io rails.rubystyle.guide raw.githubusercontent.com react.dev redis.io
+redis.readthedocs.io redux-toolkit.js.org refactoring.guru registry.npmjs.org relay.dev
+reproducible-builds.org restfulapi.net rocket.rs rom-rb.org rspec.info rubocop.org
+ruby-style-guide.shopify.dev rubystyle.guide rust-lang.github.io rustsec.org rustup.rs sass-lang.com
+securityscorecards.dev semgrep.dev semver.org serilog.net sidekiq.org simonwillison.net
+sinatrarb.com
+slab.com slsa.dev snyk.io socket.io sorbet.org spdx.dev spec.graphql.org spec.openapis.org
+specflow.org squawkhq.com sre.google stackoverflow.com static.rust-lang.org staticcheck.io
+statsig.com stimulus.hotwired.dev strawberry.rocks styled-components.com stylelint.io systemd.io
+tailwindcss.com testcontainers.com testinfra.readthedocs.io testing-library.com testmon.org
+thoughtbot.com tokio.rs trigger.dev trustee.ietf.org turbo.build turbo.hotwired.dev typeorm.io
+ubuntu.com unicode-org.github.io vercel.com viewcomponent.org vitejs.dev vitest.dev
+waffle.readthedocs.io wasm-bindgen.github.io wave.webaim.org webaim.org websockets.readthedocs.io
+webstatus.dev wiki.archlinux.org workingbackwards.com www.aicpa.org www.anthropic.com www.apache.org
+www.appsignal.com www.artillery.io www.better-auth.com www.cisa.gov www.cisecurity.org
+www.contributor-covenant.org www.conventionalcommits.org www.cypress.io www.debian.org www.deque.com
+www.djangoproject.com www.docker.com www.drawio.com www.exampler.com www.first.org www.flagsmith.com
+www.flippercloud.io www.getdbt.com www.getunleash.io www.hhs.gov www.home-assistant.io
+www.i18next.com
+www.industrialempathy.com www.inngest.com www.llama.com www.nist.gov www.nuget.org www.nvaccess.org
+www.openssh.com www.pcisecuritystandards.org www.pentest-standard.org www.postgresql.org
+www.promptingguide.ai www.python.org www.rfc-editor.org www.sans.org www.selenium.dev
+www.shellcheck.net www.simonholywell.com www.skylight.io www.softwaretestinghelp.com
+www.sqlfluff.com
+www.sqlite.org www.sqlshack.com www.sqlstyle.guide www.typescriptlang.org www.unicode.org
+www.uvicorn.org www.w3.org xunit.net xunitpatterns.com yamllint.readthedocs.io zod.dev
+zustand.docs.pmnd.rs
+```
+
+</details>
+
 ## License
 
 crefft's own guides, configuration files, and agent definitions are licensed
-under the [MIT Licence](LICENSE), Copyright (c) 2026 Alex Howells.
+under the [MIT License](LICENSE), Copyright (c) 2026 Alex Howells.
+
+The name crefft, its marks, and its logos are reserved and are not licensed
+under MIT. The MIT grant covers the material above, not permission to use
+crefft's branding.
+
+**Why**: permission to reuse the material does not imply endorsement or a
+right to present a derivative as crefft.
 
 Everything under `reference/` is third-party material and is **NOT** covered
 by that grant. Each vendored source keeps its own license:

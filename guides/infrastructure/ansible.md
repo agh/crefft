@@ -13,8 +13,8 @@ document are to be interpreted as described in
 
 | Task | Tool | Command |
 | ---- | ---- | ------- |
-| Install | pipx | `pipx install --include-deps ansible-core` |
-| Install dev tools | pipx | `pipx install ansible-dev-tools` |
+| Install | pipx | `pipx install --include-deps ansible-core==2.21.5` |
+| Install dev tools | pipx | `pipx install ansible-dev-tools==26.10.0` |
 | Lint | ansible-lint[^1] | `ansible-lint` |
 | YAML lint | yamllint[^2] | `yamllint .` |
 | Test roles | Molecule[^3] | `molecule test` |
@@ -55,10 +55,10 @@ maintainability. Target nodes running Python 3.7 are no longer supported.
 python3 --version  # Should be 3.12+
 
 # Install Ansible Core with pipx (recommended)
-pipx install --include-deps ansible-core
+pipx install --include-deps ansible-core==2.21.5
 
 # Or install ansible-dev-tools (includes ansible-lint, molecule, etc.)
-pipx install ansible-dev-tools
+pipx install ansible-dev-tools==26.10.0
 ```
 
 ## Project Structure
@@ -163,7 +163,7 @@ promotes proven practices and prevents common pitfalls.
 
 ```bash
 # Install (comes with ansible-dev-tools)
-pipx install ansible-lint
+pipx install ansible-lint==26.8.0
 
 # Run on entire project
 ansible-lint
@@ -242,7 +242,7 @@ All YAML files **MUST** pass yamllint[^2] checks for consistency.
 
 ```bash
 # Install
-pipx install yamllint
+pipx install yamllint==1.35.1
 
 # Lint all YAML files
 yamllint .
@@ -307,7 +307,7 @@ repos:
 
 ```bash
 # Install pre-commit
-pipx install pre-commit
+pipx install pre-commit==4.6.2
 
 # Install hooks
 pre-commit install
@@ -1461,10 +1461,10 @@ Roles **SHOULD** be tested with Molecule[^3]:
 
 ```bash
 # Install Molecule with Docker driver
-pipx install molecule molecule-plugins[docker]
+pipx install molecule==26.10.0 molecule-plugins[docker]==26.10.12
 
 # Or install as part of ansible-dev-tools
-pipx install ansible-dev-tools
+pipx install ansible-dev-tools==26.10.0
 
 # Initialize molecule in role
 cd roles/nginx
@@ -1494,7 +1494,8 @@ driver:
 
 platforms:
   - name: ubuntu-26-04
-    image: geerlingguy/docker-ubuntu2604-ansible:latest
+    image: "geerlingguy/docker-ubuntu2604-ansible@\
+      sha256:93834d97d0597ac0f4e8a2c499f805f36c0df3c09305ae8d7a08197368e70c2c"
     pre_build_image: true
     privileged: true
     command: /lib/systemd/systemd
@@ -1503,7 +1504,8 @@ platforms:
     cgroupns_mode: host
 
   - name: ubuntu-24-04
-    image: geerlingguy/docker-ubuntu2404-ansible:latest
+    image: "geerlingguy/docker-ubuntu2404-ansible@\
+      sha256:1c09ea777807564be091ae68836ae12e2cb02454505e912e3a19cb3fc181eaac"
     pre_build_image: true
     privileged: true
     command: /lib/systemd/systemd
@@ -1512,13 +1514,15 @@ platforms:
     cgroupns_mode: host
 
   - name: debian-13
-    image: geerlingguy/docker-debian13-ansible:latest
+    image: "geerlingguy/docker-debian13-ansible@\
+      sha256:979c0d5e12b0035fff1c46bd4dfd00d67cd82fa48035194f14f32e01c8c02372"
     pre_build_image: true
     privileged: true
     command: /lib/systemd/systemd
 
   - name: debian-12
-    image: geerlingguy/docker-debian12-ansible:latest
+    image: "geerlingguy/docker-debian12-ansible@\
+      sha256:541b6cff5ec8c9fb0a926853400db0abab8b73c2912a2f4a4ef06137416605f1"
     pre_build_image: true
     privileged: true
     command: /lib/systemd/systemd
@@ -1756,7 +1760,7 @@ For maximum performance, **MAY** use Mitogen[^15]:
 
 ```bash
 # Install
-pip install mitogen
+pip install mitogen==0.3.54
 ```
 
 ```ini
@@ -1839,16 +1843,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
 
       - name: Install ansible-lint
         run: |
-          pip install ansible-dev-tools
+          pip install ansible-dev-tools==26.10.0
 
       - name: Run ansible-lint
         run: |
@@ -1867,16 +1871,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
 
       - name: Install Molecule and dependencies
         run: |
-          pip install ansible-dev-tools molecule-plugins[docker]
+          pip install ansible-dev-tools==26.10.0 molecule-plugins[docker]==26.10.12
 
       - name: Run Molecule tests
         run: |

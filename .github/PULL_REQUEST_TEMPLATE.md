@@ -1,5 +1,11 @@
 <!-- markdownlint-disable MD041 -->
 
+External pull requests are closed in favor of
+[issue forms](https://github.com/agh/crefft/issues/new/choose).
+The maintainer makes changes so the evidence and scope are settled before
+implementation. Dependabot pull requests continue.
+The checklist below is for the maintainer's own pull requests.
+
 ## Summary
 
 What this changes, in one or two sentences.

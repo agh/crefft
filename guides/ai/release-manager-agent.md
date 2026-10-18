@@ -53,6 +53,22 @@ The Release Manager Agent bridges this gap by:
 - Generating human-quality changelogs using LLM understanding
 - Recommending actions while keeping humans in control
 
+### Release Authority
+
+Only a named person **MAY** approve a release. Agents **MAY** assess readiness,
+collect evidence, draft versions, changelogs, and notes, and open private draft
+change proposals. They **MUST** then stop. A separate step that only a person
+can trigger tags and publishes the approved commit and artifacts.
+
+Agents **MUST NOT** hold credentials that can tag, publish releases or packages,
+push to public branches, or post announcements. An agent's recommendation,
+confidence score, or session confirmation is not release approval.
+
+### Why Human Approval
+
+Publication commits the project to a public artifact. A named person owns that
+decision, and separate credentials keep preparation from becoming publication.
+
 ### Scope
 
 This specification covers:
@@ -111,8 +127,8 @@ This specification covers:
 │  ┌────────────────────────────────────────────────────────────────┐ │
 │  │                    Output Handlers                             │ │
 │  ├────────────┬────────────┬────────────┬────────────┬───────────┤ │
-│  │  Release   │  Changelog │   Slack/   │   GitHub   │  Metrics  │ │
-│  │   PR       │    File    │   Teams    │  Release   │  Export   │ │
+│  │  Private   │  Changelog │   Notes   │  Evidence  │  Metrics  │ │
+│  │ Proposal   │   Draft   │   Draft   │  Register  │  Export   │ │
 │  └────────────┴────────────┴────────────┴────────────┴───────────┘ │
 │                                                                      │
 └─────────────────────────────────────────────────────────────────────┘
@@ -330,7 +346,7 @@ signal_collectors:
     # Reject evidence produced from a different tree or too long ago
     require_exact_sha: true
     max_signal_age: 24h
-    # Record the digest of every artefact the runs produced
+    # Record the digest of every artifact the runs produced
     record_artifact_digests: true
     # Minimum coverage threshold
     coverage_threshold: 80
@@ -369,7 +385,7 @@ LOW       → Informational only
 signal_collectors:
   security:
     enabled: true
-    # Scans MUST have been produced from the release commit and artefact
+    # Scans MUST have been produced from the release commit and artifact
     scanned_sha: ${RELEASE_SHA}
     require_exact_sha: true
     require_artifact_digest: true
@@ -499,7 +515,7 @@ Your responsibilities:
 1. Analyze commits and changes for semantic meaning
 2. Identify breaking changes even when not explicitly marked
 3. Assess risk level of changes
-4. Generate clear, user-focused changelog entries
+4. Generate changelog entries following the project's release policy
 5. Provide release recommendations with rationale
 
 Context about this project:
@@ -624,7 +640,7 @@ outcome_tracking:
       # Read APIs are authenticated with a bearer auth token, never a DSN
       base_url: https://sentry.io/api/0
       auth_token: ${SENTRY_AUTH_TOKEN}
-      organization: my-org       # organisation slug or ID
+      organization: my-org       # organization slug or ID
       projects: [my-project]     # project slugs read for this release
       scopes: [org:read, project:read, event:read]
       pagination: link_header    # follow rel="next" while results="true"
@@ -980,7 +996,7 @@ Based on predictions, adjusting confidence score:
 |----------------|------------|-------------|
 | 82 | -12 (elevated risk) | 70 |
 
-**New recommendation**: Release with review (was: auto-release eligible)
+**New recommendation**: Owner review with monitoring plan (was: ready for owner review)
 ```
 
 #### Prediction Configuration
@@ -1083,11 +1099,16 @@ Confidence Score = weighted_average(
 
 | Score | Interpretation | Recommended Action |
 |-------|----------------|-------------------|
-| 90-100 | High confidence | Auto-release eligible |
-| 70-89 | Good confidence | Release with monitoring |
+| 90-100 | High confidence | Ready for owner review |
+| 70-89 | Good confidence | Owner review with monitoring plan |
 | 50-69 | Moderate confidence | Review recommended |
 | 30-49 | Low confidence | Address issues first |
 | 0-29 | Critical issues | Release blocked |
+
+Readiness also requires no blockers and passing mandatory gates; a score
+**MUST NOT** override either requirement.
+
+**Why**: averaging strong signals with a failed required check can still produce a high score.
 
 #### Score Output
 
@@ -1107,13 +1128,28 @@ Confidence Score = weighted_average(
     "2 dependencies have major version updates",
     "Code coverage decreased by 3%"
   ],
-  "recommendation": "Release with enhanced monitoring"
+  "recommendation": "Owner review with enhanced monitoring plan"
 }
 ```
 
 ### Blocker Detection
 
-The engine MUST identify release blockers.
+The engine **MUST** identify release blockers. Any non-empty `blockers` array
+or failed mandatory gate **MUST** stop the release and changelog mutation,
+regardless of `decision` or confidence. Missing, stale, or unverifiable
+mandatory gate results **MUST** count as failures. This rule applies to every
+workflow, including manual releases and runs that skip non-critical checks.
+
+**Why**: a recommendation or weighted average cannot negate a failed required
+check. The executable CI guard in the
+[release-manager definition](../../agents/ops/release-manager.md#ci-integration)
+requires `ci`, `tests`, `security`, `reviews`, and `evidence` gate results to
+be explicitly `true` before exposing successful readiness outputs.
+
+```text
+Do:    stop on a failed security gate, even with decision=release and confidence=100
+Don't: publish because the decision says release while blockers is non-empty
+```
 
 #### Blocker Categories
 
@@ -1173,7 +1209,7 @@ the release date and release history. Go libraries use SemVer tags such
 as `v0.x.y` or `v1.x.y`, with `/vN` module paths at major version 2 or
 higher. Command-only Go tools use calendar tags and **MUST** be built from
 checkouts or shipped as release artifacts, not installed with
-`go install module@vYYYY.M.N`.
+`go install` with `module@vYYYY.M.N`.
 
 #### Why
 
@@ -1268,7 +1304,13 @@ for an application.
 
 ## Changelog Generation
 
-The agent MUST generate human-quality changelogs using LLM understanding.
+The agent **MUST** generate changelogs from the collected commits and pull requests.
+
+Release-note wording, audience, tone, announcements, and approval to publish
+**MUST** follow **the project's own release policy**.
+
+**Why**: crefft defines version, tag, changelog, and CI mechanics; the project owns
+its public communication and publication decisions.
 
 ### Changelog Format
 
@@ -1277,6 +1319,14 @@ The agent MUST generate human-quality changelogs using LLM understanding.
 This is a CalVer example. For libraries, the agent **MUST** declare
 Semantic Versioning 2.0.0 and use SemVer release headings and comparison
 links instead, keeping `### Breaking` first when present.
+
+Describe completed changes in past tense (`Added`, `Fixed`, `Improved`), matching
+the [Changelog Agent](../../agents/ops/changelog.md#entry-grammar-and-structure).
+Keep a Changelog's convention groups completed changes by category and release;
+it does not mandate an entry tense or an announcement style.
+
+**Why**: consistent grammar removes the past-versus-present-tense conflict between
+the two prompts without imposing a release voice on the project.
 
 ```markdown
 # Changelog
@@ -1325,7 +1375,7 @@ def generate_changelog(
 
     Process:
     1. Group changes by category
-    2. Summarize each change for end users
+    2. Summarize each change per the project's release policy
     3. Link to PRs/issues
     4. Highlight breaking changes
     5. Format per configured style
@@ -1334,7 +1384,7 @@ def generate_changelog(
     # Use LLM for semantic grouping
     grouped = llm.group_changes(commits, prs)
 
-    # Generate user-facing descriptions
+    # Audience and style come from the project's release policy.
     entries = []
     for group in grouped:
         entry = llm.generate_entry(
@@ -1359,20 +1409,19 @@ def generate_changelog(
 ```markdown
 Generate a changelog entry for the following changes.
 
-Audience: {audience}
-Style: {style}
+Audience from the project's release policy: {audience}
+Style from the project's release policy: {style}
 
 Changes:
 {changes_json}
 
 Requirements:
-1. Write for end users, not developers (unless audience=developers)
-2. Focus on what changed, not how it was implemented
-3. Use active voice and present tense
-4. Keep entries concise but informative
-5. Group related changes together
-6. Put breaking changes and migrations under ### Breaking, first in the release section
-7. Include issue/PR references where relevant
+1. Follow the project's own release policy for release-note wording,
+   announcements, and approval to publish
+2. Describe what changed, using past tense for completed changes
+3. Group related changes by Keep a Changelog category
+4. Put breaking changes and migrations under ### Breaking, first in the release section
+5. Include issue/PR references where relevant
 
 Output format:
 {format_template}
@@ -1388,7 +1437,7 @@ changelog:
   # Format style
   format: keep-a-changelog  # or: conventional, github-releases, custom
 
-  # Entry generation
+  # Entry generation: set these values from the project's own release policy.
   audience: users  # or: developers, both
   style: concise   # or: detailed
   max_entry_length: 200
@@ -1418,14 +1467,24 @@ changelog:
 
 ## Release Workflows
 
-The agent supports multiple release workflow patterns.
+The agent supports multiple release workflow patterns. Every pattern **MUST**
+enforce `require_no_blockers`, `require_all_checks_pass`, and
+`require_mandatory_gates_pass` before release actions or changelog mutation.
+These conditions are not overridable by confidence, approval, or `skip_checks`.
+Here, "all checks" means all required checks; `skip_checks` applies only to advisory checks.
 
-### Continuous Release
+**Why**: a scheduled or manual preparation has the same mandatory safety gates as
+preparation triggered by a merge.
 
-Automatically release on every qualifying merge to main.
+### Prepare, Then Stop
+
+Prepare a private proposal on a qualifying merge to main. The agent never
+executes the publication actions. The legacy `continuous` and `scheduled`
+workflow selectors below describe preparation triggers only.
 
 ```yaml
 workflow: continuous
+prepare_only: true
 trigger:
   branches: [main]
   paths_ignore:
@@ -1435,35 +1494,42 @@ conditions:
   min_confidence_score: 90
   require_all_checks_pass: true
   require_no_blockers: true
+  require_mandatory_gates_pass: true
+  fail_on_missing_gate_results: true
 actions:
   - calculate_version
-  - generate_changelog
-  - create_git_tag
-  - create_github_release
-  - publish_packages
-  - notify_slack
+  - draft_changelog
+  - draft_release_notes
+  - collect_sha_bound_evidence
+  - prepare_private_change_proposal
+  - stop_for_owner_review
 ```
 
-### Scheduled Release
+### Scheduled Preparation
 
-Release on a defined schedule (e.g., weekly).
+Prepare on a schedule set by the owner (e.g., weekly); scheduling never approves publication.
 
 ```yaml
 workflow: scheduled
+prepare_only: true
 schedule:
   cron: "0 10 * * 1"  # Every Monday at 10 AM
 conditions:
   min_changes: 1
   min_confidence_score: 70
+  require_all_checks_pass: true
+  require_no_blockers: true
+  require_mandatory_gates_pass: true
+  fail_on_missing_gate_results: true
 actions:
-  - create_release_pr
-  - await_approval
-  - execute_release
+  - prepare_private_change_proposal
+  - stop_for_owner_review
 ```
 
 ### Manual Release
 
-Human-triggered release with AI assistance.
+Person-triggered preparation with agent assistance. Publication remains a
+separate protected step after the agent stops.
 
 A supplied version override **MUST** match the calculated library SemVer
 bump or non-library CalVer number, or the release **MUST** stop with an
@@ -1481,29 +1547,42 @@ trigger:
         description: "Skip non-critical checks"
         required: false
         default: false
+conditions:
+  require_all_checks_pass: true
+  require_no_blockers: true
+  require_mandatory_gates_pass: true
+  fail_on_missing_gate_results: true
 actions:
   - analyze_changes
   - calculate_version
   - validate_version_override
   - present_report
-  - await_confirmation
-  - execute_release
+  - prepare_private_change_proposal
+  - stop_for_owner_review
 ```
 
 ### Release Train
 
-Batched releases with multiple stages.
+Batched releases with multiple stages. This is an owner-operated deployment
+plan, not agent authority; each deployment requires a person's approval.
 
 ```yaml
 workflow: release_train
+conditions:
+  require_all_checks_pass: true
+  require_no_blockers: true
+  require_mandatory_gates_pass: true
+  fail_on_missing_gate_results: true
 stages:
   - name: staging
-    auto_deploy: true
+    auto_deploy: false
+    require_approval: true
     duration: 24h
     rollback_threshold: 5  # % error rate
 
   - name: canary
-    auto_deploy: true
+    auto_deploy: false
+    require_approval: true
     traffic_percentage: 10
     duration: 48h
     rollback_threshold: 2
@@ -1511,8 +1590,7 @@ stages:
   - name: production
     auto_deploy: false
     require_approval: true
-    approvers:
-      - "@release-team"
+    approver: "${NAMED_RELEASE_OWNER}"
 ```
 
 ---
@@ -1527,8 +1605,8 @@ Primary integration for GitHub-hosted repositories.
 
 ```yaml
 permissions:
-  contents: write      # Create releases, tags
-  pull-requests: write # Create release PRs
+  contents: read       # Read history; cannot create releases or tags
+  pull-requests: read  # Read review evidence
   issues: read         # Link issues in changelog
   actions: read        # Read workflow status
   security-events: read # Read security alerts
@@ -1540,43 +1618,140 @@ The `crefft/release-manager-agent` action below is **illustrative**: it
 names the interface a conforming implementation would expose, not a published
 action. Substitute your own implementation before running this workflow.
 
+This example runs in a private repository so the proposal artifact stays
+private. For a public source repository, prepare and review in a separate
+private proposal repository using read-only access to the source.
+
+Configure `release-publication` before enabling this example: required reviewers
+**MUST** be named people, self-review and administrator bypass **MUST** be
+disabled, and deployment branches **MUST** allow only the protected default
+branch. Restrict dispatch to maintainers, and deny automated identities access
+to that role and to environment approval. The publishing job runs no agent and
+receives no model credential. Package publication and announcements, if needed,
+belong to similarly protected, person-triggered steps, not the agent job.
+
+**Why**: a push can prepare a recommendation, but cannot cross the protected
+environment boundary. Only a person's dispatch and recorded approval unlock
+the separate publishing credential.
+
 ```yaml
-name: Release Manager
+name: Prepare and review release
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
     inputs:
-      dry_run:
-        description: "Perform dry run only"
+      publish:
+        description: "Request owner approval to publish this prepared commit"
         type: boolean
         default: false
 
+permissions: {}
+
 jobs:
-  release:
+  prepare:
+    if: github.event.repository.private == true
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      actions: read
+      security-events: read
+    outputs:
+      sha: ${{ steps.target.outputs.sha }}
+      version: ${{ steps.proposal.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0  # Full history for changelog
           ref: ${{ github.sha }}  # Pin the tree; do not follow the branch
+          persist-credentials: false
 
       - name: Resolve release commit
         id: target
         run: echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
 
-      - name: Run Release Manager Agent
+      - name: Prepare local proposal and stop
+        id: proposal
+        # crefft: illustrative -- This unpublished action only specifies an interface.
         uses: crefft/release-manager-agent@v1  # illustrative
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           config_file: .release-manager.yml
-          dry_run: ${{ inputs.dry_run }}
+          prepare_only: true
+          proposal_dir: release-proposal
           # Every collector binds its evidence to this SHA
           release_sha: ${{ steps.target.outputs.sha }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-proposal
+          path: |
+            release-proposal/VERSION
+            release-proposal/CHANGELOG.md
+            release-proposal/RELEASE_NOTES.md
+            release-proposal/evidence.json
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    if: >-
+      github.event.repository.private == true &&
+      github.event_name == 'workflow_dispatch' && inputs.publish &&
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    needs: prepare
+    environment: release-publication
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Person-approved publisher only; no agent runs in this job
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: release-proposal
+          path: release-proposal
+      - name: Publish the proposal approved by the named environment reviewer
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+          RELEASE_SHA: ${{ needs.prepare.outputs.sha }}
+        run: |
+          set -euo pipefail
+          test "$(cat release-proposal/VERSION)" = "${VERSION}"
+          test -s release-proposal/CHANGELOG.md
+          test -s release-proposal/RELEASE_NOTES.md
+          jq -e --arg sha "${RELEASE_SHA}" \
+            '.target_sha == $sha and .blockers == [] and
+             (.mandatory_gates | length == 5 and
+               has("ci") and has("tests") and has("security") and
+               has("reviews") and has("evidence") and all(.[]; . == true))' \
+            release-proposal/evidence.json
+          if git show-ref --verify --quiet "refs/tags/v${VERSION}"; then
+            echo "Tag already exists; stop for owner review" >&2
+            exit 1
+          fi
+          gh release create "v${VERSION}" --target "${RELEASE_SHA}" \
+            --title "v${VERSION}" --notes-file release-proposal/RELEASE_NOTES.md
 ```
+
+The illustrative preparation action **MUST** enforce the existing
+[release guard](../../agents/ops/release-manager.md#ci-integration), return a
+validated `version` output, and produce the four proposal files shown above.
+`evidence.json` contains `target_sha`, `blockers`, the five `mandatory_gates`,
+and links to the underlying runs and artifacts. It contains no transcript.
+Before approving, the named reviewer **MUST** inspect those exact proposal
+files, evidence expiry, artifact digests, and the workflow revision. Any change
+to the proposal or target **MUST** require a new preparation and approval.
+Keep approval and evidence records private; use a private proposal store when
+the source repository is public.
 
 A full-history checkout supplies commits, not evidence identity. `fetch-depth:
 0` says nothing about which tree the tests ran against or which artifact was
@@ -1592,26 +1767,29 @@ own image, pinned to a digest, before running this job.
 
 ```yaml
 # .gitlab-ci.yml
-release:
+prepare:
   stage: release
-  image: crefft/release-manager-agent:latest  # illustrative
+  image: crefft/release-manager-agent:2026.10.0  # Illustrative, locally built release
   script:
     - release-manager analyze
-    - release-manager release --if-ready
+    - release-manager prepare --output release-proposal
   only:
     - main
   variables:
-    GITLAB_TOKEN: $CI_JOB_TOKEN
+    GITLAB_TOKEN: $READ_ONLY_GITLAB_TOKEN
     ANTHROPIC_API_KEY: $ANTHROPIC_API_KEY
 ```
 
-### Slack Integration
+### Slack Announcement Drafts
+
+The agent returns draft text locally. Only a person-triggered notification step
+holds the webhook and posts an approved announcement.
 
 ```yaml
 notifications:
   slack:
-    enabled: true
-    webhook_url: ${SLACK_WEBHOOK_URL}
+    enabled: false
+    draft_only: true
     channel: "#releases"
     events:
       - release_started
@@ -1628,21 +1806,25 @@ notifications:
 
 ### JIRA Integration
 
+The agent **MUST** use read-only ticket access and return proposed updates
+locally, not transition tickets or post release announcements.
+
+**Why**: issue context is release evidence, not authority to act as the release owner.
+
 ```yaml
 integrations:
   jira:
     enabled: true
+    access: readonly
     host: https://company.atlassian.net
     auth:
       type: api_token
       email: ${JIRA_EMAIL}
       token: ${JIRA_API_TOKEN}
-    actions:
-      - link_issues_to_release
-      - transition_issues_on_release
-      - add_release_comment
-    transition_mapping:
-      on_release: "Done"
+    collect:
+      - issue_links
+      - issue_status
+      - release_context
 ```
 
 ---
@@ -1709,9 +1891,13 @@ signal_collectors:
 
 # Decision engine configuration
 decision:
+  require_all_checks_pass: true
+  require_no_blockers: true
+  require_mandatory_gates_pass: true
+  fail_on_missing_gate_results: true
   # Confidence score thresholds
   thresholds:
-    auto_release: 90
+    owner_review: 90
     release_with_review: 70
     block_release: 30
 
@@ -1731,8 +1917,9 @@ changelog:
   style: concise
   include_contributors: true
 
-# Release configuration
+# Preparation configuration; publication credentials are configured separately
 release:
+  prepare_only: true
   # Version file locations
   version_files:
     - package.json
@@ -1744,33 +1931,33 @@ release:
     sign_tags: false
     commit_message: "chore(release): {version}"
 
-  # GitHub Release
+  # Draft notes only; the agent cannot create a GitHub Release
   github_release:
-    enabled: true
-    draft: false
+    enabled: false
+    draft: true
     prerelease_pattern: "*-*"  # e.g., 1.0.0-beta.1
 
   # Package publishing
   publish:
     npm:
-      enabled: true
+      enabled: false
       registry: https://registry.npmjs.org
       access: public
 
 # Workflow configuration
 workflow:
-  type: continuous  # continuous | scheduled | manual | release_train
+  type: preparation  # preparation | scheduled_preparation | manual | release_train
 
-  # Continuous workflow settings
-  continuous:
-    auto_release_threshold: 90
-    create_pr_threshold: 70
+  preparation:
+    owner_review_threshold: 90
+    private_proposal_threshold: 70
+    stop_after_proposal: true
 
 # Notifications
 notifications:
   slack:
-    enabled: true
-    webhook_url: ${SLACK_WEBHOOK_URL}
+    enabled: false
+    draft_only: true
     channel: "#releases"
 
 # Advanced settings
@@ -1863,7 +2050,7 @@ set -euo pipefail
 
 # limit defaults to 20; ask for the full list so long lineups are not truncated.
 available="$(curl -sSf 'https://api.anthropic.com/v1/models?limit=1000' \
-  -H "x-api-key: ${ANTHROPIC_API_KEY}" \
+  -H @- <<<"x-api-key: ${ANTHROPIC_API_KEY}" \
   -H 'anthropic-version: 2023-06-01' | jq -r '.data[].id')"
 
 status=0
@@ -1875,6 +2062,9 @@ for id in "$@"; do
 done
 exit "${status}"
 ```
+
+**Why**: the single-line API key header is read from stdin rather than
+appearing in process arguments; shell tracing **MUST NOT** be enabled.
 
 ### Environment Variables
 
@@ -2116,7 +2306,7 @@ audit:
 ## CLI Reference
 
 This section describes the command surface a conforming implementation
-**SHOULD** expose. The `release-manager` binary and the session transcript
+**SHOULD** expose. The `release-manager` binary and the synthetic output
 below are **illustrative**; no such binary is published by this repository.
 
 ### Commands
@@ -2131,8 +2321,8 @@ release-manager changelog [--dry-run] [--since <tag>]
 # Calculate next version
 release-manager version
 
-# Execute release
-release-manager release [--dry-run] [--force]
+# Prepare a private proposal, then stop
+release-manager prepare --output release-proposal
 
 # Show release report
 release-manager report [--format html|json|markdown]
@@ -2146,7 +2336,7 @@ release-manager init [--preset minimal|standard|enterprise]
 
 ### Example Usage
 
-```bash
+```console
 # Quick release check
 $ release-manager analyze
 ✓ Collected 47 commits since v2026.10.0
@@ -2157,7 +2347,7 @@ $ release-manager analyze
 Release Readiness: 87/100 (Good)
 Recommended Version: 2026.10.1 (next October release; breaking changes flagged separately)
 
-Proceed with release? [y/N]
+Ready for owner review; no release has been approved.
 
 # Generate changelog preview
 $ release-manager changelog --dry-run
@@ -2174,16 +2364,10 @@ $ release-manager changelog --dry-run
 - Race condition in session handling (#242)
 - Timezone display in event scheduling (#248)
 
-# Execute release
-$ release-manager release
-✓ Version set to 2026.10.1
-✓ CHANGELOG.md updated
-✓ Git tag v2026.10.1 created
-✓ GitHub Release published
-✓ Package published to npm
-✓ Slack notification sent
-
-Release v2026.10.1 completed successfully!
+# Prepare a private proposal
+$ release-manager prepare --output release-proposal
+✓ Version, changelog, notes, and SHA-bound evidence drafted
+Stopped: a named person must review and trigger the separate protected publisher.
 ```
 
 ---

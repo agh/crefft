@@ -85,7 +85,7 @@ complex cases like heredocs and pipeline formatting correctly.
 
 ```bash
 # Install
-go install mvdan.cc/sh/v3/cmd/shfmt@latest
+go install mvdan.cc/sh/v3/cmd/shfmt@v3.12.0
 
 # Format
 shfmt -w script.sh
@@ -411,7 +411,7 @@ with CI systems out of the box.
 brew install bats-core
 
 # npm
-npm install --global bats
+npm install --global bats@1.13.0
 
 # Verify
 bats --version
@@ -570,9 +570,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Install bats
-        run: npm install --global bats
+        run: npm install --global bats@1.13.0
       - name: Run tests
         run: bats tests/
 ```
@@ -586,7 +586,7 @@ GitHub's secure-use reference asks for the `GITHUB_TOKEN` default to be read
 access to repository contents only[^9]; linting and testing need nothing more.
 `timeout-minutes` bounds a hung step, which would otherwise hold a runner until
 the platform's own job execution limit expires, and `cancel-in-progress` stops
-superseded pushes queueing behind each other.
+superseded pushes queuing behind each other.
 
 ### Pipelines
 
@@ -655,9 +655,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: shellcheck
-        uses: ludeeus/action-shellcheck@master
+        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # 2.0.0
         with:
           scandir: './scripts'
       - name: Install shfmt

@@ -40,16 +40,16 @@ plugin ecosystems are required (see ESLint Alternative below).
 npm install --save-dev --save-exact @biomejs/biome@2.5.12
 
 # Initialize config
-npx biome init
+npx @biomejs/biome@2.5.12 init
 
 # Lint and format
-npx biome check --write .
+npx @biomejs/biome@2.5.12 check --write .
 
 # CI mode
-npx biome ci .
+npx @biomejs/biome@2.5.12 ci .
 
 # Update an older configuration after a Biome upgrade
-npx biome migrate --write
+npx @biomejs/biome@2.5.12 migrate --write
 ```
 
 Projects **MUST** pin Biome to an exact version. Biome validates `biome.json`
@@ -168,10 +168,10 @@ Projects **MUST** enable strict type checking with TypeScript[^2]'s compiler.
 
 ```bash
 # Check types without emitting
-npx tsc --noEmit
+npx --package=typescript@6.0.3 tsc --noEmit
 
 # Watch mode
-npx tsc --noEmit --watch
+npx --package=typescript@6.0.3 tsc --noEmit --watch
 ```
 
 ### tsconfig.json (Strict)
@@ -264,7 +264,7 @@ with `SyntaxError`, so projects on standard decorators **MUST** compile with
 `tsc` before running Vitest[^5]:
 
 ```bash
-npx tsc -p tsconfig.json && npx vitest run dist
+npx --package=typescript@6.0.3 tsc -p tsconfig.json && npx vitest@5.0.0 run dist
 ```
 
 ### Class Decorators
@@ -583,7 +583,7 @@ cover all of them:
 import { expect, test } from 'vitest';
 import { Memoize, Product, Retry } from '../patterns.js';
 
-test('accessor decorator validates assignment, not just initialisation', () => {
+test('accessor decorator validates assignment, not just initialization', () => {
   const p = new Product();
   expect(p.quantity).toBe(10);
   expect(() => {
@@ -808,9 +808,9 @@ For third-party JavaScript libraries without types, use types from DefinitelyTyp
 
 ```bash
 # Install types for a library
-npm install --save-dev @types/lodash
-npm install --save-dev @types/express
-npm install --save-dev @types/node
+npm install --save-dev @types/lodash@4.17.26
+npm install --save-dev @types/express@5.0.6
+npm install --save-dev @types/node@26.6.5
 
 # Types are automatically used by TypeScript
 ```
@@ -1070,13 +1070,13 @@ node --conditions=development dist/main.js
 
 ```bash
 # Trace module resolution
-npx tsc --traceResolution
+npx --package=typescript@6.0.3 tsc --traceResolution
 
 # Check specific module
-npx tsc --traceResolution 2>&1 | grep "some-module"
+npx --package=typescript@6.0.3 tsc --traceResolution 2>&1 | grep "some-module"
 
 # Explain why a file is included
-npx tsc --explainFiles
+npx --package=typescript@6.0.3 tsc --explainFiles
 ```
 
 ### Common Resolution Issues
@@ -1091,7 +1091,7 @@ import { foo } from './foo.js';
 
 // Issue: "Cannot find type definitions for 'express'"
 // Solution: Install @types package
-// npm install --save-dev @types/express
+// npm install --save-dev @types/express@5.0.6
 
 // Issue: Module works at runtime but TypeScript errors
 // Solution: Check moduleResolution matches your runtime
@@ -1103,10 +1103,10 @@ Projects **SHOULD** regularly check for unused exports using ts-prune[^3].
 
 ```bash
 # Install
-npm install --save-dev ts-prune
+npm install --save-dev ts-prune@0.10.3
 
 # Find unused exports
-npx ts-prune
+npx ts-prune@0.10.3
 ```
 
 ## Code Coverage: c8
@@ -1117,10 +1117,10 @@ c8[^4] uses V8's built-in coverage for fast, accurate results.
 
 ```bash
 # With Vitest
-npx c8 vitest run
+npx c8@12.0.0 vitest run
 
 # Threshold
-npx c8 --check-coverage --lines 80 vitest run
+npx c8@12.0.0 --check-coverage --lines 80 vitest run
 ```
 
 Or with Vitest[^5]'s built-in coverage:
@@ -1157,13 +1157,13 @@ Projects **MUST** use Vitest[^5] as the test runner for TypeScript projects.
 npm install --save-dev --save-exact vitest@5.0.0
 
 # Run
-npx vitest
+npx vitest@5.0.0
 
 # Watch mode
-npx vitest --watch
+npx vitest@5.0.0 --watch
 
 # Report the environment and configuration Vitest actually resolved
-npx vitest doctor
+npx vitest@5.0.0 doctor
 ```
 
 ### Configuration
@@ -1212,25 +1212,25 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
-      - run: npx biome ci .
-      - run: npx tsc --noEmit
+      - run: npx @biomejs/biome@2.5.12 ci .
+      - run: npx --package=typescript@6.0.3 tsc --noEmit
 
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
-      - run: npx vitest run --coverage
+      - run: npx vitest@5.0.0 run --coverage
 ```
 
 ## Dependencies & Package Management
@@ -1500,7 +1500,7 @@ strategy:
   matrix:
     node-version: [18, 20, 22]
 steps:
-  - uses: actions/setup-node@v4
+  - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
     with:
       node-version: ${{ matrix.node-version }}
 ```

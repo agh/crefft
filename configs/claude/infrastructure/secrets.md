@@ -1,618 +1,219 @@
 # Agent Secrets Management
 
-Secure credential access for AI agents using SOPS and other secret management
-patterns.
+> [crefft](../../../README.md) > [Agent Infrastructure](README.md) > Secrets
 
-## Overview
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+"OPTIONAL" in this document are to be interpreted as described in
+BCP 14 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)
+[RFC 8174](https://datatracker.ietf.org/doc/html/rfc8174) when, and only
+when, they appear in all capitals, as shown here.
 
-Agents need access to credentials for skills (database passwords, API tokens,
-etc.) but this must be done securely:
+## Security Boundary
+
+Decrypted values **MUST NOT** reach terminal stdout, stderr, logs, prompts, agent
+transcripts, recordings, test output, plaintext files, caches, or other artifacts.
+They **MUST NOT** enter an environment wider than the one trusted process that
+needs them. Failed decryption, a missing key, or a missing file **MUST** stop
+execution before that process starts.
+
+**Why**: terminal output and environment inheritance copy a credential into places
+that outlive the operation or are visible to unrelated tools.
+
+Agents **MUST NOT** receive credentials that can publish or push, including GitHub
+write tokens, registry credentials, deployment keys, or SSH-agent access with
+those permissions. Tasks requiring them **MUST** run as a separate, human-approved
+step outside the agent.
+
+**Why**: approval of a plan does not constrain what an agent or its next tool can
+do with an inherited credential.
+
+An agent **MUST NOT** have access to decryption identities, a general-purpose
+secret-returning MCP tool, or a configurable secret launcher. A human-controlled
+supervisor **MUST** fix the encrypted file, allowed keys, and trusted executable
+outside the agent's writable workspace. It **MUST** return only approved,
+non-sensitive results, never a credential.
+
+**Why**: a launcher accepting an agent-selected command can be turned into a
+secret-printing command even if its default command is safe.
 
 ```text
-+---------------------------------------------------------------------------+
-|                        SECRETS FLOW                                       |
-+---------------------------------------------------------------------------+
-|                                                                           |
-|   +------------------+                                                    |
-|   |  Encrypted       |    Decrypt at runtime                              |
-|   |  secrets.yaml    | -------------------------+                         |
-|   |  (in git)        |                          |                         |
-|   +------------------+                          v                         |
-|                                        +------------------+               |
-|   +------------------+                 |   Environment    |               |
-|   |  age/GPG keys    | --------------->|   Variables      |               |
-|   |  (secure store)  |   Decryption    |                  |               |
-|   +------------------+   key           +--------+---------+               |
-|                                                 |                         |
-|                                                 v                         |
-|                                        +------------------+               |
-|                                        |      Agent       |               |
-|                                        |                  |               |
-|                                        |  Uses secrets    |               |
-|                                        |  via env vars    |               |
-|                                        +------------------+               |
-|                                                                           |
-+---------------------------------------------------------------------------+
+Encrypted file + protected age identity
+                  |
+        Human-controlled supervisor
+                  |
+       Pinned SOPS -> private pipe -> scoped helper
+                                         |
+                           Two named keys, one trusted child
+                                         |
+                             Approved result, no secret
+
+Agent: no identity, no credential environment, no publishing permission
 ```
 
-## SOPS Pattern
+## Pinned Tools
 
-### What is SOPS?
+This pattern uses **SOPS 3.13.3**, **age 1.3.2**, and Python 3's standard library
+on POSIX systems with `/dev/fd/`. The pin and extraction behavior were verified
+against the [SOPS 3.13.3 release](https://github.com/getsops/sops/releases/tag/v3.13.3),
+its [decryption implementation](https://github.com/getsops/sops/blob/v3.13.3/cmd/sops/decrypt.go),
+and local synthetic-fixture tests on macOS arm64 with those tool versions.
+The executable helper rejects any other SOPS version.
 
-SOPS (Secrets OPerationS) encrypts secrets in files that can be safely
-committed to git:
+Operators **MUST** obtain the pinned binaries from their official releases,
+verify their checksums and signatures using the release instructions, and keep
+their absolute paths and parent directories outside agent write access.
+See the [age 1.3.2 release](https://github.com/FiloSottile/age/releases/tag/v1.3.2).
+
+**Why**: a version string alone does not authenticate an executable, and a
+substituted executable could disclose the identity or decrypted values.
+
+## Create Encrypted Secrets
+
+A human-controlled provisioning system **MUST** create and update the encrypted
+file outside the agent. Its plaintext input **MUST** travel through a private,
+inherited pipe or file descriptor, not a terminal, shell argument, environment
+variable, editor recovery file, or saved plaintext file. Only encrypted output
+belongs in the repository.
+
+**Why**: encrypting a file afterward does not remove copies already captured by
+an editor, shell history, an agent transcript, or a backup.
+
+Use a separate age identity and encrypted file per purpose and environment. The
+following is a structural illustration, not usable ciphertext:
 
 ```yaml
-# secrets.yaml (encrypted with SOPS)
-database:
-    password: ENC[AES256_GCM,data:abc123...,type:str]
-github:
-    token: ENC[AES256_GCM,data:def456...,type:str]
-discord:
-    webhook_url: ENC[AES256_GCM,data:ghi789...,type:str]
+# secrets.yaml: only read-only database access belongs in this file.
+postgres_readonly:
+  POSTGRES_USER: ENC[...]
+  POSTGRES_PASSWORD: ENC[...]
 sops:
-    age:
-        - age1ql3z7hjy54pw3hyww5...
-    lastmodified: "2025-01-02T10:00:00Z"
-    version: 3.7.3
+  # SOPS writes the age recipients, encrypted data key, MAC, and version here.
 ```
 
-### SOPS Setup
+The role **MUST** be read-only at the database, not just named "readonly." The
+`postgres_readonly` branch **MUST** contain exactly the two nonempty string keys
+shown above; the helper rejects missing keys, extra keys, nonstrings, and NULs.
 
-#### 1. Install SOPS and age
+**Why**: fixed names and server-enforced permissions prevent a renamed write
+credential or an unexpected environment variable from expanding access.
+
+## One Scoped Execution Pattern
+
+Use [sops_command.py](sops_command.py) only from the protected supervisor. Its
+policy selects `["postgres_readonly"]` and requires exactly `POSTGRES_USER` and
+`POSTGRES_PASSWORD`. SOPS verifies the entire document internally before
+extracting that branch; no other branch crosses the private pipe or enters the
+child's environment. Separate encrypted files and identities remain the
+cryptographic isolation boundary.
+
+The helper invokes SOPS with `decrypt`, `--extract`, `--output-type json`, and
+`--output /dev/fd/<private-pipe>`. SOPS stdout and stderr are discarded; decrypted
+bytes use only the private descriptor of an unlinked FIFO in a mode-`0700`
+temporary directory. No regular plaintext file is created. The helper reads and
+validates the complete result and SOPS exit status before launching anything.
+It never modifies its own or its parent's environment.
+
+### Check Without Revealing a Value
+
+From the repository root, with `SOPS_BIN`, `AGE_IDENTITY`, and `SECRETS_FILE`
+holding absolute, non-sensitive paths:
 
 ```bash
-# macOS
-brew install sops age
-
-# Linux
-# Download from https://github.com/getsops/sops/releases
-# Download age from https://github.com/FiloSottile/age/releases
+python3 configs/claude/infrastructure/sops_command.py \
+  --sops "$SOPS_BIN" --identity "$AGE_IDENTITY" --file "$SECRETS_FILE" --check
 ```
 
-#### 2. Generate age key
-
-```bash
-# Generate key pair
-age-keygen -o ~/.config/sops/age/keys.txt
-
-# Output will show public key:
-# Public key: age1ql3z7hjy54pw3hyww5...
-```
-
-#### 3. Configure SOPS
-
-```yaml
-# .sops.yaml (in repository root)
-creation_rules:
-  # Encrypt all secrets files with age
-  - path_regex: secrets\.yaml$
-    age: >-
-      age1ql3z7hjy54pw3hyww5...,
-      age1abc123...(team member 2),
-      age1def456...(CI system)
-
-  # Environment-specific keys
-  - path_regex: secrets\.prod\.yaml$
-    age: >-
-      age1prod-key...
-
-  - path_regex: secrets\.dev\.yaml$
-    age: >-
-      age1dev-key...,
-      age1all-devs-key...
-```
-
-#### 4. Create Encrypted Secrets
-
-```bash
-# Create new encrypted file
-sops secrets.yaml
-
-# Editor opens with template:
-database:
-    password: your-password-here
-github:
-    token: ghp_xxxx
-
-# Save and close - SOPS encrypts automatically
-
-# Edit existing encrypted file
-sops secrets.yaml
-
-# Decrypt to stdout (for debugging)
-sops -d secrets.yaml
-```
-
-### SOPS for Agent Access
-
-#### Pattern 1: Environment Variable Injection
-
-`sops exec-env` decrypts into the environment of one child process. Nothing is
-written to disk, and a failed decryption stops the launch instead of starting
-the agent with empty variables.
-
-The file `exec-env` reads **MUST** be flat, one top-level key per variable.
-SOPS rejects a nested document with `cannot use complex value in environment;
-offending key <name>`, so keep the environment file separate from any nested
-`secrets.yaml`:
-
-```yaml
-# secrets.env.yaml - one top-level key per environment variable
-POSTGRES_PASSWORD: ENC[AES256_GCM,data:abc123...,type:str]
-GITHUB_TOKEN: ENC[AES256_GCM,data:def456...,type:str]
-DISCORD_WEBHOOK: ENC[AES256_GCM,data:ghi789...,type:str]
-```
-
-```bash
-#!/usr/bin/env bash
-# run-agent.sh - launch the agent with decrypted secrets
-
-set -euo pipefail
-
-SECRETS_FILE="${SECRETS_FILE:-secrets.env.yaml}"
-
-if [[ -z "${AGENT_SECRETS_LOADED:-}" ]]; then
-  # Re-exec this script inside the decrypted environment. sops exits
-  # non-zero when decryption fails, so the agent never starts without
-  # its secrets. printf %q preserves the original arguments.
-  exec sops exec-env "${SECRETS_FILE}" \
-    "AGENT_SECRETS_LOADED=1 $(printf '%q ' "$0" "$@")"
-fi
-
-exec claude "$@"
-```
-
-**Why**: `eval $(sops -d ...)` interprets decrypted values as shell source, and
-both `eval` and `export NAME=$(...)` return the status of `eval`/`export`, not
-of `sops`. A failed decryption therefore launches the agent with empty
-credentials. `exec-env` passes the values as data to a single child.
-
-**Don't** — every failure here is silent:
-
-```bash
-eval $(sops -d --output-type dotenv secrets.yaml)
-export POSTGRES_PASSWORD=$(sops -d --extract '["database"]["password"]' \
-  secrets.yaml)
-```
-
-`--pristine` clears every inherited variable, including `HOME`, so it **SHOULD
-NOT** be used for tools that read a home directory, such as Claude Code.
-Reserve it for a child process that needs nothing but its secrets.
-
-#### Pattern 2: Wrapper Script for Skills
-
-`exec-env` needs a flat file. To read one value out of a nested file, extract
-it by path. The helper takes a dotted path and builds the SOPS extraction
-expression from it:
-
-```bash
-#!/usr/bin/env bash
-# sops-secret - print one secret from a nested SOPS file
-
-set -euo pipefail
-
-SECRET_PATH="${1:?usage: sops-secret <dotted.path>}"
-SECRETS_FILE="${SECRETS_FILE:-secrets.yaml}"
-
-extract=""
-IFS='.' read -ra components <<< "${SECRET_PATH}"
-for component in "${components[@]}"; do
-  extract+="[\"${component}\"]"
-done
-
-sops -d --extract "${extract}" "${SECRETS_FILE}"
-```
-
-`sops-secret database.password` extracts `["database"]["password"]` and exits
-non-zero, with the SOPS error, when the path is absent.
-
-**Why**: a SOPS extraction expression addresses one component per bracket
-pair. Wrapping the whole argument in a single pair asks for a key literally
-named `database.password`, which fails with `error truncating tree: component
-['database.password'] not found`.
-
-**Don't**:
-
-```bash
-sops -d --extract "[\"${SECRET_PATH}\"]" "$SECRETS_FILE"
-```
-
-Usage in MCP config:
-
-```json
-{
-  "mcpServers": {
-    "postgres": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@bytebase/dbhub@1.2.3"],
-      "env": {
-        "DSN": "postgres://agent_readonly:${POSTGRES_PASSWORD}@db:5432/app"
-      }
-    }
-  }
-}
-```
-
-Claude Code expands `${VAR}` and `${VAR:-default}` in an MCP server's
-`command`, `args`, `env`, `url`, and `headers`. It **MUST NOT** be given shell
-command substitution: `"$(sops-secret database.password)"` reaches the server
-as that literal string. Put the value in Claude Code's own environment first,
-then reference it:
-
-```bash
-sops exec-env secrets.env.yaml claude
-claude mcp get postgres   # ✔ Connected
-```
-
-**Don't**:
-
-```json
-{ "env": { "POSTGRES_PASSWORD": "$(sops-secret database.password)" } }
-```
-
-#### Pattern 3: SOPS MCP Server
-
-Create an MCP server that provides secret access:
-
-```json
-{
-  "mcpServers": {
-    "secrets": {
-      "command": "mcp-sops-secrets",
-      "env": {
-        "SOPS_AGE_KEY_FILE": "${HOME}/.config/sops/age/keys.txt",
-        "SECRETS_FILE": "secrets.yaml"
-      }
-    }
-  }
-}
-```
-
-**Capabilities:**
-
-- `secrets.get` - Get a specific secret by path
-- `secrets.list` - List available secret keys (not values)
-
-**Security:** The MCP server logs all secret access to audit log.
-
-### Secrets File Structure
-
-```yaml
-# secrets.yaml - Organized by skill/purpose
-
-# Database credentials
-databases:
-  postgres:
-    production:
-      host: prod-db.example.com
-      username: agent_readonly
-      password: <encrypted>
-    staging:
-      host: staging-db.example.com
-      username: agent_readonly
-      password: <encrypted>
-
-# Communication services
-communication:
-  github:
-    token: <encrypted>
-  discord:
-    releases_webhook: <encrypted>
-    alerts_webhook: <encrypted>
-
-# Monitoring services
-monitoring:
-  prometheus:
-    url: http://prometheus:9090
-    # No auth needed for internal
-  victorialogs:
-    url: http://victorialogs:9428
-  datadog:
-    api_key: <encrypted>
-    app_key: <encrypted>
-
-# Cloud providers
-cloud:
-  aws:
-    access_key_id: <encrypted>
-    secret_access_key: <encrypted>
-    region: us-east-1
-```
-
-## Alternative: HashiCorp Vault
-
-For more complex environments, use Vault:
-
-```yaml
-# vault-config.yaml
-vault:
-  address: https://vault.example.com
-  auth:
-    method: kubernetes  # or: token, approle, aws
-    role: agent-role
-
-# Secrets paths
-secrets:
-  postgres: secret/data/agents/postgres
-  github: secret/data/agents/github
-  discord: secret/data/agents/discord
-```
-
-### Vault MCP Server
-
-```json
-{
-  "mcpServers": {
-    "vault": {
-      "command": "mcp-vault",
-      "env": {
-        "VAULT_ADDR": "${VAULT_ADDR}",
-        "VAULT_TOKEN": "${VAULT_TOKEN}"
-      }
-    }
-  }
-}
-```
-
-## SSH Key Management
-
-For agents that need SSH access:
-
-### Pattern: SSH Agent Forwarding
-
-```bash
-#!/bin/bash
-# run-agent-with-ssh.sh
-
-# Start ssh-agent and add keys
-eval $(ssh-agent)
-ssh-add ~/.ssh/agent_key
-
-# Run agent with SSH access
-claude "$@"
-
-# Kill ssh-agent when done
-ssh-agent -k
-```
-
-### Pattern: SOPS-Encrypted SSH Key
-
-```yaml
-# secrets.yaml
-ssh:
-  private_key: |
-    ENC[AES256_GCM,data:abc123...(encrypted key content)...,type:str]
-```
-
-```bash
-#!/bin/bash
-# Load SSH key from SOPS
-
-# Decrypt key to temp file
-TEMP_KEY=$(mktemp)
-sops -d --extract '["ssh"]["private_key"]' secrets.yaml > "$TEMP_KEY"
-chmod 600 "$TEMP_KEY"
-
-# Use key
-ssh -i "$TEMP_KEY" user@server "command"
-
-# Clean up
-rm -f "$TEMP_KEY"
-```
-
-## Access Levels for Secrets
-
-```yaml
-# Define which agents can access which secrets
-access_control:
-  secrets:
-    databases.postgres.production:
-      allowed_agents:
-        - ops/release-manager
-        - ops/deploy-validator
-        - security/incident-response-lead
-      access_level: readonly
-      audit: true
-
-    communication.github.token:
-      allowed_agents:
-        - ops/release-manager
-        - ops/changelog
-      access_level: read-write  # Can create PRs
-      audit: true
-
-    communication.discord:
-      allowed_agents:
-        - ops/*
-      access_level: post
-      audit: true
-```
-
-## Security Best Practices
-
-### Key Rotation
-
-```bash
-#!/usr/bin/env bash
-# rotate-age-key.sh - replace the age identity that decrypts secrets.yaml
-
-set -euo pipefail
-umask 077
-
-NEW_KEY_FILE="${1:?usage: rotate-age-key.sh <new-identity-file>}"
-
-# 1. Generate and persist the new identity (mode 0600 from the umask)
-age-keygen -o "${NEW_KEY_FILE}"
-
-# 2. Derive the recipient that belongs in .sops.yaml
-NEW_RECIPIENT="$(age-keygen -y "${NEW_KEY_FILE}")"
-echo "Add this recipient to .sops.yaml next to the current one:"
-echo "  ${NEW_RECIPIENT}"
-read -r -p "Press enter once .sops.yaml lists both recipients: " _
-
-# 3. Re-encrypt the data key to both recipients (overlap period)
-sops updatekeys --yes secrets.yaml
-
-# 4. Prove the new identity works before anything is retired
-SOPS_AGE_KEY_FILE="${NEW_KEY_FILE}" sops -d secrets.yaml > /dev/null
-echo "New identity verified against secrets.yaml."
-
-# 5. Rotate the secret values themselves
-sops secrets.yaml
-
-# 6. Remove the old recipient from .sops.yaml, then run
-#    sops updatekeys --yes secrets.yaml again to retire it
-```
-
-**Why**: `age-keygen` writes the private identity to stdout, or to the `-o`
-file, and prints only the public recipient to stderr. A pipeline that greps
-stderr for the public key therefore keeps the recipient and throws the
-identity away. Existing recipients still decrypt during the overlap, so the
-loss stays hidden until the old key is retired — at which point the file is
-unreadable.
-
-**Don't** — this persists no private key:
-
-```bash
-NEW_KEY=$(age-keygen 2>&1 | grep "public key" | cut -d: -f2 | tr -d ' ')
-```
-
-### Audit Secret Access
-
-```yaml
-# All secret access MUST be logged
-audit:
-  secrets:
-    log_access: true
-    log_destination: agent_audit_log
-
-    # Log entry format
-    entry:
-      timestamp: iso8601
-      agent_id: string
-      secret_path: string
-      access_type: read | write
-      # Never log the actual secret value!
-```
-
-### Environment Separation
+Success prints only two labeled byte lengths:
 
 ```text
-secrets/
-+-- secrets.dev.yaml      # Dev secrets, all devs can access
-+-- secrets.staging.yaml  # Staging, ops team access
-+-- secrets.prod.yaml     # Production, restricted access
-+-- .sops.yaml            # Different keys per environment
+POSTGRES_USER: length=<byte-count> bytes
+POSTGRES_PASSWORD: length=<byte-count> bytes
 ```
 
-### CI/CD Integration
+An operator **MUST** compare these lengths with the expected lengths privately.
+The check proves authenticated decryption and the required shape, not that a
+password is correct. Lengths **MUST NOT** be archived when they are sensitive.
 
-```yaml
-# GitHub Actions example
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+**Why**: a length check reveals no plaintext, whereas printing a value for
+debugging sends it to scrollback and transcripts. Even a digest can enable
+offline guessing of a low-entropy password.
 
-      - name: Install SOPS
-        run: |
-          curl -LO \
-            https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.linux.amd64
-          chmod +x sops-v3.8.1.linux.amd64
-          sudo mv sops-v3.8.1.linux.amd64 /usr/local/bin/sops
+### Run Only the Trusted Consumer
 
-      - name: Run the deploy with secrets in its environment
-        env:
-          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-        run: sops exec-env secrets.env.yaml ./deploy.sh
-
-      - name: Run a tool that needs a secrets file
-        env:
-          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-        run: sops exec-file secrets.prod.yaml './deploy.sh --config {}'
-```
-
-**Why**: a shell redirection writes plaintext to disk before the consumer
-runs, and `rm` on the success path never executes when decryption or the
-consumer fails — under the common `umask 022` the leftover file is mode 0644
-on a runner whose workspace other steps and caches can read. `exec-env` keeps
-the values in one child's environment; `exec-file` passes them through a FIFO,
-so the plaintext never reaches disk and disappears when the child exits. Both
-abort the step when decryption fails.
-
-**Don't**:
-
-```yaml
-        run: |
-          sops -d secrets.prod.yaml > /tmp/secrets.yaml
-          # Use secrets...
-          rm /tmp/secrets.yaml
-```
-
-## CLI Access Patterns
-
-For agents using SSH + CLI:
+The supervisor runs one reviewed, absolute executable, not an agent, shell, or
+general-purpose MCP server:
 
 ```bash
-#!/usr/bin/env bash
-# agent-ssh-command.sh - run a named task on a remote server
-
-set -euo pipefail
-
-SERVER="${1:?usage: agent-ssh-command.sh <server> <task>}"
-TASK="${2:?usage: agent-ssh-command.sh <server> <task>}"
-
-SSH_KEY="$(mktemp)"
-trap 'rm -f "${SSH_KEY}"' EXIT INT TERM
-chmod 600 "${SSH_KEY}"
-sops -d --extract '["ssh"]["private_key"]' secrets.yaml > "${SSH_KEY}"
-
-# The remote task fetches its own credentials, so no secret crosses the
-# wire and none appears in the remote command line
-ssh -i "${SSH_KEY}" -o StrictHostKeyChecking=accept-new "${SERVER}" \
-  /usr/local/bin/agent-task "${TASK}"
+python3 configs/claude/infrastructure/sops_command.py \
+  --sops "$SOPS_BIN" --identity "$AGE_IDENTITY" --file "$SECRETS_FILE" \
+  -- /usr/local/libexec/postgres-readonly-check
 ```
 
-When a remote host genuinely cannot reach a secret store, send the value on
-stdin and let the remote shell read it as data:
+The helper constructs the child's environment from exactly `POSTGRES_USER`,
+`POSTGRES_PASSWORD`, and the fixed, non-secret locale `LC_ALL=C`. It forwards no
+inherited `HOME`, `PATH`, GitHub token, age identity path, or unrelated secret.
+The OS or runtime can add its own non-secret bookkeeping variables at startup.
+Arguments are passed without a shell. Child stdin, stdout, and stderr are disconnected;
+both output streams go to `/dev/null`. Core dumps are disabled for the helper,
+SOPS, and the consumer.
+
+The consumer **MUST NOT** spawn other processes, log credentials, write plaintext
+artifacts, or return credentials through another channel. Any additional runtime
+configuration **MUST** be fixed and reviewed, not copied from the agent's
+environment. The helper and consumer **MUST** remain outside agent write access.
+
+**Why**: a child can otherwise forward its environment or disclose credentials
+through files, network calls, or application logs despite protected output.
+
+Don't: launch a general agent with secret environment variables, expose a
+`secrets.get` tool, print a decrypted value, forward an SSH agent, or decrypt a
+private key to a temporary file.
+
+Do: keep the identity with the supervisor and give only the read-only consumer
+the two named keys for the duration of one operation.
+
+### Failure Contract
+
+Every helper failure exits nonzero and prints only this fixed stderr message:
+
+```text
+Secret operation failed.
+```
+
+Decryption errors, missing files, missing identities, missing keys, invalid
+shapes, unsupported SOPS versions, and failed child commands **MUST NOT** be
+replaced with empty values or followed by a retry that runs the child anyway.
+Raw SOPS and child diagnostics **MUST NOT** be forwarded.
+
+**Why**: diagnostics can include document content, paths, or ciphertext fragments;
+a fixed message reports failure without disclosing them.
+
+## Rotation, Audit, and CI
+
+Operators **MUST** retain the old recipient until the `--check` command succeeds
+using the new identity. They **MUST** rotate the actual credential as well as the
+recipient and repeat the check before retiring old access.
+
+**Why**: changing the encryption recipient does not revoke a copied credential,
+and retiring an unverified identity can make the sealed file unreadable.
+
+Audit records **MUST** contain only an approved operation identifier, timestamp,
+and success/failure status. CI **MUST** use the same supervisor boundary and
+separate, human-approved publishing step, not an agent job with write credentials.
+
+**Why**: logging commands, environments, decrypted content, or raw errors defeats
+sealing, and a broad CI environment recreates the original inheritance problem.
+
+## Regression Tests
 
 ```bash
-DB_PASSWORD="$(sops -d \
-  --extract '["databases"]["postgres"]["production"]["password"]' \
-  secrets.yaml)"
-
-printf '%s\n' "${DB_PASSWORD}" |
-  ssh -i "${SSH_KEY}" -o StrictHostKeyChecking=accept-new "${SERVER}" \
-    'IFS= read -r DB_PASSWORD; export DB_PASSWORD; exec /usr/local/bin/agent-task'
+python3 -m unittest discover -s scripts -p 'test_secrets_security.py' -v
 ```
 
-**Why**: `ssh` joins its command arguments into one string that the remote
-login shell re-parses, so an interpolated secret becomes remote shell source.
-A password containing `'` ends the quoting and the command dies with
-`unexpected EOF while looking for matching "'"` before the task runs; a
-password containing `$(...)` would be executed. Values read from stdin are
-never parsed and never appear in `ps` output on either host. `TASK` **MUST**
-come from a fixed set of task names, because it is re-parsed remotely too.
-`read` consumes one line, so a secret that contains a newline **MUST** be
-encoded, for example with `base64`, before it is sent.
-
-**Don't**:
-
-```bash
-ssh -i "$SSH_KEY" "$SERVER" "export DB_PASSWORD='$DB_PASSWORD'; $COMMAND"
-```
-
-## Summary
-
-| Pattern | Use Case | Complexity |
-| ------- | -------- | ---------- |
-| **SOPS + age** | Small-medium teams, git-based workflow | Low |
-| **SOPS + GPG** | Existing GPG infrastructure | Medium |
-| **HashiCorp Vault** | Enterprise, dynamic secrets | High |
-| **Cloud KMS** | Cloud-native, managed service | Medium |
-
-**Recommended**: Start with SOPS + age for simplicity, migrate to Vault if
-you need dynamic secrets or fine-grained access control.
+The tests execute the documented helper commands using a temporary age identity
+and synthetic SOPS-encrypted YAML, never a real credential. They check selected
+keys, parent isolation, value-free output, byte lengths, and fail-closed behavior.
+They skip with a clear reason when the pinned SOPS binary, `age`, or `age-keygen`
+is unavailable. `SOPS_BIN`, `AGE_BIN`, and `AGE_KEYGEN_BIN` can select local pinned
+binaries, including binaries in `.tmp-check/`, without a global installation.

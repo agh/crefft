@@ -83,32 +83,50 @@ Content structure MUST be programmatically determinable:
 
 **Color Contrast Requirements:**
 
-WCAG defines large-scale text in points, not CSS pixels. The point sizes below
-are the thresholds that **MUST** be applied; the CSS pixel figures are the
-conversion at `1pt = 1.333px` and are approximate.
+The table distinguishes WCAG 2.2 AA minimums from crefft's stricter requirements.
+[WCAG SC 1.4.3](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+defines large-scale text in points, not CSS pixels. The CSS pixel figures below
+are approximate conversions at `1pt = 1.333px`.
 
-| Content Type                                                 | Minimum Ratio |
-| ------------------------------------------------------------ | ------------- |
-| Normal text: below 18pt regular, or below 14pt bold          | 4.5:1         |
-| Large text: 18pt or larger regular (approximately 24 CSS px) | 3:1           |
-| Large text: 14pt or larger bold (approximately 18.66 CSS px) | 3:1           |
-| UI components                                                | 3:1           |
-| Focus indicators                                             | 3:1           |
+| Content Type                                              | WCAG 2.2 AA | crefft |
+| --------------------------------------------------------- | ----------- | ------ |
+| Normal text: below 18pt regular, or below 14pt bold          | 4.5:1       | 4.5:1  |
+| Large text: 18pt or larger regular (approximately 24 CSS px) | 3:1         | 4.5:1  |
+| Large text: 14pt or larger bold (approximately 18.66 CSS px) | 3:1         | 4.5:1  |
+| Non-text UI components and essential graphics              | 3:1         | 3:1    |
+| Focus indicators                                          | 3:1         | 3:1    |
+
+All text **MUST** reach at least 4.5:1 against its actual background in every
+theme, regardless of size or weight. This includes placeholders and disabled
+control labels. Non-text UI components, focus indicators, and essential graphics
+**MUST** reach at least 3:1 (SC 1.4.11).
+
+**Why**: A single 4.5:1 threshold for all text is simpler to test, holds up when
+users scale text, and avoids arguing about what counts as large.
 
 W3C rounds 14pt to approximately 18.5 CSS px and WebAIM to 18.66 CSS px; both
-are roundings of 14pt at 1.333px per point. For any size between those figures,
-evaluate the point size rather than the rounded pixel value.
+are roundings of 14pt at 1.333px per point. For a WCAG-only audit, evaluate the
+point size rather than the rounded pixel value. These size boundaries never
+lower crefft's 4.5:1 text requirement.
 
 Contrast ratios are thresholds and **MUST NOT** be rounded before the
-comparison: a computed 4.499:1 fails the 4.5:1 requirement, and 2.995:1 fails
-the 3:1 requirement. Round for display only, never for the pass or fail
-decision.
+comparison: a computed 4.499:1 fails the 4.5:1 text requirement, and 2.995:1
+fails the 3:1 non-text requirement. Round for display only, never for the pass
+or fail decision.
 
-**Why**: 18 CSS px regular text is 13.5pt, far below the 18pt large-scale
-boundary, so a `>= 18px` rule certifies failing text as passing. `#949494` on
-white computes 3.03:1, which meets 3:1 for 18pt regular or 14pt bold text but
-fails the 4.5:1 that 18 CSS px body text requires. `#959595` on white computes
-2.9953:1, which displays as 3.0:1 yet fails the 3:1 threshold outright.
+**Why**: 18 CSS px regular text is 13.5pt, far below WCAG's 18pt large-scale
+boundary. `#949494` on white computes 3.03:1, which meets WCAG's minimum for
+large text but fails crefft's 4.5:1 requirement for text of any size.
+`#959595` on white computes 2.9953:1, which displays as 3.0:1 yet fails even
+the 3:1 non-text threshold.
+
+```css
+/* DON'T: 3.03:1 is insufficient for text, even a large heading */
+h1 { color: #949494; background: #ffffff; }
+
+/* DO: 4.54:1 meets the all-text requirement */
+h1 { color: #767676; background: #ffffff; }
+```
 
 **Color Independence:**
 
@@ -531,7 +549,7 @@ Test with at least one screen reader:
 
 ### Before Development
 
-- [ ] Color contrast verified (4.5:1 text, 3:1 UI)
+- [ ] Color contrast verified (4.5:1 for all text, 3:1 for non-text UI and focus) in every theme
 - [ ] Focus states designed
 - [ ] Error states designed with clear messages
 - [ ] Keyboard interaction patterns defined

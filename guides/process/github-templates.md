@@ -3,8 +3,11 @@
 > [crefft](../../README.md) > [Process](../README.md) > GitHub Templates
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+"OPTIONAL" in this document are to be interpreted as described in
+BCP 14 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)
+[RFC 8174](https://datatracker.ietf.org/doc/html/rfc8174) when, and only
+when, they appear in all capitals, as shown here.
 
 Standardized templates for all @agh projects.
 
@@ -28,33 +31,60 @@ LICENSE
 
 ## CONTRIBUTING.md
 
-All @agh projects **SHOULD** include a CONTRIBUTING.md file. It **MUST** be
-based on best practices from major open source projects.
+Projects **SHOULD** include a `CONTRIBUTING.md` file. It **MUST** state which
+contribution channels the maintainer accepts and what happens to submissions
+outside that policy. The example below uses crefft's issues-only policy;
+projects accepting external pull requests **MUST** adapt the channel and
+workflow text to their own policy.
+
+Contribution and security templates **MUST NOT** promise response or
+resolution schedules or offer bounties.
+
+### Why
+
+An explicit channel prevents contributors from preparing changes the
+maintainer will not accept. Unfunded response, fix, and payment promises
+create obligations a template cannot fulfill.
 
 ````markdown
 # Contributing to [Project Name]
 
-Thank you for considering contributing! This document explains how to
-contribute.
+Contribute by opening an issue using the repository's issue forms.
+The maintainer makes changes; external pull requests are closed with a
+pointer to those forms. Dependabot pull requests continue.
+
+**Why**: issues let the maintainer verify the evidence and scope before
+implementing a consistent change.
 
 ## Code of Conduct
 
 This project follows the [Contributor Covenant](https://www.contributor-covenant.org/).
 Be respectful and constructive.
 
-## Getting Started
+## Proposing a Change
 
-1. Fork the repository
-2. Clone your fork
-3. Set up the development environment (see README.md)
-4. Create a branch for your changes
+1. Search existing issues to avoid duplicates.
+2. Choose the issue form for a bug, version update, or new proposal.
+3. Identify the latest release and affected files or sections.
+4. Include reproduction steps, expected and actual behavior, and evidence.
+5. Cite primary sources and the date checked for time-sensitive claims.
 
-## Development Workflow
+Support is best effort, for the latest release only, with no service levels,
+promised response times, or guaranteed fixes.
 
-### Before You Start
+**Why**: a single-maintainer project does not provide a support service.
 
-- Check existing issues and PRs to avoid duplicates
-- For significant changes, open an issue first to discuss
+For security problems, use GitHub's private vulnerability reporting as
+described in `SECURITY.md`, not a public issue. Vulnerabilities in other
+projects go through those projects' own security policies.
+
+**Why**: public reports can expose users before a fix is available.
+
+## Maintainer Development Workflow
+
+The house style, tests, and checks still apply to the maintainer's changes.
+
+**Why**: restricting contribution channels does not lower release standards.
 
 ### Making Changes
 
@@ -100,13 +130,11 @@ Examples:
 - `fix(api): handle null response from server`
 - `docs: update installation instructions`
 
-### Pull Requests
+### Maintainer Pull Requests
 
-1. Push your branch to your fork
-2. Open a PR against the `main` branch
-3. Fill out the PR template completely
-4. Wait for CI to pass
-5. Address review feedback
+1. Open the maintainer's pull request against `main`.
+2. Fill out the pull request template completely.
+3. Confirm the required checks pass and address review findings.
 
 ## Reporting Issues
 
@@ -137,25 +165,53 @@ Use the feature request template. Include:
 
 ## SECURITY.md
 
-All @agh projects **MUST** include a SECURITY.md file with vulnerability reporting procedures.
+Projects **MUST** include a `SECURITY.md` file with vulnerability reporting
+procedures. GitHub's private vulnerability reporting **SHOULD** be the
+default channel and **MUST** be enabled before the policy points reporters
+to it. Replace `OWNER/REPO` below with the repository's actual path.
+
+The policy **MUST** state the supported release scope, best-effort handling,
+the absence of service levels and bounties, and publication of an advisory
+after a fix. It **MUST** route vulnerabilities in other projects through
+those projects' own policies, not public issues in this repository.
+
+### Why
+
+Private reporting keeps exploit details out of public issues while a fix
+is prepared. A clear release scope and best-effort policy avoid response,
+resolution, and payment promises the maintainer cannot guarantee.
 
 ```markdown
 # Security Policy
 
 ## Supported Versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 1.x     | :white_check_mark: |
-| < 1.0   | :x:                |
+| Version | Supported |
+| ------- | --------- |
+| Latest release | Best effort |
+| Older releases and unreleased revisions | No |
+
+Only the latest release is supported; older releases are not patched.
+
+**Why**: maintenance effort stays on the release users are directed to use.
 
 ## Reporting a Vulnerability
 
-**Please do not report security vulnerabilities through public GitHub issues.**
+Security vulnerabilities **MUST NOT** be reported through public issues.
 
-Instead, please report them via email to: security@example.com
+Report privately at:
+<https://github.com/OWNER/REPO/security/advisories/new>.
+Do not open a public placeholder issue.
+
+**Why**: the private advisory thread protects users before a fix.
+
+Vulnerabilities in someone else's project **MUST** go through that project's
+own security policy, never a public issue here.
+
+**Why**: that project's maintainers control the fix and disclosure.
 
 Include:
+
 - Description of the vulnerability
 - Steps to reproduce
 - Potential impact
@@ -163,15 +219,21 @@ Include:
 
 ### What to Expect
 
-- **Response**: Within 48 hours acknowledging receipt
-- **Updates**: Every 5 business days on progress
-- **Resolution**: Target 90 days for fix
+Replies and fixes are best effort. There is no promised response time, fix
+date, or service level, and no bounty or other payment.
+
+Progress is discussed in the private advisory thread. After a fix is
+released, a security advisory is published with impact and remediation.
+
+**Why**: an advisory informs users without promising an unsupported schedule.
 
 ### Disclosure Policy
 
-- We follow coordinated disclosure
-- Credit will be given to reporters (unless anonymity requested)
-- We will not pursue legal action against good-faith reporters
+Reporters **SHOULD** coordinate disclosure in the private thread until the
+fix and advisory are published. Reporters are credited unless they request
+anonymity. No legal action will be taken against good-faith reporters.
+
+**Why**: coordinated disclosure protects users while a fix is prepared.
 
 ## Security Best Practices
 
@@ -334,9 +396,23 @@ body:
 
 All @agh projects **MUST** include a pull request template[^3] to ensure comprehensive change documentation.
 
+For an issues-only project such as crefft, the template **MUST** open with
+the external-pull-request closure policy and a link to its issue forms.
+Keep the checklist for the maintainer's own pull requests.
+
+### Why
+
+The note explains closure before a contributor submits a pull request;
+the checklist still records the maintainer's required review and checks.
+
 ### .github/PULL_REQUEST_TEMPLATE.md
 
 ```markdown
+External pull requests are closed in favor of
+[issue forms](https://github.com/OWNER/REPO/issues/new/choose).
+The maintainer makes changes so the evidence and scope are settled first.
+Dependabot pull requests continue. This checklist is for maintainer pull requests.
+
 ## Summary
 
 Brief description of changes.

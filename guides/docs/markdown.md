@@ -10,20 +10,20 @@ Extends [Google Markdown Style Guide](../../reference/google/markdown.md).
 
 ## Quick Reference
 
-| Task       | Tool                    | Command                                                           |
-| ---------- | ----------------------- | ----------------------------------------------------------------- |
-| Lint       | markdownlint[^1]        | `npx markdownlint '**/*.md'`                                      |
-| Format     | Prettier[^2]            | `npx prettier --write '**/*.md'`                                  |
-| Diagrams   | Mermaid[^3]             | via markdown code blocks                                          |
-| Link check | markdown-link-check[^4] | `npx markdown-link-check --config .markdown-link-check.json *.md` |
+| Task | Tool | Command |
+| ---- | ---- | ------- |
+| Lint | markdownlint[^1] | `npx --package=markdownlint-cli@0.46.0 markdownlint '**/*.md'` |
+| Format | Prettier[^2] | `npx prettier@4.0.0-alpha.8 --write '**/*.md'` |
+| Diagrams | Mermaid[^3] | via markdown code blocks |
+| Link check | markdown-link-check[^4] | [Link-check command](#link-checking) |
 
 ## Linting: markdownlint
 
 Projects **MUST** use markdownlint[^1] to enforce consistent Markdown style.
 
 ```bash
-npm install --save-dev markdownlint-cli
-npx markdownlint '**/*.md'
+npm install --save-dev markdownlint-cli@0.46.0
+npx --package=markdownlint-cli@0.46.0 markdownlint '**/*.md'
 ```
 
 ### Why markdownlint
@@ -253,7 +253,7 @@ erDiagram
 
 ```bash
 # Install mermaid-cli
-npm install -g @mermaid-js/mermaid-cli
+npm install -g @mermaid-js/mermaid-cli@12.0.0
 
 # Validate syntax
 mmdc -i diagram.mmd -o diagram.png
@@ -304,8 +304,8 @@ necessary if you use proper editor support.
 Projects **SHOULD** validate links using markdown-link-check[^4]:
 
 ```bash
-npm install --save-dev markdown-link-check
-npx markdown-link-check --config .markdown-link-check.json README.md
+npm install --save-dev markdown-link-check@3.15.0
+npx markdown-link-check@3.15.0 --config .markdown-link-check.json README.md
 ```
 
 ### Why Link Checking
@@ -383,11 +383,12 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: DavidAnson/markdownlint-cli2-action@v18
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: DavidAnson/markdownlint-cli2-action@eb5ca3ab411449c66620fe7f1b3c9e10547144b0 # v18.0.0
         with:
           globs: "**/*.md"
-      - uses: gaurav-nelson/github-action-markdown-link-check@v1
+      - uses: >- # v1
+          gaurav-nelson/github-action-markdown-link-check@5c5dfc0ac2e225883c0e5f03a85311ec2830d368
         with:
           config-file: .markdown-link-check.json
 ```

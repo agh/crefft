@@ -3,13 +3,22 @@
 > [crefft](README.md) > Contributing
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+"OPTIONAL" in this document are to be interpreted as described in
+BCP 14 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)
+[RFC 8174](https://datatracker.ietf.org/doc/html/rfc8174) when, and only
+when, they appear in all capitals, as shown here.
 
-crefft is a style-guide repository. Contributions are prose, tables, code
-examples, and configuration files — not application code. This document
-explains how to propose a change and what a change **MUST** satisfy before it
-is merged.
+crefft accepts contributions through [issues](https://github.com/agh/crefft/issues/new/choose),
+not pull requests. The maintainer makes the changes. Pull requests from
+anyone other than the maintainer are closed with a pointer to the issue
+forms; Dependabot pull requests continue.
+
+**Why**: issues let the maintainer assess the evidence and scope before
+implementing a consistent change across the guides.
+
+This document explains how to propose a change and what the maintainer's
+changes **MUST** satisfy before they are merged.
 
 Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
@@ -38,12 +47,27 @@ A proposal **SHOULD** fall into one of four shapes:
 4. **Correct provenance** — attribution, license, or notice problems in
    `reference/` or [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-Open an issue first for anything larger than a fix. The issue forms in
-`.github/ISSUE_TEMPLATE/` map onto the shapes above.
+Every proposal, including a small fix, **MUST** start with an
+[issue form](https://github.com/agh/crefft/issues/new/choose).
+Use **Bug in a guide** for incorrect prose, examples, configuration, links,
+or provenance; **Outdated version** for stale pins; and **New guide proposal**
+for missing coverage.
+
+Search existing issues first. A useful report identifies the latest crefft
+release, the affected file and heading or line, the expected and actual
+behavior, reproduction steps or the exact incorrect text, and primary-source
+evidence. Version claims **MUST** include a source URL and the date checked.
+Suggested wording belongs in the issue; a pull request is not needed.
+
+**Why**: a reproducible, sourced issue gives the maintainer enough information
+to verify the problem without guessing.
 
 ## House Rules
 
-These are the rules a reviewer will check. They are not negotiable.
+These rules still bind the maintainer's own changes.
+
+**Why**: an issues-only contribution policy does not lower the standards for
+the changes that ship.
 
 - **MUST** use [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)
   keywords (MUST, MUST NOT, SHOULD, SHOULD NOT, MAY) in **bold uppercase**,
@@ -64,6 +88,7 @@ These are the rules a reviewer will check. They are not negotiable.
 - **SHOULD** use US English spelling in all human-facing prose, including
   Welsh-named projects. Welsh names, proper nouns, quotations, and upstream
   tool and code spellings stay unchanged.
+  `make typos` enforces this rule; **Why**: spelling drift fails locally and in CI.
 - **MUST** use a serial comma in lists of three or more items joined by
   "and" or "or"; two-item phrases take no serial comma.
 - **MUST** put commas and periods inside closing quotation marks. Colons
@@ -77,8 +102,10 @@ These are the rules a reviewer will check. They are not negotiable.
 
 Version numbers, release dates, and deprecation timelines **MUST** be checked
 against a current source before they are written down, and the source
-**SHOULD** be cited in the pull request. Model knowledge and memory are not
-evidence. This applies to human and AI contributors alike.
+**SHOULD** be cited in the issue and the maintainer's pull request.
+Memory is not evidence.
+
+**Why**: release information changes independently of crefft's text.
 
 ### Vendored Material
 
@@ -94,26 +121,27 @@ evidence. This applies to human and AI contributors alike.
 - **MUST** record modifications to CC BY, CC BY-SA, and Apache-2.0 material in
   the vendor directory's `NOTICE` file.
 
-## Development Workflow
+## Maintainer Development Workflow
 
-1. Fork the repository and clone your fork.
-2. Create a branch: `git checkout -b fix/python-ruff-version`.
-3. Make the change.
-4. Run `make check` and fix everything it reports.
+1. Verify the issue's evidence and scope.
+2. Create a branch in the repository.
+3. Make the change, following the house rules.
+4. Run `make check` and fix everything it reports before committing.
 5. Commit using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
-6. Open a pull request against `main` and fill in the template.
+6. Open the maintainer's pull request against `main` and fill in the template.
+
+**Why**: the maintainer's pull requests retain the same review record and
+checks even though external pull requests are not accepted.
 
 ### Checks
 
-`make check` runs Markdown linting, JSON validation, and the tool-version
-validator. Run it before every push. If you do not have `make`, run the
-underlying commands:
+`make check` **MUST** pass before every commit. It runs Markdown linting,
+US spelling, internal links, secret scanning, script unit tests, tool-version
+validation, vendored integrity and license checks, and advisory snippet checks.
+See the [Makefile](Makefile) for the exact commands and pinned versions.
 
-```bash
-npx markdownlint-cli2@0.23.2 "**/*.md"
-python3 scripts/validate_versions.py
-find . -name '*.json' -not -path './node_modules/*' -exec jq -e . {} \; > /dev/null
-```
+**Why**: the full check catches cross-guide and tooling regressions that a
+single-file lint cannot detect.
 
 Markdown lint configuration lives in `.markdownlint.json` and
 `reference/security/.markdownlint.json`. Do not relax a rule to make a lint
@@ -172,7 +200,7 @@ incompatible changes explicit under either policy.
 
 ## Reporting Problems
 
-Use the issue forms:
+Use the [issue forms](https://github.com/agh/crefft/issues/new/choose):
 
 - **Bug in a guide** — a rule, example, or command that is wrong.
 - **Outdated version** — a pinned version that has moved on. Include the
@@ -183,8 +211,12 @@ Use the issue forms:
 Security vulnerabilities **MUST NOT** be reported in public issues. See
 [SECURITY.md](SECURITY.md).
 
-## Review
+**Why**: public reports can expose readers before a fix is available.
 
-crefft has one maintainer. Review is best effort, in the maintainer's own
-time. A pull request that follows the house rules, cites its sources, and
-passes `make check` will be reviewed faster than one that does not.
+## Support
+
+Support and issue replies are best effort, for the latest release only.
+There are no service levels, promised response times, or guaranteed fixes.
+See [SECURITY.md](SECURITY.md) for private security reporting.
+
+**Why**: crefft has one maintainer and does not provide a support service.

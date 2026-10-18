@@ -4,6 +4,14 @@ Skills extend agent capabilities through MCP (Model Context Protocol) servers.
 They provide agents with access to external systems for analysis,
 communication, and action.
 
+## Agency and sessions
+
+Every skill **MUST** preserve the agency, evidence, and session boundaries in
+[AGENTS.md](../../../AGENTS.md#agency-and-sessions), including when installed
+without the rest of crefft.
+
+**Why**: a skill adds capabilities, not authority to impersonate people or disclose sessions.
+
 ## Concept
 
 ```text
@@ -143,6 +151,12 @@ access token limited to the repositories the agent needs. `claude mcp get`
 reports `✔ Connected` on success and `✘ Failed to connect` with the HTTP
 status when the token is wrong.
 
+The token **MUST** have only the read permissions listed in the
+[GitHub skill](communication/github.md#access-levels), not the person's broader
+write grant.
+
+**Why**: repository scope alone does not prevent tagging, pushing, or release publication.
+
 **Don't** — Claude Code never reads MCP servers from this file:
 
 ```json
@@ -173,8 +187,8 @@ Agents declare skills they can leverage in their `skills_available` section:
 | Skill | Access | Use For |
 |-------|--------|---------|
 | `postgres` | readonly | Query deployment history |
-| `github` | read-write | Create PRs, manage releases |
-| `discord` | post | Send notifications |
+| `github` | readonly | Assess PRs and draft private proposals |
+| `discord` | readonly | Read context and draft notifications locally |
 
 ### Graceful Degradation
 
@@ -208,8 +222,11 @@ Each skill document **MUST** include:
 ### Audit Requirements
 
 - **SHOULD** log all skill invocations
-- **MUST** include agent ID and conversation context
+- **MUST** record only an opaque invocation ID, action, result, and evidence reference
+- **MUST NOT** include prompts, responses, transcripts, credentials, or confidential material
 - **SHOULD** retain logs per compliance requirements
+
+**Why**: an operational audit trail records actions without reproducing a private session.
 
 ### Access Control
 

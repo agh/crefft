@@ -3,8 +3,11 @@
 > [crefft](README.md) > Security Policy
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+"OPTIONAL" in this document are to be interpreted as described in
+BCP 14 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)
+[RFC 8174](https://datatracker.ietf.org/doc/html/rfc8174) when, and only
+when, they appear in all capitals, as shown here.
 
 ## What This Policy Covers
 
@@ -23,23 +26,30 @@ compromised or typo-squatted package name, or a pinned action pointing at a
 malicious revision are all in scope. So is security advice in a guide that is
 wrong in a way that would make a reader's system less safe.
 
-Out of scope: vulnerabilities in the upstream tools crefft recommends.
-Report those to the tool's own maintainers.
+Vulnerabilities in someone else's project, including upstream tools crefft
+recommends, **MUST** go through that project's own security policy, never a
+public issue here.
+
+**Why**: that project's maintainers control the fix and its disclosure.
 
 ## Supported Versions
 
 | Version | Supported |
 | ------- | --------- |
-| Latest commit on `main` | Yes |
-| Any tagged release older than `main` | No |
+| Latest release | Best effort |
+| Older releases and unreleased revisions | No |
 
-crefft is a single moving document set. Fixes land on `main`; older tags are
-historical records and are not patched. Pull the current `main` before
-reporting.
+Only the [latest release](https://github.com/agh/crefft/releases/latest) is
+supported. Check the problem against that release before reporting.
+Fixes are developed on `main` and published in a release; older releases
+are not patched.
+
+**Why**: a single supported release keeps limited maintenance effort on the
+material readers are directed to use.
 
 ## Reporting a Vulnerability
 
-**Do not open a public issue for a security problem.**
+Security vulnerabilities **MUST NOT** be reported in public issues.
 
 Report privately through GitHub:
 
@@ -48,29 +58,29 @@ Report privately through GitHub:
    could do with it.
 3. Include the steps you took to confirm it.
 
-This uses GitHub's private vulnerability reporting, so the report stays
-between you and the maintainer until a fix is published.
+GitHub's private vulnerability reporting is enabled for crefft. Use that
+channel rather than opening a public issue, including a placeholder issue.
 
-If private reporting is unavailable to you, open a public issue that says only
-that you have a security report and gives no details, and the maintainer will
-open a private channel.
+**Why**: the private advisory thread lets the reporter and maintainer discuss
+the vulnerability without exposing readers before a fix.
 
 ## What to Expect
 
-crefft has one maintainer working on it in their own time. Handling is best
-effort:
+Replies and fixes are best effort. There is no promised response time, fix
+date, or service level, and no bounty or other payment.
 
-- Reports are acknowledged when the maintainer next picks up the repository.
-- There is no service level agreement, no fixed response window, and no
-  guaranteed fix date. Anyone who needs one of those needs a commercial
-  vendor, not this repository.
-- Progress is communicated in the private advisory thread.
-- Reporters are credited in the advisory and the changelog unless they ask not
-  to be.
+Progress is discussed in the private advisory thread. After a fix is
+released, crefft publishes a security advisory describing the impact and
+remediation. Reporters are credited in the advisory and changelog unless
+they ask not to be.
 
-Coordinated disclosure is expected: please give the maintainer a reasonable
-chance to fix the problem before publishing. No legal action will be taken
-against anyone reporting in good faith.
+Reporters **SHOULD** coordinate disclosure in that thread until the fix and
+advisory are published.
+
+**Why**: coordinated disclosure protects readers while the fix is prepared;
+a single-maintainer project cannot promise a response or resolution schedule.
+
+No legal action will be taken against anyone reporting in good faith.
 
 ## Using crefft Safely
 

@@ -1117,10 +1117,11 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Run Semgrep
         run: |
+          # Exact release tag; verified from the container registry.
           docker run --rm --volume "$PWD:/src" --workdir /src \
             semgrep/semgrep:1.176.0 semgrep scan \
               --config p/security-audit \
@@ -1129,7 +1130,7 @@ jobs:
               --sarif --output semgrep.sarif
 
       - name: Upload Semgrep results
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
         with:
           sarif_file: semgrep.sarif
           category: semgrep
@@ -1141,10 +1142,10 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Run Trivy
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
           scan-ref: .
@@ -1155,7 +1156,7 @@ jobs:
           exit-code: '0'
 
       - name: Upload Trivy results
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
         with:
           sarif_file: trivy.sarif
           category: trivy
@@ -1176,17 +1177,17 @@ jobs:
           - language: javascript-typescript
             build-mode: none
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Initialise CodeQL
-        uses: github/codeql-action/init@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
           queries: security-extended
 
-      - name: Analyse with CodeQL
-        uses: github/codeql-action/analyze@v4
+      - name: Analyze with CodeQL
+        uses: github/codeql-action/analyze@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
         with:
           category: /language:${{ matrix.language }}
 ```
@@ -1442,7 +1443,8 @@ LLM-generated code MUST be executed in isolated environments:
 
 ```dockerfile
 # Dockerfile for LLM code execution sandbox
-FROM python:3.11-slim
+# python:3.11-slim; registry manifest digest.
+FROM python@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce
 
 # Create non-root user
 RUN useradd -m -u 1000 sandbox && \

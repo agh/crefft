@@ -384,7 +384,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
           toolchain: ${{ matrix.rust }}
           targets: ${{ matrix.target }}
@@ -404,7 +404,7 @@ jobs:
           - wasm32-unknown-unknown
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
           toolchain: stable
           targets: ${{ matrix.target }}
@@ -449,7 +449,7 @@ unicode-normalization = "0.1.25"  # Unicode 17.0.0 data
 ```
 
 ```toml
-# For locale-aware i18n rather than normalisation
+# For locale-aware i18n rather than normalization
 [dependencies]
 icu = "2.3.1"  # ICU4X[^47]
 ```
@@ -468,17 +468,17 @@ pub fn nfc(text: &str) -> String {
 }
 
 #[test]
-fn normalisation_makes_the_two_spellings_equal() {
+fn normalization_makes_the_two_spellings_equal() {
     // "café" with a precomposed U+00E9, versus "e" + U+0301 combining acute.
     let precomposed = "caf\u{e9}";  // NFC
     let decomposed = "cafe\u{301}"; // NFD
 
-    // Different code points before normalisation.
+    // Different code points before normalization.
     assert_ne!(precomposed, decomposed);
     assert_eq!(precomposed.chars().count(), 4);
     assert_eq!(decomposed.chars().count(), 5);
 
-    // Equal after normalisation.
+    // Equal after normalization.
     assert_eq!(nfc(precomposed), nfc(decomposed));
 }
 

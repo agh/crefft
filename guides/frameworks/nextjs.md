@@ -22,13 +22,13 @@ All TypeScript tooling applies. Additional Next.js-specific tools:
 
 | Task | Tool | Command |
 | ---- | ---- | ------- |
-| Install | npm/pnpm/yarn | `npx create-next-app@latest` |
+| Install | npm/pnpm/yarn | `npx create-next-app@16.3.4` |
 | Run dev | Next.js | `npm run dev` |
 | Build | Next.js | `npm run build` |
 | Bundler | Turbopack[^1] | `next dev --turbo` |
 | Test | Vitest[^2] + Testing Library[^3] | `vitest` |
 | E2E | Playwright[^4] | `playwright test` |
-| Lint | ESLint + `eslint-config-next`[^5] | `npx eslint .` |
+| Lint | ESLint + `eslint-config-next`[^5] | `npx eslint@9.39.5 .` |
 
 ## Linting
 
@@ -260,7 +260,7 @@ export function TagFilter({
 }
 ```
 
-Projects **SHOULD** run `npx next typegen` and use the generated `PageProps`,
+Projects **SHOULD** run `npx next@16.3.4 typegen` and use the generated `PageProps`,
 `LayoutProps`, and `RouteContext` helpers instead of hand-writing the promise
 types:
 
@@ -675,7 +675,7 @@ export async function createPost(
     return { ok: false, error: 'Unauthorized' };
   }
 
-  // 2. Authorise this specific operation
+  // 2. Authorize this specific operation
   if (!user.permissions.includes('post:create')) {
     return { ok: false, error: 'Forbidden' };
   }
@@ -1576,7 +1576,8 @@ const config: NextConfig = {
 
 ```dockerfile
 # Dockerfile
-FROM node:20-alpine AS base
+# node:20-alpine; registry manifest digest.
+FROM node@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 AS base
 
 # Dependencies
 FROM base AS deps
@@ -1627,7 +1628,8 @@ services:
       - db
 
   db:
-    image: postgres:17
+    # postgres:17; registry manifest digest.
+    image: postgres@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
     environment:
       POSTGRES_PASSWORD: pass
       POSTGRES_USER: user
@@ -1852,7 +1854,7 @@ their APIs.
 ### Pusher Integration
 
 ```bash
-npm install pusher pusher-js
+npm install pusher@5.3.4 pusher-js@8.6.0
 ```
 
 ```ts
@@ -2013,7 +2015,7 @@ export async function GET(request: Request) {
 ### Inngest for Complex Workflows
 
 ```bash
-npm install inngest
+npm install inngest@4.24.0
 ```
 
 ```ts
@@ -2092,7 +2094,7 @@ timeouts. This protects both your application and the failing service.
 ### Implementation
 
 ```bash
-npm install opossum
+npm install opossum@10.0.0
 ```
 
 ```ts
@@ -2190,7 +2192,7 @@ custom) while optimizing for Edge Runtime performance.
 ### Installation
 
 ```bash
-npm install flags @flags-sdk/statsig  # or @flags-sdk/launchdarkly
+npm install flags@4.3.1 @flags-sdk/statsig@0.3.1  # or @flags-sdk/launchdarkly@1.1.1
 ```
 
 ### Configuration with Statsig

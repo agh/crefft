@@ -693,7 +693,7 @@ function CartSummary() {
 Derived values **MUST NOT** be declared as state fields:
 
 ```tsx
-// BAD: `total` is declared as a number but initialised with a function.
+// BAD: `total` is declared as a number but initialized with a function.
 // tsc rejects this with TS2322: Type '() => number' is not assignable to type 'number'.
 type CartState = {
   items: CartItem[];
@@ -1066,7 +1066,7 @@ Projects using React 19 **SHOULD** enable the React Compiler[^13] to automatical
 #### Installation and Configuration
 
 ```bash
-npm install -D babel-plugin-react-compiler eslint-plugin-react-compiler
+npm install -D babel-plugin-react-compiler@1.0.0 eslint-plugin-react-compiler@19.1.0-rc.2
 ```
 
 ```js
@@ -1636,37 +1636,37 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
-      - run: npx biome ci .
-      - run: npx tsc --noEmit
+      - run: npx @biomejs/biome@2.5.12 ci .
+      - run: npx --package=typescript@6.0.3 tsc --noEmit
 
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
-      - run: npx vitest run --coverage
+      - run: npx vitest@5.0.0 run --coverage
 
   e2e:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
-      - run: npx playwright install --with-deps
-      - run: npx playwright test
+      - run: npx playwright@1.64.1 install --with-deps
+      - run: npx playwright@1.64.1 test
 ```
 
 ## See Also

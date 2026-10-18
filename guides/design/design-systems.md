@@ -69,29 +69,73 @@ primitives. Primitives MUST contain raw values.
 
 ### Font Stack
 
-Projects MUST define a complete font stack with fallbacks:
+Each project **MUST** choose its own typefaces and record the choice, license,
+font version, and any modifications in its own design record. crefft does not
+prescribe a typeface.
 
-```css
-:root {
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-               Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas,
-               'Liberation Mono', monospace;
-}
+- Selected fonts **MUST** have a license permitting self-hosting and modification;
+  [SIL Open Font License 1.1](https://openfontlicense.org/open-font-license-official-text/)
+  is a common case. Projects **MUST** retain required license and copyright
+  notices, honor any Reserved Font Names, and record modifications, including
+  subsetting and format conversion.
+- Fonts **MUST** provide real files or variable-font axes for every used weight.
+  Synthesized bold **MUST NOT** replace missing weights.
+- Projects **MUST** verify glyph coverage against their content, including IPA
+  and non-Latin text wherever used, and preserve that coverage when subsetting.
+- Code **MUST** use a monospace face with true bold and italic, including bold
+  italic wherever those styles are combined.
+- Font files **MUST** be self-hosted. Pages **MUST NOT** make third-party font requests.
+- Projects **MUST** define complete font stacks with fallbacks.
+
+**Why**: Licensing and modification records make font delivery auditable.
+Real weights and glyph coverage preserve legibility without synthetic styles or
+missing characters. True code styles keep emphasis distinct, and self-hosting
+avoids third-party tracking and availability dependencies.
+
+```text
+DO: Record the selected faces and licenses, then ship verified font files locally.
+DON'T: Copy a standard's example face, synthesize bold, or fetch fonts from a third party.
 ```
 
-**Why Inter?**
+The names below are example aliases, not typeface recommendations. Replace the
+aliases and files with the project's selected variable fonts:
 
-- Designed for screens, optimized for UI
-- Excellent legibility at small sizes
-- Variable font support for precise weight control
-- Open source, widely available
+```css
+@font-face {
+  font-family: 'Project Text';
+  src: url('/fonts/project-text-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
 
-**Why JetBrains Mono?**
+@font-face {
+  font-family: 'Project Code';
+  src: url('/fonts/project-code-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
 
-- Clear character distinction (0/O, 1/l/I)
-- Designed for code readability
-- Consistent character width
+@font-face {
+  font-family: 'Project Code';
+  src: url('/fonts/project-code-italic-variable.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+:root {
+  --font-sans: 'Project Text', system-ui, sans-serif;
+  --font-mono: 'Project Code', ui-monospace, monospace;
+  font-family: var(--font-sans);
+  font-synthesis: none;
+}
+
+code, pre, kbd, samp {
+  font-family: var(--font-mono);
+}
+```
 
 ### Type Scale
 
@@ -263,10 +307,8 @@ the new pairing has been measured.
   --text-primary:   var(--gray-900);
   --text-secondary: var(--gray-700);
   --text-muted:     var(--gray-600);
+  --text-disabled:  var(--text-muted);
   --text-on-fill:   #ffffff;
-
-  /* Inactive controls only: exempt from SC 1.4.3, MUST NOT carry meaning */
-  --text-disabled:  var(--gray-400);
 
   /* Icons and control boundaries: 3:1 or better (SC 1.4.11) */
   --icon-default:   var(--gray-700);
@@ -313,29 +355,28 @@ the new pairing has been measured.
 }
 ```
 
-**Why the role split?** WCAG 2.1 requires 4.5:1 for body text (SC 1.4.3) but
-only 3:1 for icons, control boundaries, and focus indicators (SC 1.4.11). A
-single `--status-error` tuned for a 3:1 badge fill fails as error-message text;
-a single value tuned for text is needlessly dark as a fill. Naming the role in
-the token makes the applicable threshold, and therefore the required test,
-unambiguous.
+**Why the role split?** crefft requires 4.5:1 for all text, while non-text
+icons, control boundaries, and focus indicators require 3:1 (SC 1.4.11).
+A single `--status-error` tuned for a 3:1 badge fill fails as error-message text;
+a single value tuned for text is needlessly dark as a fill. Naming the role
+makes the applicable threshold, and therefore the required test, unambiguous.
 
-**Why `--text-disabled` is separate.** SC 1.4.3 exempts "inactive user
-interface components". `--text-disabled` is the only token permitted to fall
-below 4.5:1, and only on a control that is genuinely disabled. Placeholder text
-is *not* exempt — WCAG states the criterion "applies to text in the page,
-including placeholder text" — so placeholders MUST use `--text-muted` or
-stronger.
+**Why `--text-disabled` is separate.** WCAG SC 1.4.3 exempts inactive UI
+components, but crefft's all-text rule does not. Disabled labels **MUST** still
+reach 4.5:1, so the token aliases `--text-muted` rather than a low-contrast gray.
+Keeping a separate semantic role lets projects style disabled controls without
+weakening text contrast. Placeholders **MUST** use `--text-muted` or stronger;
+they are not exempt under WCAG either.
 
 ```css
-/* ✗ DON'T: a 3:1 icon token as text (4.39:1), or a disabled token as
+/* ✗ DON'T: a 3:1 icon token as text (4.39:1), or a primitive as
    placeholder (2.33:1) */
 .hint        { color: var(--icon-subtle); background: var(--surface-inset); }
-.placeholder { color: var(--text-disabled); }
+.placeholder { color: var(--gray-400); background: var(--surface-inset); }
 
 /* ✓ DO: use the token whose role matches the pixels (7.03:1 for both) */
 .hint        { color: var(--text-muted); background: var(--surface-inset); }
-.placeholder { color: var(--text-muted); }
+.placeholder { color: var(--text-muted); background: var(--surface-inset); }
 ```
 
 #### Alpha and Translucent Tokens
@@ -383,8 +424,8 @@ leaves light-theme surfaces underneath dark-theme text:
   --text-primary:   var(--gray-100);
   --text-secondary: var(--gray-300);
   --text-muted:     var(--gray-400);
+  --text-disabled:  var(--text-muted);
   --text-on-fill:   var(--gray-950);
-  --text-disabled:  var(--gray-600);
 
   --icon-default:   var(--gray-300);
   --icon-subtle:    var(--gray-500);
@@ -459,30 +500,36 @@ another route. Theme selectors MUST out-specify the base `:root` block.
 
 ### Contrast Requirements
 
-All color combinations MUST meet WCAG 2.1 AA. WCAG defines large-scale text in
-points, not CSS pixels:
+All text **MUST** reach at least 4.5:1 against its actual background in every
+theme, regardless of size or weight. Non-text UI components, focus indicators,
+and essential graphics **MUST** reach at least 3:1 (SC 1.4.11).
 
-| Element                                         | Minimum Contrast |
-| ----------------------------------------------- | ---------------- |
-| Normal text, below the large-scale threshold    | 4.5:1            |
-| Large text: 18pt (24px), or 14pt bold (18.67px) | 3:1              |
-| UI components and graphical objects             | 3:1              |
-| Focus indicators                                | 3:1              |
+**Why**: One text threshold simplifies testing, remains valid when users scale
+text, and removes size-classification disputes. The
+[shared contrast rule](./accessibility.md#14-distinguishable) distinguishes
+crefft's requirement from WCAG 2.2 AA:
 
-`1pt = 1.333px`, so 18pt is 24 CSS px and 14pt bold is 18.67 CSS px. WCAG's
-own note rounds these to "approximately 18.5px and 24px"; when working in CSS
-pixels you MUST round the bold threshold *up*, to 19px, because 18.5px is
-smaller than 14pt. **18px normal-weight text is not large text** and MUST meet
-4.5:1.
+| Element                                         | WCAG 2.2 AA | crefft |
+| ----------------------------------------------- | ----------- | ------ |
+| Normal text, below the large-scale threshold     | 4.5:1       | 4.5:1  |
+| Large text: 18pt regular, or 14pt bold             | 3:1         | 4.5:1  |
+| Non-text UI components and essential graphics     | 3:1         | 3:1    |
+| Focus indicators                                | 3:1         | 3:1    |
+
+WCAG defines large-scale text in points, not CSS pixels. At `1pt = 1.333px`,
+18pt is approximately 24 CSS px and 14pt bold is approximately 18.67 CSS px.
+WCAG's own note rounds these to "approximately 18.5px and 24px";
+18 CSS px normal-weight text is not large text even under WCAG.
+None of these size boundaries lowers crefft's 4.5:1 text threshold.
 
 Three further rules apply:
 
-- Ratios MUST NOT be rounded up. WCAG treats the thresholds as exact, so
+- Ratios **MUST NOT** be rounded up. WCAG treats the thresholds as exact, so
   4.499:1 fails 4.5:1.
 - Very thin or unusual faces render fainter than their declared color. Such
-  faces SHOULD exceed the normative ratio rather than sit on it.
-- Placeholder text, hover text, and focus-revealed text are text. Only
-  genuinely inactive controls are exempt.
+  faces **SHOULD** exceed the normative ratio rather than sit on it.
+- Placeholder text, hover text, focus-revealed text, and disabled labels
+  **MUST** meet the same 4.5:1 text threshold.
 
 Use tools like [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
 to verify.
@@ -499,6 +546,7 @@ truncated, never rounded up. The worst case for light-theme text is
 | `--text-primary` on the worst surface                 | 16.11:1  | 4.5:1    |
 | `--text-secondary` on the worst surface               | 9.50:1   | 4.5:1    |
 | `--text-muted` on the worst surface                   | 7.03:1   | 4.5:1    |
+| `--text-disabled` on the worst surface                | 7.03:1   | 4.5:1    |
 | `--icon-subtle` / `--border-control` on worst surface | 4.39:1   | 3:1      |
 | `--interactive-default` as text on worst surface      | 5.72:1   | 4.5:1    |
 | `--text-on-fill` on `--interactive-default`           | 6.28:1   | 4.5:1    |
@@ -516,6 +564,7 @@ truncated, never rounded up. The worst case for light-theme text is
 | `--text-primary` on the worst surface                 | 16.76:1  | 4.5:1    |
 | `--text-secondary` on the worst surface               | 12.46:1  | 4.5:1    |
 | `--text-muted` on the worst surface                   | 7.18:1   | 4.5:1    |
+| `--text-disabled` on the worst surface                | 7.18:1   | 4.5:1    |
 | `--icon-subtle` / `--border-control` on worst surface | 3.81:1   | 3:1      |
 | `--interactive-default` as text on worst surface      | 6.17:1   | 4.5:1    |
 | `--text-on-fill` on `--interactive-default`           | 6.66:1   | 4.5:1    |
@@ -528,10 +577,9 @@ truncated, never rounded up. The worst case for light-theme text is
 | `--status-*-on-surface` on `--status-*-surface`       | 8.14:1 + | 4.5:1    |
 | `--text-on-fill` on `--status-*-fill`                 | 7.19:1 + | 4.5:1    |
 
-`--text-disabled` (2.33:1 light, 2.38:1 dark) and the decorative
-`--border-default` / `--border-muted` / `--border-emphasis` tokens are the only
-entries below threshold. They MUST be confined to inactive controls and
-non-meaningful rules respectively.
+Only the decorative `--border-default`, `--border-muted`, and
+`--border-emphasis` tokens have no contrast minimum. They **MUST** be confined
+to non-meaningful rules, never text or essential control boundaries.
 
 `--status-warning` has the least headroom in the light theme. Changing any
 light surface MUST trigger a re-run of the contrast suite below.
@@ -565,6 +613,7 @@ const SUITE = [
     ['--text-primary', '#18181b', 4.5],
     ['--text-secondary', '#3f3f46', 4.5],
     ['--text-muted', '#52525b', 4.5],
+    ['--text-disabled', '#52525b', 4.5],
     ['--icon-subtle', '#71717a', 3],
     ['--border-control', '#71717a', 3],
     ['--interactive-default', '#4f46e5', 4.5],
@@ -577,6 +626,7 @@ const SUITE = [
     ['--text-primary', '#f4f4f5', 4.5],
     ['--text-secondary', '#d4d4d8', 4.5],
     ['--text-muted', '#a1a1aa', 4.5],
+    ['--text-disabled', '#a1a1aa', 4.5],
     ['--icon-subtle', '#71717a', 3],
     ['--border-control', '#71717a', 3],
     ['--interactive-default', '#818cf8', 4.5],
@@ -854,7 +904,7 @@ working after load.
 
 All themes MUST:
 
-1. Meet WCAG 2.1 AA contrast requirements, verified by the contrast suite
+1. Meet 4.5:1 for all text and 3:1 for non-text UI and focus, verified by the contrast suite
 2. Redefine every semantic token, not a subset
 3. Use a single selector contract, qualified so it out-specifies base `:root`
 4. Be tested with all UI components
@@ -924,11 +974,12 @@ background of a real component, not by inspecting the stylesheet.
 - [ ] All values use design tokens (no hardcoded values)
 - [ ] Token architecture has three layers (primitive, semantic, component)
 - [ ] Every semantic foreground token names its role (text, icon, border, fill)
+- [ ] Project-selected fonts and licenses recorded, coverage and real weights verified
 - [ ] Type scale based on consistent ratio
 - [ ] Spacing based on consistent unit, half steps use valid identifiers
 - [ ] Dark mode intentionally designed (not inverted)
 - [ ] Every theme overrides the complete semantic layer under one selector
-- [ ] All color combinations meet WCAG AA contrast, asserted by an automated test
+- [ ] All text meets 4.5:1 and non-text UI and focus meet 3:1, asserted by an automated test
 - [ ] Translucent values use `color-mix()`, never a slash inside `var()`
 - [ ] Z-index uses defined scale
 - [ ] Theme switching works without page reload

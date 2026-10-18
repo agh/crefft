@@ -1,4 +1,7 @@
 {
+  "license": "MIT",
+  "license_url": "LICENSE",
+  "restrictions": [],
   "name": "Container and Kubernetes Security Reference",
   "version": "2025.01",
   "sources": [

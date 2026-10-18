@@ -1787,8 +1787,8 @@ class FakeResponse:
     def json(self) -> dict:
         return {"status": "ok"}
 
-def call_five_times(monkeypatch, behaviour) -> None:
-    monkeypatch.setattr(payment.requests, "post", behaviour)
+def call_five_times(monkeypatch, behavior) -> None:
+    monkeypatch.setattr(payment.requests, "post", behavior)
     service = PaymentService()
     for attempt in range(5):
         try:

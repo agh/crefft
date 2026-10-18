@@ -12,13 +12,18 @@ Targets Docker Engine 27.5+ and Docker Compose v5.0+.
 
 | Task | Tool | Command |
 | ---- | ---- | ------- |
-| Build image | docker build | `docker build -t myapp:1.0 .` |
-| Run container | docker run | `docker run -d --name myapp myapp:1.0` |
+| Build image | docker build | `docker build -t myapp:1.0.0 .` |
+| Run container | docker run | `docker run -d --name myapp myapp:1.0.0` |
 | Compose up | docker compose | `docker compose up -d` |
 | Compose down | docker compose | `docker compose down` |
-| Image scan | Trivy | `trivy image myapp:1.0` |
+| Image scan | Trivy | `trivy image myapp:1.0.0` |
 | Format Dockerfile | Hadolint | `hadolint Dockerfile` |
 | Compose validate | docker compose | `docker compose config --quiet` |
+
+`myapp:1.0.0` is the exact local tag produced by the build row, not a registry
+release. Application image names and abbreviated digests in the marked YAML
+templates below are nonexecuting placeholders; replace each with your own
+registry-verified digest before deployment.
 
 ## Docker Compose File Organization
 
@@ -180,6 +185,7 @@ x-service-defaults: &service-defaults
 services:
   api:
     <<: *service-defaults
+    # crefft: illustrative -- Supply your own application's full registry digest.
     image: myapp/api@sha256:abc123...
     cap_add:
       - NET_BIND_SERVICE  # Add back only required capabilities
@@ -274,13 +280,14 @@ registry is compromised, digest-pinned images remain safe.
 # WRONG: Tags are mutable
 services:
   api:
+    # crefft: allow-floating -- Negative example contrasts a mutable tag with the digest below.
     image: nginx:latest
 
 # CORRECT: SHA256 digest pinning
 services:
   api:
-    # nginx:1.25.3, pinned 2024-11
-    image: nginx@sha256:4c0fdaa8b6341bfdeca5f18f7837462c80cff90527ee35ef185571e1c327beac
+    # nginx:1.25.3; registry manifest digest.
+    image: nginx@sha256:c7a6ad68be85142c7fe1089e48faa1e7c7166a194caa9180ddea66345876b9d2
 ```
 
 **Finding Digests**:
@@ -299,10 +306,11 @@ crane digest nginx:1.25.3
 Projects deploying to multiple architectures **SHOULD** maintain per-architecture
 digests.
 
-**Why**: Multi-arch images have different SHA256 digests per platform. Pinning
-a single digest fails on other architectures with "exec format error".
-Maintaining per-architecture digests ensures reproducible deployments across
-ARM64 and AMD64 hosts.
+**Why**: A manifest-index digest preserves automatic platform selection, while
+a platform-manifest digest selects only that platform and can fail on another
+architecture with "exec format error." Per-architecture digests let reviewers
+approve ARM64 and AMD64 images independently; the examples otherwise pin the
+registry's manifest index.
 
 **images.yml Pattern**:
 
@@ -311,22 +319,20 @@ ARM64 and AMD64 hosts.
 images:
   traefik:
     version: "3.6.5"
-    pinned_at: "2025-12-24T22:00:00Z"
+    pinned_at: "2026-10-18"
     digests:
-      amd64: "sha256:d944e3693bbf5a..."
-      arm64: "sha256:088e42947073..."
+      amd64: "sha256:d944e3693bbf5a361ddd2e411bb713049cfb4f5ff3da200b30ee7a347dbd6abd"
+      arm64: "sha256:4df45c2d1101f440d989afb8d54ce557fda8c1028c63b4edb46e1387f20e252d"
 ```
 
 **Compose Integration**:
 
 ```yaml
-# compose.yml - use environment variable for digest
+# compose.yml - deployment tooling renders a reviewed manifest digest
 services:
   traefik:
-    image: ${TRAEFIK_IMAGE:-traefik:v3.6}
-
-# .env (templated by deployment tooling)
-TRAEFIK_IMAGE=traefik@sha256:d944e3693bbf5a...
+    # traefik:v3.6.5; registry manifest digest.
+    image: traefik@sha256:67622638cd88dbfcfba40159bc652ecf0aea0e032f8a3c7e3134ae7c037b9910
 ```
 
 **Finding Per-Architecture Digests**:
@@ -516,7 +522,7 @@ only.
 docker inspect myapp-app-1 --format '{{json .Mounts}}' | jq '.[] | {Type, Source}'
 # {"Type": "bind", "Source": "/etc/myapp/secrets/db_password"}
 
-# Materialise it outside the build context, readable only by the deploy account
+# Materialize it outside the build context, readable only by the deploy account
 umask 077
 mkdir -p /etc/myapp/secrets
 vault kv get -field=password secret/myapp/db > /etc/myapp/secrets/db_password
@@ -871,7 +877,8 @@ vulnerabilities, faster pull times, and lower storage costs.
 
 ```dockerfile
 # Stage 1: Build
-FROM golang:1.22 AS builder
+# golang:1.22; registry manifest digest.
+FROM golang@sha256:1cf6c45ba39db9fd6db16922041d074a63c935556a05c5ccb62d181034df7f02 AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
@@ -879,7 +886,9 @@ COPY . .  # Requires a .dockerignore that excludes secrets and credentials
 RUN CGO_ENABLED=0 go build -o /app/server
 
 # Stage 2: Runtime
-FROM gcr.io/distroless/static-debian12:nonroot
+# gcr.io/distroless/static-debian12:nonroot; registry manifest digest.
+FROM gcr.io/distroless/static-debian12@\
+sha256:afa5c872c891853ca7fcf1f12c3edb23f7eeef36189728842dd51042ff57f7ab
 COPY --from=builder /app/server /server
 EXPOSE 8080
 ENTRYPOINT ["/server"]
@@ -909,14 +918,21 @@ COPY app /app
 ENTRYPOINT ["/app"]
 
 # Go, Rust (with CA certs, timezone data)
-FROM gcr.io/distroless/static-debian12:nonroot
+# gcr.io/distroless/static-debian12:nonroot; registry manifest digest.
+FROM gcr.io/distroless/static-debian12@\
+sha256:afa5c872c891853ca7fcf1f12c3edb23f7eeef36189728842dd51042ff57f7ab
 
 # Python, Node.js, Ruby
-FROM gcr.io/distroless/python3-debian12:nonroot
-FROM gcr.io/distroless/nodejs20-debian12:nonroot
+# gcr.io/distroless/python3-debian12:nonroot; registry manifest digest.
+FROM gcr.io/distroless/python3-debian12@\
+sha256:7d1042ce588ab97019fe95c24ffca7bc5a82ccdac572511d5e09bda4435c89c5
+# gcr.io/distroless/nodejs20-debian12:nonroot; registry manifest digest.
+FROM gcr.io/distroless/nodejs20-debian12@\
+sha256:2cd820156cf039c8b54ae2d2a97e424b6729070714de8707a6b79f20d56f6a9a
 
 # Alpine (when distroless unavailable)
-FROM alpine:3.19
+# alpine:3.19; registry manifest digest.
+FROM alpine@sha256:6baf43584bcb78f2e5847d1de515f23499913ac9f12bdf834811a3145eb11ca1
 RUN apk add --no-cache ca-certificates
 ```
 
@@ -931,13 +947,15 @@ prevents re-downloading packages on every code change.
 
 ```dockerfile
 # WRONG: Invalidates cache on every code change
-FROM python:3.12-slim
+# python:3.12-slim; registry manifest digest.
+FROM python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
 COPY . /app
 WORKDIR /app
 RUN pip install -r requirements.txt
 
 # CORRECT: Dependencies cached separately
-FROM python:3.12-slim
+# python:3.12-slim; registry manifest digest.
+FROM python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -1042,17 +1060,19 @@ nothing to the layer.
 
 ```dockerfile
 # WRONG: a build argument survives in the published image
-FROM alpine:3.22
+# alpine:3.22; registry manifest digest.
+FROM alpine@sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8
 ARG REGISTRY_TOKEN
 ENV REGISTRY_TOKEN=${REGISTRY_TOKEN}
 RUN echo "fetching dependencies with $REGISTRY_TOKEN" > /tmp/build.log
-# docker inspect myapp:1.0 --format '{{json .Config.Env}}'
+# docker inspect myapp:1.0.0 --format '{{json .Config.Env}}'
 # ["PATH=...","REGISTRY_TOKEN=fixture-token-value"]
 ```
 
 ```dockerfile
 # syntax=docker/dockerfile:1.27
 # CORRECT: the credential is mounted for one instruction only
+# Exact release tag; verified from the container registry.
 FROM golang:1.27.1 AS builder
 WORKDIR /src
 COPY go.mod go.sum ./
@@ -1064,11 +1084,11 @@ RUN CGO_ENABLED=0 go build -o /out/server ./...
 
 ```bash
 # Supply the secret from a file outside the build context
-docker build --secret id=netrc,src="$HOME/.netrc" -t myapp:1.0 .
+docker build --secret id=netrc,src="$HOME/.netrc" -t myapp:1.0.0 .
 
 # Or take the value from an environment variable on the build client;
 # it is mounted at /run/secrets/npm_token unless the RUN mount sets env=
-docker build --secret id=npm_token,env=NPM_TOKEN -t myapp:1.0 .
+docker build --secret id=npm_token,env=NPM_TOKEN -t myapp:1.0.0 .
 ```
 
 Use `--mount=type=ssh` for private Git dependencies so the agent socket, not a
@@ -1083,11 +1103,11 @@ dependencies. Automated scanning in CI/CD prevents vulnerable images from
 reaching production.
 
 ```bash
-# Scan with Trivy
-trivy image myapp:1.0
+# Scan the exact local tag built above
+trivy image myapp:1.0.0
 
 # Fail CI if critical vulnerabilities found
-trivy image --severity CRITICAL,HIGH --exit-code 1 myapp:1.0
+trivy image --severity CRITICAL,HIGH --exit-code 1 myapp:1.0.0
 
 # Scan Dockerfile
 trivy config Dockerfile
@@ -1098,9 +1118,9 @@ trivy config Dockerfile
 ```yaml
 # GitHub Actions
 - name: Scan image
-  uses: aquasecurity/trivy-action@master
+  uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
   with:
-    image-ref: myapp:1.0
+    image-ref: myapp:1.0.0  # Exact local tag built above
     severity: CRITICAL,HIGH
     exit-code: 1
 ```
@@ -1111,13 +1131,16 @@ Projects **SHOULD** lint Dockerfiles with Hadolint.
 
 ```bash
 # Install Hadolint
-docker pull hadolint/hadolint
+# Exact release tag; verified from the container registry.
+docker pull hadolint/hadolint:v2.14.0
 
 # Lint Dockerfile
-docker run --rm -i hadolint/hadolint < Dockerfile
+# Exact release tag; verified from the container registry.
+docker run --rm -i hadolint/hadolint:v2.14.0 < Dockerfile
 
 # Ignore specific rules
-docker run --rm -i hadolint/hadolint \
+# Exact release tag; verified from the container registry.
+docker run --rm -i hadolint/hadolint:v2.14.0 \
   --ignore DL3008 --ignore DL3009 < Dockerfile
 ```
 
@@ -1270,6 +1293,7 @@ services:
 # compose.production.yml
 services:
   api:
+    # crefft: illustrative -- Replace this production API placeholder with a full registry digest.
     image: registry.example.com/api@sha256:abc123...
     restart: always
     deploy:
@@ -1336,7 +1360,7 @@ networks:
 
 # Secrets
 # Host files bind-mounted into the container: not encrypted, not in memory.
-# Keep the source outside the build context, mode 0400, materialised by
+# Keep the source outside the build context, mode 0400, materialized by
 # deployment tooling from a secret manager.
 secrets:
   api_key:
@@ -1349,7 +1373,7 @@ volumes:
 # Services
 services:
   api:
-    # SHA256 digest pinning
+    # crefft: illustrative -- Replace this application placeholder with a full registry digest.
     image: myapp/api@sha256:abc123def456...
     container_name: api
     <<: *service-defaults
@@ -1412,20 +1436,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
 
       - name: Login to Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5.4.0
         with:
           context: .
           push: true
@@ -1434,7 +1458,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Scan image
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: ghcr.io/${{ github.repository }}:${{ github.sha }}
           severity: CRITICAL,HIGH

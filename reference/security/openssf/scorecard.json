@@ -4,6 +4,8 @@
   "source": "https://securityscorecards.dev/",
   "github": "https://github.com/ossf/scorecard",
   "license": "Apache-2.0",
+  "license_url": "reference/security/LICENSES/Apache-2.0.txt",
+  "restrictions": [],
   "description": "Automated security health metrics for open source projects",
   "scoring": {
     "range": "0-10",

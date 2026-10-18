@@ -34,9 +34,8 @@ Extends [Google Python Style Guide](../../reference/google/python.md).
 
 Projects **MUST** use uv[^10] for all Python package management.
 
-**Why**: uv is the world-class Python package manager, 10-100x faster than
-pip[^11]. It provides deterministic dependency resolution, faster installs, and
-a superior developer experience compared to pip, poetry, or pipenv.
+**Why**: uv manages project dependencies and environments together. Use
+`uv sync --locked` where the lockfile is authoritative.
 
 ```bash
 # Create new project
@@ -123,8 +122,8 @@ line-ending = "auto"
 Projects **MUST** use both Mypy[^2] and Pyright[^3] for type checking.
 
 **Why**: Mypy and Pyright catch different classes of type errors due to their
-different implementations and type inference strategies[^15]. Using both
-provides maximum type safety coverage.
+different implementations and type inference strategies[^15]. Run both checks;
+neither replaces the other in this standard.
 
 ### Mypy (strict mode)
 
@@ -591,8 +590,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
       - run: uv sync --locked
       - run: uv run ruff check .
       - run: uv run ruff format --check .
@@ -602,8 +601,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
       - run: uv sync --locked
       - run: uv run pytest -n auto --cov=src --cov-fail-under=80
 ```
@@ -700,7 +699,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 
 class Counter:
-    """Counter whose increments are serialised by a lock."""
+    """Counter whose increments are serialized by a lock."""
 
     def __init__(self) -> None:
         self._lock = threading.Lock()

@@ -580,7 +580,7 @@ gcloud run deploy gemini-app \
     --service-account=gemini-service@your-project-id.iam.gserviceaccount.com
 
 # Local development: user credentials for ADC, impersonating the same
-# service account so local and production authorisation match.
+# service account so local and production authorization match.
 gcloud auth application-default login
 gcloud config set auth/impersonate_service_account \
     gemini-service@your-project-id.iam.gserviceaccount.com
@@ -672,7 +672,7 @@ export GEMINI_API_KEY="your-auth-key-here"
 4. Install the Vertex AI SDK, `google-cloud-aiplatform`[^12]:
 
    ```bash
-   pip install google-cloud-aiplatform
+   pip install google-cloud-aiplatform==2.5.0
    ```
 
 Footnote markers MUST stay in the surrounding prose. A marker such as
@@ -688,20 +688,20 @@ Install the Google AI Studio SDK (`google-generativeai`) or the Vertex AI SDK
 
 ```bash
 # For Google AI Studio
-pip install google-generativeai
+pip install google-generativeai==0.8.6
 
 # For Vertex AI
-pip install google-cloud-aiplatform
+pip install google-cloud-aiplatform==2.5.0
 ```
 
 For Node.js, install `@google/generative-ai` or `@google-cloud/vertexai`:
 
 ```bash
 # For Google AI Studio
-npm install @google/generative-ai
+npm install @google/generative-ai@0.24.1
 
 # For Vertex AI
-npm install @google-cloud/vertexai
+npm install @google-cloud/vertexai@1.12.0
 ```
 
 ---
@@ -2178,7 +2178,7 @@ def select_model(task_type: str, context_size: int) -> str:
     if context_size > 1_000_000:
         raise ValueError(
             "No current Gemini model accepts more than 1M input tokens; "
-            "split, summarise, or retrieve selectively"
+            "split, summarize, or retrieve selectively"
         )
 
     if task_type in ["simple_qa", "classification", "extraction"]:
@@ -2882,7 +2882,7 @@ def generate_with_retry(prompt: str, max_retries: int = 3):
         ) as exc:
             if attempt == max_retries - 1:
                 raise
-            # Full jitter, capped: spreads retries instead of synchronising
+            # Full jitter, capped: spreads retries instead of synchronizing
             # every client onto the same second.
             delay = min(MAX_BACKOFF_SECONDS, 2 ** attempt) * random.random()
             print(f"{type(exc).__name__}. Retrying in {delay:.1f}s...")

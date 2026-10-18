@@ -216,6 +216,7 @@
 
 ## Configuration
 
+- [tool-versions.json](configs/tool-versions.json)
 - agents/
   - [AGENTS.md.template](configs/agents/AGENTS.md.template)
 - ansible/

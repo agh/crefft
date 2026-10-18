@@ -830,16 +830,16 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Install the pinned documentation toolchain
       - run: npm ci
 
       # Lint markdown
-      - run: npx markdownlint-cli2 "**/*.md"
+      - run: npx markdownlint-cli2@0.23.2 "**/*.md"
 
       # Check links
-      - run: npx markdown-link-check docs/**/*.md
+      - run: npx markdown-link-check@3.15.0 docs/**/*.md
 
       # Validate frontmatter against the checked-in schema
       - run: node scripts/check-frontmatter.mjs

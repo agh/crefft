@@ -5,7 +5,9 @@
   "collection_modified": "2026-05-27",
   "source": "https://atlas.mitre.org/",
   "data_source": "https://github.com/mitre-atlas/atlas-data/blob/main/dist/v6/ATLAS-2026.08.yaml",
-  "license": "CC-BY-4.0",
+  "license": "Apache-2.0",
+  "license_url": "reference/security/LICENSES/Apache-2.0.txt",
+  "restrictions": [],
   "description": "Adversarial machine learning tactics and techniques for AI/ML systems",
   "generation": {
     "method": "Generated from the official ATLAS distribution YAML; every id, name and maturity value in this file is copied from that release",

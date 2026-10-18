@@ -263,7 +263,7 @@ module Admin
           response[:current_user] = user
         end
 
-        # Authorisation: is that user allowed here?
+        # Authorization: is that user allowed here?
         def authorize!(_request, response)
           halt 403 unless response[:current_user].admin?
         end

@@ -1,5 +1,5 @@
 name: Bug in a guide
-description: A rule, example, command, or link in a crefft guide is wrong.
+description: Report incorrect prose, examples, configuration, links, or provenance in crefft.
 title: "fix(<guide>): "
 labels: ["bug"]
 body:
@@ -8,10 +8,22 @@ body:
       value: |
         Use this for content that is wrong: a rule that contradicts the tool,
         an example that does not run, a command that no longer exists, a
-        broken link, or a claim that is not true.
+        broken link, a provenance error, or a claim that is not true.
+        The maintainer implements changes; external pull requests are closed
+        in favor of issues so evidence and scope are settled first.
 
         Do not use this for a security vulnerability. See
         [SECURITY.md](https://github.com/agh/crefft/blob/main/SECURITY.md).
+
+  - type: input
+    id: release
+    attributes:
+      label: crefft release
+      description: >
+        Confirm the problem in the latest release and give its version.
+        Only the latest release is supported, on a best-effort basis.
+    validations:
+      required: true
 
   - type: input
     id: file
