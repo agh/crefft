@@ -157,7 +157,10 @@ $(TYPOS):
 	  --output $(TMP)/$(TYPOS_ARCHIVE) \
 	  "https://github.com/crate-ci/typos/releases/download/v$(TYPOS_VERSION)/$(TYPOS_ARCHIVE)"
 	@echo "$(TYPOS_SHA256)  $(TMP)/$(TYPOS_ARCHIVE)" | shasum -a 256 -c -
-	tar -xzf $(TMP)/$(TYPOS_ARCHIVE) -C $(TMP)/typos-$(TYPOS_VERSION) typos
+	# Extract the whole archive: the binary is stored as ./typos, which GNU tar
+	# does not match by the bare name "typos" while bsdtar does.
+	tar -xzf $(TMP)/$(TYPOS_ARCHIVE) -C $(TMP)/typos-$(TYPOS_VERSION)
+	@test -x $(TYPOS) || { echo "typos binary missing after extraction" >&2; exit 1; }
 	@rm -f $(TMP)/$(TYPOS_ARCHIVE)
 
 clean: ## Remove downloaded tools and caches
