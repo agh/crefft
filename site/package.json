@@ -1,0 +1,38 @@
+{
+  "name": "crefft-site",
+  "version": "2026.10.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "brand": "node scripts/brand.mjs",
+    "check": "npm run brand && astro check",
+    "build": "node scripts/clean-content.mjs && npm run brand && astro build && pagefind --site dist",
+    "test": "node --test tests/*.test.mjs",
+    "verify": "npm run check && npm test && npm run build && node scripts/check-output.mjs && node scripts/browser-check.mjs",
+    "dev": "astro dev --host 127.0.0.1",
+    "preview": "wrangler dev --local --ip 127.0.0.1 --port 4371"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "7.3.3",
+    "astro": "7.4.0",
+    "hast-util-to-html": "9.0.5",
+    "rehype-raw": "7.0.0",
+    "rehype-sanitize": "6.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-parse": "11.0.0",
+    "remark-stringify": "11.0.0",
+    "unified": "11.0.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "4.14.0",
+    "@resvg/resvg-js": "2.6.2",
+    "@types/node": "26.6.5",
+    "cheerio": "1.2.0",
+    "opentype.js": "1.3.4",
+    "pagefind": "1.5.2",
+    "playwright": "1.64.1",
+    "typescript": "6.0.3",
+    "wrangler": "4.151.1"
+  }
+}

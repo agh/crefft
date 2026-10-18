@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" role="img" aria-labelledby="title desc">
+  <title id="title">crefft: Offset pin at sixteen pixels</title>
+  <desc id="desc">A two-pixel-thick offset head and shank cross unequal shoulders; a two-pixel bevel continues below the longer leg.</desc>
+  <path d="M1 13L1 8L3 6L6 6L6 3L4 3L4 2L5 1L8 1L9 2L9 3L8 3L8 6L13 6L15 8L15 11L13 11L13 9L12 8L8 8L8 13L6 15L6 8L4 8L3 9L3 13Z"/>
+</svg>

@@ -1,0 +1,15 @@
+title = "crefft with static-site build exclusions"
+
+[extend]
+path = ".gitleaks.toml"
+
+[[allowlists]]
+description = "Uncommitted site inputs, generated copies, browser tools, and local evidence"
+targets = ["file"]
+paths = [
+  '''^SITE-INPUTS/''',
+  '''^SITE-OUT/''',
+  '''^site/(node_modules|dist|test-results)/''',
+  '''^site/\.(astro|cache|venv|wrangler)/''',
+  '''^site/\.cache-[^/]*\.log$''',
+]

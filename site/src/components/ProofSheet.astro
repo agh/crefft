@@ -1,0 +1,55 @@
+---
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import { citationHTML } from '../lib/citation.mjs';
+import {
+  requirement, reason, configuration, good, bad, pin, proofURL,
+  specimenURL, proofTitle, proofContext, traceMarkdown,
+} from '../lib/home.mjs';
+interface Props { full?: boolean }
+const { full = false } = Astro.props;
+const processor = await createMarkdownProcessor({ syntaxHighlight: false });
+const requirementHTML = (await processor.render(requirement)).code;
+const reasonHTML = (await processor.render(reason.replace(/^\*\*Why\*\*:\s*/, ''))).code;
+const traceHTML = (await processor.render(traceMarkdown.replace(/^## Trace this rule\n+/, ''))).code;
+const Title = full ? 'h1' : 'h2';
+const Why = full ? 'h2' : 'h3';
+---
+<article class:list={['rule-record', 'proof-sheet', full ? 'rule-specimen' : 'home-proof']} aria-labelledby="rule-title">
+  <Fragment set:html={citationHTML(proofContext)} />
+  <div class="record-main">
+    <Title class="rule-title" id="rule-title">{proofTitle}</Title>
+    <div class="proof-columns">
+      <div class="obligation">
+        <div class="normative" set:html={requirementHTML} />
+        <p class="pin-line">Recorded Ruff pin <code>{pin}</code></p>
+        <section class="why" aria-labelledby="why">
+          <Why id="why">Why</Why>
+          <div class="reason" set:html={reasonHTML} />
+        </section>
+      </div>
+      <div class="examples" id="examples">
+        <section aria-labelledby="do">
+          <h3 id="do" class="good">Do / recorded pin</h3>
+          <pre tabindex="0" role="region" aria-label="Do: recorded Ruff hook configuration"><code>{good}</code></pre>
+          <p class="caption">Ruff entry quoted from the guide.</p>
+        </section>
+        <section aria-labelledby="dont">
+          <h3 id="dont" class="bad">Don't / incompatible pin</h3>
+          <pre tabindex="0" role="region" aria-label="Don't: illustrative incompatible hook"><code>{bad}</code></pre>
+          <p class="caption">Illustrative counterexample using the incompatible revision described in the guide.</p>
+        </section>
+      </div>
+    </div>
+    <p class="basis" id="evidence">Both Ruff examples use <code>https://github.com/astral-sh/ruff-pre-commit</code>.
+      The guide records the failure messages; this site build does not rerun Ruff or Mypy.</p>
+    <details class="full-config">
+      <summary>Complete configuration from the guide</summary>
+      <pre tabindex="0" role="region" aria-label="Complete pre-commit configuration"><code>{configuration}</code></pre>
+    </details>
+    {full ? <details class="trace" id="trace">
+      <summary>Trace this rule</summary>
+      <Fragment set:html={traceHTML} />
+    </details> : <p class="rule-bottom"><a href={specimenURL}>Read the rule and trace its evidence</a></p>}
+    <p class="source-line">Source: <a href={proofURL}>Python Style Guide, “Pre-commit Configuration.”</a></p>
+  </div>
+</article>

@@ -1,0 +1,12 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProofSheet from '../../components/ProofSheet.astro';
+import { proofTitle, specimenURL } from '../../lib/home.mjs';
+---
+<Base title={proofTitle} route={specimenURL}>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/guides/languages/">Language guides</a> /
+    <a href="/guides/languages/python/">Python</a> / Pre-commit
+  </nav>
+  <ProofSheet full />
+</Base>

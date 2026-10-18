@@ -10,3 +10,20 @@ __pycache__/
 
 # Local scratch space used by `make check`.
 .tmp-check/
+
+# Site dependencies, generated assets, local previews, and delivery evidence.
+/SITE-INPUTS/
+/SITE-OUT/
+/SITE-TASK.md
+/site/dist/
+/site/.astro/
+/site/.wrangler/
+/site/.cache/
+/site/.venv/
+/site/test-results/
+/site/.cache-*.log
+/site/src/generated/
+/site/public/favicon.svg
+/site/public/favicon-32.png
+/site/public/favicon-16.png
+/site/public/favicon.ico

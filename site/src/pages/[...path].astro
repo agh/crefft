@@ -1,0 +1,102 @@
+---
+import { getCollection, render } from 'astro:content';
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import Base from '../layouts/Base.astro';
+import Navigation from '../components/Navigation.astro';
+import { pages } from '../lib/pages.mjs';
+import { childrenFor } from '../lib/navigation.mjs';
+import { routeFor, markdownFor, sourceURL, commit, version } from '../lib/paths.mjs';
+import { fileManifest } from '../lib/downloads.mjs';
+import { rehypePlugins } from '../lib/markdown.mjs';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('documents');
+  return [
+    ...entries.map((entry) => ({
+      params: { path: routeFor(entry.id).slice(1, -1) },
+      props: { entry, page: undefined, downloadRoot: undefined },
+    })),
+    ...pages.filter((page) => page.route !== '/404/').map((page) => ({
+      params: { path: page.route.slice(1, -1) },
+      props: { page, entry: undefined, downloadRoot: undefined },
+    })),
+    ...['agents', 'commands', 'configs'].map((downloadRoot) => ({
+      params: { path: downloadRoot },
+      props: { downloadRoot, entry: undefined, page: undefined },
+    })),
+  ];
+}
+const { entry, page, downloadRoot } = Astro.props;
+const route = entry ? routeFor(entry.id) : page?.route ?? `/${downloadRoot}/`;
+const title = entry
+  ? entry.body?.match(/^#\s+(.+)$/m)?.[1] ?? entry.data.title
+  : page?.title ?? ({ agents: 'Agent definitions', commands: 'Commands', configs: 'Configurations' }[downloadRoot!]);
+if (!title) throw new Error(`Missing page title: ${route}`);
+const rendered = entry ? await render(entry) : undefined;
+const Content = rendered?.Content;
+const headings = rendered?.headings ?? [];
+const processor = await createMarkdownProcessor({ syntaxHighlight: false, rehypePlugins });
+const html = page ? (await processor.render(page.body)).code : '';
+const children = entry ? childrenFor(entry.id) : [];
+const isIndex = entry?.id.endsWith('/README.md');
+const indexHTML = isIndex && entry?.rendered?.html
+  ? entry.rendered.html.replace(/<h1\b[^>]*>[\s\S]*?<\/h1>/, '')
+  : '';
+const files = downloadRoot ? (await fileManifest()).files.filter((file) => file.path.startsWith(`${downloadRoot}/`)) : [];
+const section = entry?.id.split('/')[0];
+if (route === '/search/') {
+  if (!Astro.csp) throw new Error('Search requires CSP');
+  Astro.csp.insertScriptResource("'self'");
+  Astro.csp.insertScriptResource("'wasm-unsafe-eval'");
+}
+---
+<Base title={title} route={route}>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">crefft</a><span aria-hidden="true"> / </span>
+    {section && <><a href={`/${section}/`}>{section === 'guides' ? 'Guides' : section}</a><span aria-hidden="true"> / </span></>}
+    <span>{title}</span>
+  </nav>
+  {entry && Content ? <div class:list={['document-layout', {
+    'index-layout': isIndex, 'guide-layout': section === 'guides' && !isIndex,
+  }]}>
+    <aside class="contents">
+      <details>
+        <summary>On this page</summary>
+        <nav aria-label="Contents"><ul>
+          {headings.filter((heading) => heading.depth === 2).map((heading) =>
+            <li><a href={`#${heading.slug}`}>{heading.text}</a></li>)}
+        </ul></nav>
+      </details>
+      <nav class="page-tools" aria-label="Source and formats">
+        <a href={markdownFor(route)}>View as Markdown</a>
+        <a href={`https://github.com/agh/crefft/edit/main/${entry.id}`}>Edit on GitHub</a>
+      </nav>
+      <p class="source-note">Source {version}<br /><a href={sourceURL(entry.id)}>Commit <code>{commit.slice(0, 8)}</code></a></p>
+    </aside>
+    <article class:list={['reading', { 'guide-reading': section === 'guides' && !isIndex }]} data-pagefind-body={section === 'guides' ? true : undefined}>
+      {isIndex ? <>
+        <h1 id={headings[0]?.slug}>{title}</h1>
+        {children.length > 0 && <nav class="category-index" aria-label={title}><Navigation items={children} /></nav>}
+        <details class="index-source"><summary>Source index and context</summary><div class="source-content" set:html={indexHTML} /></details>
+      </> : <Content />}
+    </article>
+  </div> : <article class="standalone reading">
+    {downloadRoot ? <>
+      <h1>{title}</h1>
+      <p>Byte-exact repository files. Check sizes and SHA-256 digests in <a href="/files.json">files.json</a>.</p>
+      <ul class="downloads">{files.map((file) =>
+        <li><a href={file.url} download>{file.path}</a> <span class="file-size">{file.size.toLocaleString('en-US')} bytes</span></li>)}</ul>
+      <p><a href="/for-agents/">How to use these files</a></p>
+    </> : <Fragment set:html={html} />}
+    {route === '/search/' && <>
+      <form hidden id="search-form" role="search">
+        <label for="query">Search terms</label>
+        <div class="search-input"><input id="query" type="search" required maxlength="200" /><button type="submit">Search</button></div>
+      </form>
+      <p id="status" role="status" aria-live="polite"></p>
+      <ol id="results"></ol>
+      <button hidden id="more" type="button">More results</button>
+      <script is:inline src="/search.js"></script>
+    </>}
+  </article>}
+</Base>

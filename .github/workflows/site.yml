@@ -1,0 +1,100 @@
+name: Site
+
+on:
+  pull_request:
+    paths:
+      - 'site/**'
+      - 'guides/**'
+      - 'agents/**'
+      - 'commands/**'
+      - 'configs/**'
+      - 'SUMMARY.md'
+      - 'AGENTS.md'
+      - 'VERSION'
+      - 'THIRD_PARTY_NOTICES.md'
+      - 'Makefile'
+      - 'banner.svg'
+      - '.gitignore'
+      - '.github/workflows/site.yml'
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+# Release builds and deploys share one serial group. PRs never cancel a release.
+concurrency:
+  group: site-${{ github.event.pull_request.number || 'production' }}
+  cancel-in-progress: false
+
+env:
+  ASTRO_TELEMETRY_DISABLED: '1'
+  WRANGLER_SEND_METRICS: 'false'
+  WRANGLER_WRITE_LOGS: 'false'
+  PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/site/.cache/browsers
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '26.11.1'
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: npm ci --prefix site
+      - run: site/node_modules/.bin/playwright install --with-deps chromium
+      - name: Check release identity
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: test "$RELEASE_TAG" = "v$(cat VERSION)"
+      - run: make site-check
+      - name: Retain verification evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: site-evidence
+          path: |
+            site/test-results
+            SITE-OUT
+          retention-days: 14
+      - name: Retain the checked publication artifact
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: site-dist
+          path: site/dist
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+
+  deploy:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: check
+    runs-on: ubuntu-24.04
+    environment: production
+    concurrency:
+      group: crefft-site-deploy
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '26.11.1'
+      - run: npm ci --prefix site --ignore-scripts
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: site-dist
+          path: site/dist
+      - name: Deploy the checked static files
+        working-directory: site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node_modules/.bin/wrangler deploy

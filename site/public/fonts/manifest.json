@@ -1,0 +1,34 @@
+[
+  {
+    "source": "SourceSerif4-Regular.ttf",
+    "sourceSha256": "e5a4ee6a3d87bb9024796be390c6771e2a0eb1883dae25effaf57ca01668e24b",
+    "file": "reading-400.woff2",
+    "sha256": "31f050288b5acdd892ba7f9842fce95b4b22e457814e17b9c9f0b4604b0d2779",
+    "bytes": 26968,
+    "family": "crefft Reading"
+  },
+  {
+    "source": "SourceSerif4-Semibold.ttf",
+    "sourceSha256": "36db62940cb5728b12b1802476dc7fcf4c6c519a7bdd476ba23a4e555fc4655f",
+    "file": "reading-600.woff2",
+    "sha256": "83469cfeb586c946042cad36aec58aa1f5c5db161762adff82409294f797dbeb",
+    "bytes": 28500,
+    "family": "crefft Reading"
+  },
+  {
+    "source": "SourceCodePro-Regular.ttf",
+    "sourceSha256": "74bd80d3e42a08517cd7e1108ba3d86f2da29ac0f3065be95e0357956ab9db37",
+    "file": "mono-400.woff2",
+    "sha256": "a4a6e946ed6c831417dd83a2239e9feb2fba00b120fa4a9d9e9dd617f7b0397e",
+    "bytes": 32812,
+    "family": "crefft Mono"
+  },
+  {
+    "source": "SourceCodePro-Semibold.ttf",
+    "sourceSha256": "014a0fdf42504ee1faf719a96eab5f9ffdade793f1d5c5729ad4606f2aedc765",
+    "file": "mono-600.woff2",
+    "sha256": "17e7216b520f83985d5a1d0e33032d136a448b15f6bf7c914e9fdfb6ffdbb6e4",
+    "bytes": 33300,
+    "family": "crefft Mono"
+  }
+]
