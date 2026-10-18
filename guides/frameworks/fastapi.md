@@ -244,21 +244,21 @@ _BLOCKLIST = frozenset(
 )
 
 def screen_password(password: str) -> str:
-    """Normalise, then reject short or known-compromised values.
+    """Normalize, then reject short or known-compromised values.
 
-    SP 800-63B-4 §3.1.1.2 requires NFC normalisation before hashing, comparison
+    SP 800-63B-4 §3.1.1.2 requires NFC normalization before hashing, comparison
     of the whole password against a breach blocklist, and a stated reason for
     rejection. Load the corpus at import time, or query a k-anonymity range API
     so that the password itself never leaves the process.
     """
-    normalised = unicodedata.normalize("NFC", password)
-    if len(normalised) < MIN_PASSWORD_LENGTH:
+    normalized = unicodedata.normalize("NFC", password)
+    if len(normalized) < MIN_PASSWORD_LENGTH:
         raise ValueError(
             f"Password must be at least {MIN_PASSWORD_LENGTH} characters."
         )
-    if normalised.casefold() in _BLOCKLIST:
+    if normalized.casefold() in _BLOCKLIST:
         raise ValueError("This password appears in a breach corpus. Choose another.")
-    return normalised
+    return normalized
 ```
 
 ```python
@@ -1116,13 +1116,13 @@ def item_policy(user: User, item: Item, action: Action) -> bool:
 # granting access.
 POLICIES: dict[type, Policy] = {Item: item_policy}
 
-def authorise(user: User, obj: object, action: Action) -> None:
+def authorize(user: User, obj: object, action: Action) -> None:
     """Raise 403 unless an explicit policy grants `action` on `obj`."""
     policy = POLICIES.get(type(obj))
     if policy is None or not policy(user, obj, action):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not authorised to perform this action on this resource",
+            detail="Not authorized to perform this action on this resource",
         )
 ```
 
@@ -1130,7 +1130,7 @@ def authorise(user: User, obj: object, action: Action) -> None:
 # src/myapp/api/items.py
 from typing import Annotated
 
-from myapp.permissions import Action, authorise
+from myapp.permissions import Action, authorize
 
 @router.get("/{item_id}", response_model=ItemResponse)
 async def get_item(
@@ -1141,7 +1141,7 @@ async def get_item(
     item = await db.get(Item, item_id)
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
-    authorise(current_user, item, Action.READ)
+    authorize(current_user, item, Action.READ)
     return item
 ```
 
@@ -1153,7 +1153,7 @@ if hasattr(obj, "owner_id") and obj.owner_id != user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
 
 # DO: look up an explicit policy and deny when none exists
-authorise(user, obj, Action.READ)
+authorize(user, obj, Action.READ)
 ```
 
 ```python
@@ -1161,28 +1161,28 @@ authorise(user, obj, Action.READ)
 import pytest
 from fastapi import HTTPException
 
-from myapp.permissions import Action, authorise
+from myapp.permissions import Action, authorize
 from myapp.models.item import Item
 from myapp.models.user import User
 
 def test_owner_may_read_own_item() -> None:
-    authorise(User(id=1), Item(id=1, owner_id=1), Action.READ)
+    authorize(User(id=1), Item(id=1, owner_id=1), Action.READ)
 
 @pytest.mark.parametrize("action", list(Action))
 def test_cross_tenant_access_is_denied(action: Action) -> None:
     with pytest.raises(HTTPException) as excinfo:
-        authorise(User(id=1), Item(id=2, owner_id=2), action)
+        authorize(User(id=1), Item(id=2, owner_id=2), action)
     assert excinfo.value.status_code == 403
 
 def test_resource_without_a_policy_is_denied() -> None:
     with pytest.raises(HTTPException):
-        authorise(User(id=1), object(), Action.READ)
+        authorize(User(id=1), object(), Action.READ)
 
 def test_admin_may_read_but_not_delete_another_users_item() -> None:
     admin = User(id=9, is_admin=True)
-    authorise(admin, Item(id=2, owner_id=2), Action.READ)
+    authorize(admin, Item(id=2, owner_id=2), Action.READ)
     with pytest.raises(HTTPException):
-        authorise(admin, Item(id=2, owner_id=2), Action.DELETE)
+        authorize(admin, Item(id=2, owner_id=2), Action.DELETE)
 ```
 
 **Why**: Object-level permissions prevent horizontal privilege escalation where
@@ -1865,7 +1865,7 @@ def test_anonymous_callers_are_keyed_by_ip() -> None:
     assert dynamic_limit(key) == ANONYMOUS_LIMIT
 
 def test_two_users_behind_one_ip_get_separate_buckets() -> None:
-    """A free customer must not exhaust a paid neighbour's budget."""
+    """A free customer must not exhaust a paid neighbor's budget."""
     alice = get_rate_limit_key(request_from(Identity("alice", "free")))
     bob = get_rate_limit_key(request_from(Identity("bob", "pro")))
     assert alice != bob

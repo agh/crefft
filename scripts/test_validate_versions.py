@@ -18,40 +18,40 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate_versions as vv  # noqa: E402
 
 
-class NormaliseRepoTests(unittest.TestCase):
+class NormalizeRepoTests(unittest.TestCase):
     def test_https_url(self):
         self.assertEqual(
-            vv.normalise_repo("https://github.com/astral-sh/ruff-pre-commit"),
+            vv.normalize_repo("https://github.com/astral-sh/ruff-pre-commit"),
             "astral-sh/ruff-pre-commit",
         )
 
     def test_https_url_with_git_suffix(self):
-        self.assertEqual(vv.normalise_repo("https://github.com/psf/black.git"), "psf/black")
+        self.assertEqual(vv.normalize_repo("https://github.com/psf/black.git"), "psf/black")
 
     def test_trailing_slash(self):
-        self.assertEqual(vv.normalise_repo("https://github.com/psf/black/"), "psf/black")
+        self.assertEqual(vv.normalize_repo("https://github.com/psf/black/"), "psf/black")
 
     def test_scp_style_ssh_keeps_owner(self):
         # The previous implementation returned "tool", losing the owner.
-        self.assertEqual(vv.normalise_repo("git@github.com:owner/tool.git"), "owner/tool")
+        self.assertEqual(vv.normalize_repo("git@github.com:owner/tool.git"), "owner/tool")
 
     def test_ssh_protocol_url(self):
-        self.assertEqual(vv.normalise_repo("ssh://git@github.com/owner/tool.git"), "owner/tool")
+        self.assertEqual(vv.normalize_repo("ssh://git@github.com/owner/tool.git"), "owner/tool")
 
     def test_non_github_host(self):
-        self.assertEqual(vv.normalise_repo("https://gitlab.com/group/project"), "group/project")
+        self.assertEqual(vv.normalize_repo("https://gitlab.com/group/project"), "group/project")
 
     def test_quoted_url(self):
-        self.assertEqual(vv.normalise_repo('"https://github.com/psf/black"'), "psf/black")
+        self.assertEqual(vv.normalize_repo('"https://github.com/psf/black"'), "psf/black")
 
     def test_bare_owner_repo(self):
-        self.assertEqual(vv.normalise_repo("psf/black"), "psf/black")
+        self.assertEqual(vv.normalize_repo("psf/black"), "psf/black")
 
     def test_two_owners_are_distinct(self):
         # Suffix matching used to conflate these; owner-preserving keys do not.
         self.assertNotEqual(
-            vv.normalise_repo("https://github.com/dnephin/pre-commit-golang"),
-            vv.normalise_repo("https://github.com/TekWizely/pre-commit-golang"),
+            vv.normalize_repo("https://github.com/dnephin/pre-commit-golang"),
+            vv.normalize_repo("https://github.com/TekWizely/pre-commit-golang"),
         )
 
 

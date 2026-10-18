@@ -3,7 +3,7 @@
 > [crefft](README.md) > Third-Party Notices
 
 crefft's own guides, configurations, and agents are licensed under the MIT
-Licence (see [LICENSE](LICENSE)). Everything under `reference/` is third-party
+License (see [LICENSE](LICENSE)). Everything under `reference/` is third-party
 material and is **NOT** covered by that grant. This file records, for every
 vendored source: the upstream project, its URL, the exact license and license
 URL, what crefft changed, and the attribution that **MUST** travel with the
@@ -145,7 +145,7 @@ license-tracking capability booleans are not license declarations.
   `css-in-javascript.md`); Airbnb Ruby Style Guide —
   <https://github.com/airbnb/ruby> (`ruby.md`)
 - **Copyright**: Copyright (c) 2012 Airbnb
-- **License**: MIT Licence
+- **License**: MIT License
 - **License URL**:
   <https://github.com/airbnb/javascript/blob/master/LICENSE.md>,
   <https://github.com/airbnb/ruby/blob/master/LICENSE.md>
@@ -302,7 +302,7 @@ license-tracking capability booleans are not license declarations.
 - **Upstream**: <https://github.com/Shopify/ruby-style-guide>,
   <https://ruby-style-guide.shopify.dev/>
 - **Copyright**: Copyright (c) 2015-2022 Shopify Inc.
-- **License**: MIT Licence
+- **License**: MIT License
 - **License URL**:
   <https://github.com/Shopify/ruby-style-guide/blob/main/LICENSE.md>
 - **License text**: `reference/shopify/LICENSE`
@@ -412,7 +412,7 @@ fields for each source are in `reference/security/manifest.json`.
 - **Upstream**: <https://d3fend.mitre.org/>,
   <https://github.com/d3fend/d3fend-ontology>
 - **Copyright**: Copyright (c) 2022 The MITRE Corporation
-- **License**: MIT Licence
+- **License**: MIT License
 - **License URL**:
   <https://github.com/d3fend/d3fend-ontology/blob/develop/LICENSE.md>
 - **License text**: `reference/security/LICENSES/MIT-D3FEND.md`

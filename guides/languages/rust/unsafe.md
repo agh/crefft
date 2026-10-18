@@ -62,7 +62,7 @@ pub fn get(slice: &[u8], index: usize) -> Option<u8> {
 /// # Safety
 ///
 /// `index` must be strictly less than `slice.len()`. Violating this reads out
-/// of bounds, which is undefined behaviour.
+/// of bounds, which is undefined behavior.
 #[must_use]
 pub unsafe fn get_unchecked(slice: &[u8], index: usize) -> u8 {
     debug_assert!(index < slice.len());
@@ -73,7 +73,7 @@ pub unsafe fn get_unchecked(slice: &[u8], index: usize) -> u8 {
 
 ```rust
 // BAD: safe fn, unchecked index. The comment transfers nothing; safe callers
-// can pass any index and cause undefined behaviour.
+// can pass any index and cause undefined behavior.
 pub fn get_unchecked(slice: &[u8], index: usize) -> u8 {
     // SAFETY: Caller must ensure index < slice.len()
     unsafe { *slice.get_unchecked(index) }
@@ -139,7 +139,7 @@ impl ZeroedBuffer {
             return None;
         }
         // SAFETY: `index < self.len()`, so the offset stays inside the
-        // allocation, and `alloc_zeroed` initialised every byte of it.
+        // allocation, and `alloc_zeroed` initialized every byte of it.
         Some(unsafe { self.ptr.as_ptr().add(index).read() })
     }
 
@@ -163,7 +163,7 @@ impl Drop for ZeroedBuffer {
 ```
 
 ```rust
-// BAD: unwraps the layout, ignores allocation failure, reads uninitialised
+// BAD: unwraps the layout, ignores allocation failure, reads uninitialized
 // bytes through a safe method, and leaks the allocation.
 pub struct SafeBuffer {
     ptr: *mut u8,
@@ -181,7 +181,7 @@ impl SafeBuffer {
 
     pub fn get(&self, index: usize) -> Option<u8> {
         if index < self.len {
-            // SAFETY: index is bounds-checked   <- but the byte is uninitialised
+            // SAFETY: index is bounds-checked   <- but the byte is uninitialized
             Some(unsafe { *self.ptr.add(index) })
         } else {
             None

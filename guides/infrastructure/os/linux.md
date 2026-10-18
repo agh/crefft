@@ -725,7 +725,7 @@ table inet crefft {
             mld-listener-done, mld2-listener-report
         } accept
 
-        # Neighbour and router discovery: link-local only
+        # Neighbor and router discovery: link-local only
         meta l4proto ipv6-icmp icmpv6 type {
             nd-router-solicit, nd-router-advert,
             nd-neighbor-solicit, nd-neighbor-advert

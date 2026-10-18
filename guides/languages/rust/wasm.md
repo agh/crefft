@@ -53,7 +53,7 @@ rustup target add wasm32-unknown-unknown
 # Install wasm-pack, pinned
 cargo install wasm-pack --version 0.15.0 --locked
 
-# Optional: wasm-opt for size optimisation
+# Optional: wasm-opt for size optimization
 cargo install wasm-opt --version 0.116.1 --locked
 ```
 
@@ -94,8 +94,8 @@ features = ["Document", "Element", "Window"]  # one feature per interface used
 wasm-bindgen-test = "0.3.78"
 
 [profile.release]
-opt-level = "z"      # Optimise for size
-lto = true           # Link-time optimisation
+opt-level = "z"      # Optimize for size
+lto = true           # Link-time optimization
 codegen-units = 1
 panic = "abort"
 strip = true
@@ -178,7 +178,7 @@ pub struct Config {
 ///
 /// # Errors
 ///
-/// Returns the JavaScript error when `config` does not deserialise into
+/// Returns the JavaScript error when `config` does not deserialize into
 /// [`Config`].
 #[wasm_bindgen]
 pub fn process_config(config: JsValue) -> Result<JsValue, JsValue> {
@@ -335,7 +335,7 @@ and says so: "profiles for the non root package will be ignored".
 # Check WASM size
 ls -lh pkg/*.wasm
 
-# Analyse with twiggy
+# Analyze with twiggy
 cargo install twiggy --version 0.8.0 --locked
 twiggy top pkg/app_bg.wasm
 twiggy paths pkg/app_bg.wasm

@@ -18,12 +18,12 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 REVIEW = re.compile(r"<!-- license-review\s*\n(.*?)\n-->", re.DOTALL)
 LABEL_FIELDS = {
-    "license", "licence", "licenses", "licences", "licenseid",
+    "license", "licenses", "licenseid",
     "licenseexpression", "licenseidentifier", "spdxlicense", "spdxlicenseid",
     "spdxlicenseidentifier", "spdxlicenseexpression",
     "licensedeclared", "licenseconcluded", "licenseinfoinfile", "datalicense",
 }
-URL_FIELDS = {"licenseurl", "licenceurl"}
+URL_FIELDS = {"licenseurl"}
 RESTRICTIONS = {"noncommercial", "share-alike", "no-derivatives"}
 SPDX_IDS = {
     "Apache-2.0", "BSD-3-Clause", "CC-BY-3.0", "CC-BY-SA-4.0",

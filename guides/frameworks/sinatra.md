@@ -177,7 +177,7 @@ class User < ActiveRecord::Base
   validates :name, presence: true
   validates :email, presence: true
 
-  # ActiveRecord::Base has no #to_h. Serialise an explicit allowlist so a new
+  # ActiveRecord::Base has no #to_h. Serialize an explicit allowlist so a new
   # column such as password_digest can never reach a response body.
   def public_attributes
     serializable_hash(only: PUBLIC_FIELDS)

@@ -580,7 +580,7 @@ gcloud run deploy gemini-app \
     --service-account=gemini-service@your-project-id.iam.gserviceaccount.com
 
 # Local development: user credentials for ADC, impersonating the same
-# service account so local and production authorisation match.
+# service account so local and production authorization match.
 gcloud auth application-default login
 gcloud config set auth/impersonate_service_account \
     gemini-service@your-project-id.iam.gserviceaccount.com
@@ -2178,7 +2178,7 @@ def select_model(task_type: str, context_size: int) -> str:
     if context_size > 1_000_000:
         raise ValueError(
             "No current Gemini model accepts more than 1M input tokens; "
-            "split, summarise, or retrieve selectively"
+            "split, summarize, or retrieve selectively"
         )
 
     if task_type in ["simple_qa", "classification", "extraction"]:
@@ -2882,7 +2882,7 @@ def generate_with_retry(prompt: str, max_retries: int = 3):
         ) as exc:
             if attempt == max_retries - 1:
                 raise
-            # Full jitter, capped: spreads retries instead of synchronising
+            # Full jitter, capped: spreads retries instead of synchronizing
             # every client onto the same second.
             delay = min(MAX_BACKOFF_SECONDS, 2 ** attempt) * random.random()
             print(f"{type(exc).__name__}. Retrying in {delay:.1f}s...")

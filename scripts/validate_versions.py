@@ -605,7 +605,7 @@ def collect_install_mismatches(
     return mismatches
 
 
-def normalise_repo(url: str) -> str:
+def normalize_repo(url: str) -> str:
     """Reduce a repository URL to ``owner/name``.
 
     Handles HTTPS, SCP-style SSH (``git@github.com:owner/name.git``) and
@@ -665,7 +665,7 @@ def parse_canonical(config_path: Path) -> dict[str, str]:
     for raw in config_path.read_text(encoding="utf-8").splitlines():
         repo_match = REPO_RE.match(raw)
         if repo_match:
-            current = canonical_key(normalise_repo(repo_match.group("url")))
+            current = canonical_key(normalize_repo(repo_match.group("url")))
             continue
         if current is None:
             continue
@@ -792,7 +792,7 @@ def collect_references(
                 Reference(
                     path=path,
                     line=content.count("\n", 0, match.start()) + 1,
-                    repo=canonical_key(normalise_repo(match.group("url"))),
+                    repo=canonical_key(normalize_repo(match.group("url"))),
                     rev=match.group("rev").strip("\"'"),
                 )
             )

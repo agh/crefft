@@ -61,12 +61,6 @@ chage = "chage"
 [default.extend-identifiers]
 # The vendored Holywell license file is named LICENCE.
 LICENCE = "LICENCE"
-# The existing repository-validator function retains its identifier.
-normalise_repo = "normalise_repo"
-# The existing version-validator test class retains its identifier.
-NormaliseRepoTests = "NormaliseRepoTests"
-# The existing vendored-license test retains its identifier.
-test_every_entry_records_a_licence = "test_every_entry_records_a_licence"
 # Devise's upstream authentication module is named rememberable.
 rememberable = "rememberable"
 

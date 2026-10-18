@@ -2000,7 +2000,7 @@ if err != nil || stateCookie != c.Query("state") {
 	c.JSON(http.StatusBadRequest, gin.H{"error": "invalid state parameter"})
 	return
 }
-// No verifier, no expiry, and the cookie still authorises the next callback.
+// No verifier, no expiry, and the cookie still authorizes the next callback.
 token, err := h.oauth2Service.Exchange(c.Request.Context(), c.Query("code"))
 ```
 
@@ -3397,7 +3397,7 @@ func RateLimitByIP(requestsPerSecond float64) gin.HandlerFunc {
 	lmt.SetMessageContentType("application/json")
 
 	return func(c *gin.Context) {
-		// c.ClientIP() honours SetTrustedProxies; a raw header does not.
+		// c.ClientIP() honors SetTrustedProxies; a raw header does not.
 		httpError := tollbooth.LimitByKeys(lmt, []string{c.ClientIP()})
 		if httpError != nil {
 			c.JSON(httpError.StatusCode, gin.H{
@@ -4564,7 +4564,7 @@ func ComposeMiddleware(middlewares ...gin.HandlerFunc) gin.HandlerFunc {
 // middleware runs after the response is written:
 //   first-before, handler, first-after, second-before, second-after
 // If the second middleware is Auth(), an unauthenticated request is served in
-// full before authorisation is ever evaluated, and c.Abort() comes too late.
+// full before authorization is ever evaluated, and c.Abort() comes too late.
 r.Use(ComposeMiddleware(Logger(), Auth()))
 ```
 

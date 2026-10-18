@@ -1214,7 +1214,7 @@ class MigrationArgs(BaseModel):
 
 @dataclass(frozen=True)
 class ToolPolicy:
-    """Couple one callable to its validator and authorisation rules."""
+    """Couple one callable to its validator and authorization rules."""
 
     args_model: type[BaseModel]
     handler: Callable[..., dict]
@@ -1239,11 +1239,11 @@ TOOL_POLICIES = {
 
 def dispatch_tool_call(tool_call, principal, approved_call_ids) -> dict:
     """
-    Validate, authorise, and execute a single tool call.
+    Validate, authorize, and execute a single tool call.
 
     Requirements:
     - MUST reject unknown tools, unknown fields, and mistyped values
-    - MUST authorise the caller before execution
+    - MUST authorize the caller before execution
     - MUST require explicit approval for consequential actions
     - MUST NOT return raw exception text to the model
     """
@@ -1262,7 +1262,7 @@ def dispatch_tool_call(tool_call, principal, approved_call_ids) -> dict:
         return {"tool_call_id": tool_call.id, "error": "schema_violation"}
 
     if policy.required_scope not in principal.scopes:
-        return {"tool_call_id": tool_call.id, "error": "not_authorised"}
+        return {"tool_call_id": tool_call.id, "error": "not_authorized"}
 
     if policy.needs_approval and tool_call.id not in approved_call_ids:
         return {"tool_call_id": tool_call.id, "error": "approval_required"}
@@ -1278,7 +1278,7 @@ def dispatch_tool_call(tool_call, principal, approved_call_ids) -> dict:
 
 def safe_function_calling(client, messages, tools, principal, approved_call_ids):
     """
-    Run one function-calling turn with validation, authorisation, and
+    Run one function-calling turn with validation, authorization, and
     a result for every returned tool call.
     """
     response = client.chat.completions.create(
@@ -1670,7 +1670,7 @@ class ConversationManager:
                 raise ContextOverflowError(
                     f"{self.total_tokens()} tokens exceed the "
                     f"{self.input_budget}-token input budget for {self.model}; "
-                    "compact or summarise the conversation before retrying"
+                    "compact or summarize the conversation before retrying"
                 )
 
             # Remove oldest user-assistant pair
@@ -2124,10 +2124,10 @@ response = client.chat.completions.create(
 args = json.loads(tool_call.function.arguments)
 result = execute_function(**args)  # No validation
 
-# GOOD: Validate, authorise, then execute
+# GOOD: Validate, authorize, then execute
 args = ToolArgs.model_validate_json(tool_call.function.arguments)
 if not principal.may_call(tool_call.function.name, args):
-    raise PermissionError("caller not authorised for this tool")
+    raise PermissionError("caller not authorized for this tool")
 result = execute_function(**args.model_dump())
 ```
 
@@ -2375,10 +2375,10 @@ system = """Expert TypeScript engineer. Write type-safe, modern TS code followin
 args = json.loads(tool_call.function.arguments)
 result = eval(args["code"])  # DANGEROUS!
 
-# DO: Validate against a closed schema, then authorise the action
+# DO: Validate against a closed schema, then authorize the action
 args = RunTestsArgs.model_validate_json(tool_call.function.arguments)
 if "ci:run_tests" not in principal.scopes:
-    raise PermissionError("caller not authorised for run_tests")
+    raise PermissionError("caller not authorized for run_tests")
 result = run_tests(**args.model_dump())
 ```
 
