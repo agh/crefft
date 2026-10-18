@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { citationNode, element, recordedHookPins } from './citation.mjs';
-import { repository, routeFor } from './paths.mjs';
+import { repository } from './paths.mjs';
 
 const text = (node) => node.value ?? (node.children ?? []).map(text).join('');
 const heading = (node) => node.type === 'element' && /^h[1-6]$/.test(node.tagName);
@@ -17,7 +17,6 @@ export default function ruleBlocks() {
     if (!source.startsWith('guides/') || source.endsWith('/README.md')) return;
     const title = tree.children.find((node) => node.tagName === 'h1');
     if (!title) throw new Error(`Guide title missing: ${source}`);
-    const guide = text(title).replace(/ (?:Style Guide|Best Practices)$/, '');
     const result = [];
     for (let index = 0; index < tree.children.length;) {
       const first = tree.children[index];
@@ -33,8 +32,9 @@ export default function ruleBlocks() {
         const id = first.properties?.id;
         if (!id) throw new Error(`Rule section lacks a heading anchor: ${source}: ${text(first)}`);
         const pins = nodes.filter((node) => node.tagName === 'pre').flatMap((node) => recordedHookPins(text(node)));
+        const citation = citationNode({ pins });
         result.push(element('section', { className: ['rule-record', 'guide-rule'], dataRuleSection: id }, [
-          citationNode({ guide, section: text(first), url: `${routeFor(source)}#${id}`, pins }),
+          ...(citation ? [citation] : []),
           element('div', { className: ['record-main'] }, nodes),
         ]));
       } else {

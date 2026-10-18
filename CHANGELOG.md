@@ -7,6 +7,14 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+### Fixed
+
+- crefft.dev shows only recorded facts beside a rule. A guide's rules no longer
+  repeat the guide and section next to their own heading, and the placeholder
+  identifier, scope, review date, and evidence lines are gone, so a rule's
+  margin lists its recorded hook pins or stays empty. The home page's quoted
+  rule keeps its source.
+
 ## [2026.10.1] - 2026-10-17
 
 ### Breaking

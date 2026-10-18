@@ -67,7 +67,6 @@ strong, b { font-weight: 600; }
 .serial a { text-decoration: none; }
 .serial a:hover { text-decoration: underline; }
 .citation-section { font: 14px/1.5 Mono, monospace; margin: 10px 0 0; }
-.id-note { font: 14px/1.5 Mono, monospace; color: var(--secondary); margin: 10px 0 0; }
 .rule-title { font-size: 38px; line-height: 1.15; color: var(--accent); font-weight: 400; margin: 0 0 18px; }
 .proof-columns { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 32px; }
 .normative { font-size: 25px; line-height: 1.44; }
@@ -86,6 +85,7 @@ strong, b { font-weight: 600; }
 .context dt { color: var(--secondary); margin-top: 18px; }
 .context dt:first-child { margin-top: 0; }
 .context dd { margin: 4px 0 0; }
+.citation > .context:first-child { margin-top: 10px; }
 .basis { max-width: 68ch; font-size: 16px; line-height: 1.5; border-top: 1px solid var(--accent); padding-top: 14px; margin-top: 22px; }
 .source-line { color: var(--secondary); font-size: 14px; line-height: 1.6; margin: 16px 0 8px; }
 .rule-specimen .record-main { max-width: calc(68ch + 34px); }
@@ -123,7 +123,7 @@ summary { color: var(--accent); min-height: 44px; padding: 8px 0; cursor: pointe
 .guide-reading > .rule-record { margin-top: 36px; }
 .guide-rule .record-main > :first-child { margin-top: 0; color: var(--accent); }
 .guide-rule .record-main > * { max-width: 68ch; }
-.guide-rule .serial { font-size: 24px; line-height: 1.2; }
+.guide-rule > .record-main:only-child { grid-column: 2; }
 .index-layout .reading { max-width: none; border-left: 2px solid var(--accent); padding-left: 32px; }
 .index-layout h1 { font-size: 82px; line-height: 1.02; }
 .reading > blockquote:first-of-type { font-size: 16px; color: var(--secondary); }
@@ -192,9 +192,8 @@ footer nav { margin-top: 8px; }
   .rule-record { display: flex; flex-direction: column; gap: 0; border-top: 2px solid var(--accent); padding-top: 16px; margin-bottom: 24px; }
   .citation { display: contents; }
   .citation-identity { order: 0; }
-  .serial, .guide-rule .serial { font-size: 24px; line-height: 1.15; }
+  .serial { font-size: 24px; line-height: 1.15; }
   .citation-section { font-size: 13px; margin: 6px 0 0; }
-  .id-note { font-size: 13px; margin: 4px 0 0; }
   .record-main { order: 1; border-left: 0; padding-left: 0; margin-top: 12px; width: 100%; }
   .citation .context { order: 2; display: grid; grid-template-columns: 98px minmax(0, 1fr); gap: 10px 14px; margin-top: 24px; border-top: 1px solid var(--accent); padding-top: 16px; }
   .citation .context dt, .citation .context dd { margin: 0; }
