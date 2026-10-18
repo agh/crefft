@@ -56,6 +56,26 @@ TYPOS_SHA256 := $(TYPOS_SHA256_$(TYPOS_PLATFORM))
 TYPOS_ARCHIVE := typos-v$(TYPOS_VERSION)-$(TYPOS_PLATFORM).tar.gz
 TYPOS := $(TMP)/typos-$(TYPOS_VERSION)/typos
 
+# Release asset digests from vale_3.24.0_checksums.txt.
+VALE_VERSION := 3.24.0
+VALE_PLATFORM_Darwin_arm64 := macOS_arm64
+VALE_PLATFORM_Darwin_x86_64 := macOS_64-bit
+VALE_PLATFORM_Linux_aarch64 := Linux_arm64
+VALE_PLATFORM_Linux_x86_64 := Linux_64-bit
+VALE_PLATFORM := $(VALE_PLATFORM_$(UNAME_S)_$(UNAME_M))
+VALE_SHA256_macOS_arm64 := \
+  87b513f26499f6657c15cf7175ba5b058a7c1ff2bb2d4e07265db2dd43451e44
+VALE_SHA256_macOS_64-bit := \
+  eeb39e86f1daac27cc2a77fef3af1824d50559bdc22329fb25fb921c80c79472
+VALE_SHA256_Linux_arm64 := \
+  104cbd349279e50c4cb40adb70adf345d93cc4a3a0191f9e68bdccb97086b582
+VALE_SHA256_Linux_64-bit := \
+  867534ddb678abca7f214bc4706ead0922bd5252ffe8035fc227013f66c8b214
+VALE_SHA256 := $(VALE_SHA256_$(VALE_PLATFORM))
+VALE_ARCHIVE := vale_$(VALE_VERSION)_$(VALE_PLATFORM).tar.gz
+VALE := $(TMP)/vale-$(VALE_VERSION)/vale
+VALE_PACKAGE_DIR := $(TMP)/vale-package
+
 # Tracked first-party Markdown: everything except the vendored reference tree.
 MARKDOWN_FILES = $(shell git ls-files '*.md' ':!:reference/**')
 
@@ -85,13 +105,13 @@ export GITLEAKS_FIXTURE_PY
 site-check: ## Build and check the static website (install with npm ci --prefix site)
 	npm --prefix site run verify
 
-.PHONY: help check install lint typos links links-external secrets versions snippets test clean
+.PHONY: help check install lint typos vale vale-package vale-package-check links links-external secrets versions snippets test clean
 
 help: ## Show this help
 	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) \
 	  | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
-check: lint typos links secrets versions vendored snippets ## Run every check CI runs
+check: lint typos vale links secrets versions vendored snippets ## Run every check CI runs
 
 install: node_modules ## Install the pinned documentation toolchain
 
@@ -105,6 +125,19 @@ lint: install ## Lint Markdown with markdownlint-cli2
 typos: $(TYPOS) ## Enforce US spelling in first-party code and prose
 	$(TYPOS) --version
 	$(TYPOS) --config _typos.toml .
+
+vale: $(VALE) vale-package-check ## Enforce the Crefft writing rules in tracked Markdown
+	$(VALE) --no-global --version
+	$(VALE) --no-global sync
+	$(VALE) --no-global test --coverage configs/vale/Crefft/styles/Crefft
+	@git ls-files -z '*.md' ':!:reference/**' | xargs -0 $(VALE) --no-global
+
+vale-package: ## Build the deterministic Crefft archive and checksum
+	python3 scripts/build_vale_package.py --output-dir $(VALE_PACKAGE_DIR)
+
+vale-package-check: $(VALE) vale-package ## Sync and exercise the built archive as a consumer
+	python3 scripts/check_vale_package.py --vale $(VALE) \
+	  --package $(VALE_PACKAGE_DIR)/Crefft.zip
 
 links: install ## Check internal links in all first-party Markdown (blocking)
 	@git ls-files -z '*.md' ':!:reference/**' \
@@ -167,6 +200,17 @@ $(TYPOS):
 	tar -xzf $(TMP)/$(TYPOS_ARCHIVE) -C $(TMP)/typos-$(TYPOS_VERSION)
 	@test -x $(TYPOS) || { echo "typos binary missing after extraction" >&2; exit 1; }
 	@rm -f $(TMP)/$(TYPOS_ARCHIVE)
+
+$(VALE):
+	@test -n "$(VALE_SHA256)" || { echo "Unsupported Vale platform: $(UNAME_S)/$(UNAME_M)"; exit 1; }
+	@mkdir -p $(TMP)/vale-$(VALE_VERSION)
+	curl --fail-with-body --location --silent --show-error --retry 3 \
+	  --output $(TMP)/$(VALE_ARCHIVE) \
+	  "https://github.com/vale-cli/vale/releases/download/v$(VALE_VERSION)/$(VALE_ARCHIVE)"
+	@echo "$(VALE_SHA256)  $(TMP)/$(VALE_ARCHIVE)" | shasum -a 256 -c -
+	tar -xzf $(TMP)/$(VALE_ARCHIVE) -C $(TMP)/vale-$(VALE_VERSION)
+	@test -x $(VALE) || { echo "Vale binary missing after extraction" >&2; exit 1; }
+	@rm -f $(TMP)/$(VALE_ARCHIVE)
 
 clean: ## Remove downloaded tools and caches
 	rm -rf $(TMP) node_modules scripts/__pycache__

@@ -26,6 +26,7 @@ on:
       - '.markdownlint-cli2.jsonc'
       - '.gitleaks.toml'
       - '_typos.toml'
+      - '.vale.ini'
       - 'package.json'
       - 'package-lock.json'
       - 'Makefile'
@@ -42,6 +43,7 @@ on:
       - '.markdownlint-cli2.jsonc'
       - '.gitleaks.toml'
       - '_typos.toml'
+      - '.vale.ini'
       - 'package.json'
       - 'package-lock.json'
       - 'Makefile'
@@ -86,6 +88,9 @@ jobs:
       - name: Check US spelling in code and prose
         # Use the Makefile's exact version and verified release checksums.
         run: make typos
+
+      - name: Check Crefft writing rules and package
+        run: make vale
 
       - name: Verify vendored payload integrity
         run: |

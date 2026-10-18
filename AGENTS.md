@@ -45,6 +45,7 @@ Don't: "We will fix this within 24 hours. All checks pass."
 | ---- | ------- |
 | Run every check below | `make check` |
 | Lint Markdown | `npx --yes markdownlint-cli2@0.23.2 "**/*.md" "#reference"` |
+| Check writing rules and package | `make vale` |
 | Check links | `npx --yes markdown-link-check@3.15.0 --quiet README.md` |
 | Validate tool versions | `python3 scripts/validate_versions.py` |
 | Check navigation coverage | `python3 scripts/gen_nav.py --check` |
@@ -75,7 +76,8 @@ crefft/
 │   ├── cursor/        # .cursorrules.template
 │   ├── editorconfig/  # .editorconfig
 │   ├── pre-commit/    # .pre-commit-config.yaml
-│   └── prettier/      # .prettierrc
+│   ├── prettier/      # .prettierrc
+│   └── vale/          # Crefft package, consumer fixtures, and setup
 ├── guides/
 │   ├── ai/            # AI-assisted development practices
 │   ├── api/           # GraphQL and REST API design

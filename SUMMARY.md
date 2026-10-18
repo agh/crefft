@@ -87,47 +87,47 @@
 
 ## Reference Material
 
-- [CHECKSUMS.sha256](reference/CHECKSUMS.sha256)
+- [`CHECKSUMS.sha256`](reference/CHECKSUMS.sha256)
 - [Vendored Reference Errata](reference/ERRATA.md)
-- [UPSTREAM.json](reference/UPSTREAM.json)
+- [`UPSTREAM.json`](reference/UPSTREAM.json)
 - airbnb/
-  - [LICENSE](reference/airbnb/LICENSE)
-  - [NOTICE](reference/airbnb/NOTICE)
+  - [`LICENSE`](reference/airbnb/LICENSE)
+  - [`NOTICE`](reference/airbnb/NOTICE)
   - [Airbnb CSS-in-JavaScript](reference/airbnb/css-in-javascript.md)
   - [Airbnb JavaScript Style Guide() {](reference/airbnb/javascript.md)
   - [Airbnb React/JSX](reference/airbnb/react.md)
   - [Ruby](reference/airbnb/ruby.md)
 - google/
-  - [LICENSE](reference/google/LICENSE)
-  - [NOTICE](reference/google/NOTICE)
+  - [`LICENSE`](reference/google/LICENSE)
+  - [`NOTICE`](reference/google/NOTICE)
   - [C# at Google](reference/google/csharp.md)
   - [Go Style Best Practices](reference/google/go-best-practices.md)
   - [Go Style Decisions](reference/google/go-decisions.md)
   - [Go](reference/google/go.md)
-  - [htmlcss.html](reference/google/htmlcss.html)
-  - [javascript.html](reference/google/javascript.html)
-  - [json.xml](reference/google/json.xml)
+  - [`htmlcss.html`](reference/google/htmlcss.html)
+  - [`javascript.html`](reference/google/javascript.html)
+  - [`json.xml`](reference/google/json.xml)
   - [Markdown style guide](reference/google/markdown.md)
   - [Google Python](reference/google/python.md)
   - [Shell](reference/google/shell.md)
-  - [typescript.html](reference/google/typescript.html)
+  - [`typescript.html`](reference/google/typescript.html)
 - holywell/
-  - [LICENCE](reference/holywell/LICENCE)
-  - [NOTICE](reference/holywell/NOTICE)
+  - [`LICENCE`](reference/holywell/LICENCE)
+  - [`NOTICE`](reference/holywell/NOTICE)
   - [SQL style guide](reference/holywell/sql.md)
 - ietf/
-  - [NOTICE](reference/ietf/NOTICE)
+  - [`NOTICE`](reference/ietf/NOTICE)
   - [IETF Reference Documents](reference/ietf/README.md)
-  - [rfc2119.txt](reference/ietf/rfc2119.txt)
+  - [`rfc2119.txt`](reference/ietf/rfc2119.txt)
 - rubocop/
-  - [LICENSE](reference/rubocop/LICENSE)
-  - [NOTICE](reference/rubocop/NOTICE)
-  - [rails.adoc](reference/rubocop/rails.adoc)
-  - [ruby.adoc](reference/rubocop/ruby.adoc)
+  - [`LICENSE`](reference/rubocop/LICENSE)
+  - [`NOTICE`](reference/rubocop/NOTICE)
+  - [`rails.adoc`](reference/rubocop/rails.adoc)
+  - [`ruby.adoc`](reference/rubocop/ruby.adoc)
 - rust/
-  - [LICENSE-APACHE](reference/rust/LICENSE-APACHE)
-  - [LICENSE-MIT](reference/rust/LICENSE-MIT)
-  - [NOTICE](reference/rust/NOTICE)
+  - [`LICENSE-APACHE`](reference/rust/LICENSE-APACHE)
+  - [`LICENSE-MIT`](reference/rust/LICENSE-MIT)
+  - [`NOTICE`](reference/rust/NOTICE)
   - [Rust API Guidelines — Vendored Snapshot and 2024 Supplement](reference/rust/README.md)
   - [Summary](reference/rust/SUMMARY.md)
   - [Rust API Guidelines](reference/rust/about.md)
@@ -146,93 +146,95 @@
   - [Type safety](reference/rust/type-safety.md)
 - security/
   - [Security Reference Agent Integration](reference/security/AGENT_GUIDE.md)
-  - [NOTICE](reference/security/NOTICE)
+  - [`NOTICE`](reference/security/NOTICE)
   - [Security Reference Loading Protocol](reference/security/REFERENCE_PROTOCOL.md)
-  - [manifest.json](reference/security/manifest.json)
+  - [`manifest.json`](reference/security/manifest.json)
   - LICENSES/
-    - [Apache-2.0.txt](reference/security/LICENSES/Apache-2.0.txt)
-    - [BSD-3-Clause-JA4.txt](reference/security/LICENSES/BSD-3-Clause-JA4.txt)
-    - [CC-BY-NC-ND-4.0.txt](reference/security/LICENSES/CC-BY-NC-ND-4.0.txt)
-    - [CC-BY-SA-4.0.txt](reference/security/LICENSES/CC-BY-SA-4.0.txt)
+    - [`Apache-2.0.txt`](reference/security/LICENSES/Apache-2.0.txt)
+    - [`BSD-3-Clause-JA4.txt`](reference/security/LICENSES/BSD-3-Clause-JA4.txt)
+    - [`CC-BY-NC-ND-4.0.txt`](reference/security/LICENSES/CC-BY-NC-ND-4.0.txt)
+    - [`CC-BY-SA-4.0.txt`](reference/security/LICENSES/CC-BY-SA-4.0.txt)
     - [Community Specification License 1.0](reference/security/LICENSES/Community-Specification-1.0.md)
     - [Detection Rule License (DRL) 1.1](reference/security/LICENSES/DRL-1.1.md)
-    - [FoxIO-License-1.1.txt](reference/security/LICENSES/FoxIO-License-1.1.txt)
-    - [MIT-D3FEND.md](reference/security/LICENSES/MIT-D3FEND.md)
-    - [MITRE-ATTACK-Terms-of-Use.txt](reference/security/LICENSES/MITRE-ATTACK-Terms-of-Use.txt)
-    - [MITRE-CAPEC-Terms-of-Use.txt](reference/security/LICENSES/MITRE-CAPEC-Terms-of-Use.txt)
-    - [MITRE-CWE-Terms-of-Use.txt](reference/security/LICENSES/MITRE-CWE-Terms-of-Use.txt)
+    - [`FoxIO-License-1.1.txt`](reference/security/LICENSES/FoxIO-License-1.1.txt)
+    - [`MIT-D3FEND.md`](reference/security/LICENSES/MIT-D3FEND.md)
+    - [`MITRE-ATTACK-Terms-of-Use.txt`](reference/security/LICENSES/MITRE-ATTACK-Terms-of-Use.txt)
+    - [`MITRE-CAPEC-Terms-of-Use.txt`](reference/security/LICENSES/MITRE-CAPEC-Terms-of-Use.txt)
+    - [`MITRE-CWE-Terms-of-Use.txt`](reference/security/LICENSES/MITRE-CWE-Terms-of-Use.txt)
   - cis/
-    - [NOTICE](reference/security/cis/NOTICE)
-    - [controls-v8.json](reference/security/cis/controls-v8.json)
+    - [`NOTICE`](reference/security/cis/NOTICE)
+    - [`controls-v8.json`](reference/security/cis/controls-v8.json)
   - compliance/
-    - [control-mappings.json](reference/security/compliance/control-mappings.json)
-    - [frameworks.json](reference/security/compliance/frameworks.json)
-    - [technical-requirements.json](reference/security/compliance/technical-requirements.json)
+    - [`control-mappings.json`](reference/security/compliance/control-mappings.json)
+    - [`frameworks.json`](reference/security/compliance/frameworks.json)
+    - [`technical-requirements.json`](reference/security/compliance/technical-requirements.json)
   - containers/
-    - [container-security.json](reference/security/containers/container-security.json)
+    - [`container-security.json`](reference/security/containers/container-security.json)
   - crypto/
-    - [cryptographic-standards.json](reference/security/crypto/cryptographic-standards.json)
+    - [`cryptographic-standards.json`](reference/security/crypto/cryptographic-standards.json)
   - cwe/
-    - [cwe-common.json](reference/security/cwe/cwe-common.json)
-    - [cwe-top-25-2025.json](reference/security/cwe/cwe-top-25-2025.json)
+    - [`cwe-common.json`](reference/security/cwe/cwe-common.json)
+    - [`cwe-top-25-2025.json`](reference/security/cwe/cwe-top-25-2025.json)
   - epss/
-    - [exploit-prediction.json](reference/security/epss/exploit-prediction.json)
+    - [`exploit-prediction.json`](reference/security/epss/exploit-prediction.json)
   - exploits/
-    - [exploit-availability.json](reference/security/exploits/exploit-availability.json)
+    - [`exploit-availability.json`](reference/security/exploits/exploit-availability.json)
   - fingerprints/
-    - [malware-signatures.json](reference/security/fingerprints/ja4/malware-signatures.json)
+    - [`malware-signatures.json`](reference/security/fingerprints/ja4/malware-signatures.json)
   - kev/
-    - [known-exploited-vulnerabilities.json](reference/security/kev/known-exploited-vulnerabilities.json)
+    - [`known-exploited-vulnerabilities.json`](reference/security/kev/known-exploited-vulnerabilities.json)
   - mitre/
-    - [atlas-summary.json](reference/security/mitre/atlas/atlas-summary.json)
-    - [techniques-summary.json](reference/security/mitre/attack/techniques-summary.json)
-    - [capec-summary.json](reference/security/mitre/capec/capec-summary.json)
-    - [d3fend-summary.json](reference/security/mitre/d3fend/d3fend-summary.json)
+    - [`atlas-summary.json`](reference/security/mitre/atlas/atlas-summary.json)
+    - [`techniques-summary.json`](reference/security/mitre/attack/techniques-summary.json)
+    - [`capec-summary.json`](reference/security/mitre/capec/capec-summary.json)
+    - [`d3fend-summary.json`](reference/security/mitre/d3fend/d3fend-summary.json)
   - nist/
-    - [csf-2.0-summary.json](reference/security/nist/csf-2.0-summary.json)
-    - [sp800-53-controls.json](reference/security/nist/sp800-53-controls.json)
+    - [`csf-2.0-summary.json`](reference/security/nist/csf-2.0-summary.json)
+    - [`sp800-53-controls.json`](reference/security/nist/sp800-53-controls.json)
   - openssf/
-    - [scorecard.json](reference/security/openssf/scorecard.json)
+    - [`scorecard.json`](reference/security/openssf/scorecard.json)
   - owasp/
-    - [asvs-5.0.json](reference/security/owasp/asvs-5.0.json)
-    - [top10-api-2023.json](reference/security/owasp/top10-api-2023.json)
-    - [top10-llm-2025.json](reference/security/owasp/top10-llm-2025.json)
-    - [top10-mobile-2024.json](reference/security/owasp/top10-mobile-2024.json)
-    - [top10-web-2025.json](reference/security/owasp/top10-web-2025.json)
+    - [`asvs-5.0.json`](reference/security/owasp/asvs-5.0.json)
+    - [`top10-api-2023.json`](reference/security/owasp/top10-api-2023.json)
+    - [`top10-llm-2025.json`](reference/security/owasp/top10-llm-2025.json)
+    - [`top10-mobile-2024.json`](reference/security/owasp/top10-mobile-2024.json)
+    - [`top10-web-2025.json`](reference/security/owasp/top10-web-2025.json)
   - sbom/
-    - [sbom-formats.json](reference/security/sbom/sbom-formats.json)
+    - [`sbom-formats.json`](reference/security/sbom/sbom-formats.json)
   - sigma/
-    - [rules-summary.json](reference/security/sigma/rules-summary.json)
+    - [`rules-summary.json`](reference/security/sigma/rules-summary.json)
   - slsa/
-    - [slsa-levels.json](reference/security/slsa/slsa-levels.json)
+    - [`slsa-levels.json`](reference/security/slsa/slsa-levels.json)
 - shopify/
-  - [LICENSE](reference/shopify/LICENSE)
-  - [NOTICE](reference/shopify/NOTICE)
+  - [`LICENSE`](reference/shopify/LICENSE)
+  - [`NOTICE`](reference/shopify/NOTICE)
   - [Ruby](reference/shopify/ruby.md)
 - uber/
-  - [LICENSE](reference/uber/LICENSE)
-  - [NOTICE](reference/uber/NOTICE)
+  - [`LICENSE`](reference/uber/LICENSE)
+  - [`NOTICE`](reference/uber/NOTICE)
   - [Uber Go](reference/uber/go.md)
 
 ## Configuration
 
-- [tool-versions.json](configs/tool-versions.json)
+- [`tool-versions.json`](configs/tool-versions.json)
 - agents/
-  - [AGENTS.md.template](configs/agents/AGENTS.md.template)
+  - [`AGENTS.md.template`](configs/agents/AGENTS.md.template)
 - ansible/
-  - [.ansible-lint](configs/ansible/.ansible-lint)
-  - [.sops.yaml](configs/ansible/.sops.yaml)
-  - [.yamllint](configs/ansible/.yamllint)
+  - [`.ansible-lint`](configs/ansible/.ansible-lint)
+  - [`.sops.yaml`](configs/ansible/.sops.yaml)
+  - [`.yamllint`](configs/ansible/.yamllint)
   - [Ansible Configuration Templates](configs/ansible/README.md)
-  - [ansible.cfg](configs/ansible/ansible.cfg)
-  - [requirements.yml](configs/ansible/requirements.yml)
+  - [`ansible.cfg`](configs/ansible/ansible.cfg)
+  - [`requirements.yml`](configs/ansible/requirements.yml)
 - claude/
-  - [settings.json](configs/claude/settings.json)
+  - [`settings.json`](configs/claude/settings.json)
   - infrastructure/
     - [Agent Infrastructure](configs/claude/infrastructure/README.md)
+    - [`audit-hook.sh`](configs/claude/infrastructure/audit-hook.sh)
     - [Agent Audit Logging](configs/claude/infrastructure/audit.md)
     - [Agent Coordination](configs/claude/infrastructure/coordination.md)
     - [Agent Secrets Management](configs/claude/infrastructure/secrets.md)
+    - [`sops_command.py`](configs/claude/infrastructure/sops_command.py)
   - skills/
     - [Skills](configs/claude/skills/README.md)
     - [Discord Skill](configs/claude/skills/communication/discord.md)
@@ -248,19 +250,29 @@
     - [VictoriaLogs Skill](configs/claude/skills/monitoring/victorialogs.md)
 - cursor/
   - rules/
-    - [project-rules.mdc.template](configs/cursor/rules/project-rules.mdc.template)
+    - [`project-rules.mdc.template`](configs/cursor/rules/project-rules.mdc.template)
 - editorconfig/
-  - [.editorconfig](configs/editorconfig/.editorconfig)
+  - [`.editorconfig`](configs/editorconfig/.editorconfig)
   - [EditorConfig](configs/editorconfig/README.md)
 - github/
   - [GitHub Workflow Templates](configs/github/README.md)
   - workflows/
-    - [doc-sync.yml](configs/github/workflows/doc-sync.yml)
-    - [sync-crefft.yml](configs/github/workflows/sync-crefft.yml)
+    - [`doc-sync.yml`](configs/github/workflows/doc-sync.yml)
+    - [`sync-crefft.yml`](configs/github/workflows/sync-crefft.yml)
 - pre-commit/
-  - [.pre-commit-config.yaml](configs/pre-commit/.pre-commit-config.yaml)
+  - [`.pre-commit-config.yaml`](configs/pre-commit/.pre-commit-config.yaml)
 - prettier/
-  - [.prettierrc](configs/prettier/.prettierrc)
+  - [`.prettierrc`](configs/prettier/.prettierrc)
+- vale/
+  - [Crefft Vale Package](configs/vale/README.md)
+  - Crefft/
+    - [`.vale.ini`](configs/vale/Crefft/.vale.ini)
+    - [`Direct.yml`](configs/vale/Crefft/styles/Crefft/Direct.yml)
+    - [`Literals.yml`](configs/vale/Crefft/styles/Crefft/Literals.yml)
+    - [`US.yml`](configs/vale/Crefft/styles/Crefft/US.yml)
+  - fixtures/
+    - [`clean.txt`](configs/vale/fixtures/clean.txt)
+    - [`probe.txt`](configs/vale/fixtures/probe.txt)
 
 ## Agents
 

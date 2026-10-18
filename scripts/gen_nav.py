@@ -52,7 +52,7 @@ def title_for(path: Path) -> str:
                 if title.endswith(suffix) and len(title) > len(suffix):
                     title = title[: -len(suffix)]
             return title.strip()
-    return path.name
+    return f"`{path.name}`" if path.is_file() else path.name
 
 
 def sorted_files(directory: Path, pattern: str, keep_dotfiles: bool) -> List[Path]:

@@ -437,7 +437,7 @@ dotnet format --verify-no-changes
 dotnet format ./src/MyProject/MyProject.csproj
 ```
 
-### EditorConfig (.editorconfig)
+### EditorConfig (`.editorconfig`)
 
 ```ini
 root = true

@@ -6,6 +6,10 @@ extend-exclude = [
   ".tmp-check/**",
   # Git's own metadata and sample hooks, present in a full clone.
   ".git/**",
+  # The Vale spelling rule encodes rejected spellings, including negative fixtures.
+  "configs/vale/Crefft/styles/Crefft/US.yml",
+  # The consumer probe must fail the US spelling rule.
+  "configs/vale/fixtures/probe.txt",
 ]
 ignore-hidden = false
 
@@ -30,6 +34,8 @@ extend-ignore-re = [
   '"caf\\u\{e9\}"',
   # GitHub Actions spells its cancellation predicate this way.
   '\bcancelled\(\)',
+  # The Vale documentation uses this exact negative example to show the US rule.
+  '(?m)^The colour changes\.$',
 ]
 
 [default.extend-words]

@@ -88,7 +88,7 @@ indent_size = 4
 
 | Property | Values | Description |
 | -------- | ------ | ----------- |
-| `root` | `true` | Stop searching for .editorconfig |
+| `root` | `true` | Stop searching for `.editorconfig` |
 | `indent_style` | `tab`, `space` | Hard tabs or soft tabs |
 | `indent_size` | integer | Number of spaces per indent |
 | `tab_width` | integer | Width of a tab character |

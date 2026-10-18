@@ -157,7 +157,7 @@ gofmt -l .         # Go
 rubocop --only Layout # Ruby
 ```
 
-### 7. Security Scan (--full mode)
+### 7. Security Scan (`--full` mode)
 
 ```bash
 # Dependency vulnerabilities
@@ -174,7 +174,7 @@ gitleaks detect --source . --no-git
 semgrep scan --config auto
 ```
 
-### 8. Coverage Report (--full mode)
+### 8. Coverage Report (`--full` mode)
 
 ```bash
 # Generate coverage metrics
@@ -415,7 +415,7 @@ verify:
 
 ---
 
-## Time-Travel Debugging (--bisect mode)
+## Time-Travel Debugging (`--bisect` mode)
 
 When a test or check is failing and you need to find *when* it broke:
 
@@ -539,7 +539,7 @@ if (!session) {
 
 ---
 
-## Contract Verification (--contract mode)
+## Contract Verification (`--contract` mode)
 
 Verify that PR descriptions and commit messages match actual code changes.
 
@@ -718,7 +718,7 @@ contract:
 
 - Auto-detect project type before running checks
 - Run Stage 1 checks in parallel when possible
-- Stop sequential checks on first failure (unless --continue flag)
+- Stop sequential checks on first failure (unless `--continue` flag)
 - Report first failure with actionable details
 - Include command output for failures
 - Don't stop on warnings, only errors

@@ -1,0 +1,7 @@
+# Probe
+
+Let me explain the colour change.
+
+Edit .editorconfig and pass --all-files first.
+
+We ship apples, pears and plums.

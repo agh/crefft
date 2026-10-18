@@ -1936,4 +1936,4 @@ jobs:
 
 [^19]: [PostgreSQL Versioning Policy](https://www.postgresql.org/support/versioning/) - Each major is supported for five years; 16 is supported until 2028-11-09 and 18 is current. Always run the current minor release of the chosen major
 
-[^20]: [community.sops.sops vars plugin](https://docs.ansible.com/ansible/latest/collections/community/sops/sops_vars.html) - Loads encrypted files from `group_vars/` and `host_vars/`, restricted by default to `.sops.yaml`, `.sops.yml`, and `.sops.json` extensions
+[^20]: [`community.sops.sops` vars plugin](https://docs.ansible.com/ansible/latest/collections/community/sops/sops_vars.html) - Loads encrypted files from `group_vars/` and `host_vars/`, restricted by default to `.sops.yaml`, `.sops.yml`, and `.sops.json` extensions

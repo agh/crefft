@@ -489,6 +489,8 @@ def executable_references(executable: Executable) -> Iterator[tuple[str, str, st
 def pinned_reference(ecosystem: str, version: str) -> bool:
     if ecosystem == "action":
         return bool(COMMIT_RE.fullmatch(version))
+    if ecosystem == "checksum":
+        return bool(DIGEST_RE.fullmatch(version))
     if ecosystem == "docker":
         return bool(DIGEST_RE.fullmatch(version) or IMAGE_VERSION_RE.fullmatch(version))
     return exact_version(version)
@@ -556,6 +558,8 @@ def parse_tool_versions(path: Path, hooks: dict[str, str]) -> dict[str, dict[str
             if not pinned_reference(ecosystem, version):
                 raise ValueError(f"{ecosystem} {name}: {version!r} is not an exact version")
     overlaps = {
+        ("binary", "vale"): ("vale-cli/vale", ""),
+        ("hook", "vale-cli/vale"): ("vale-cli/vale", ""),
         ("go", "github.com/golangci/golangci-lint/cmd/golangci-lint"):
             ("golangci/golangci-lint", ""),
         ("go", "mvdan.cc/sh/v3/cmd/shfmt"): ("scop/pre-commit-shfmt", r"-\d+$"),
@@ -569,7 +573,7 @@ def parse_tool_versions(path: Path, hooks: dict[str, str]) -> dict[str, dict[str
         if repo not in hooks:
             continue
         expected = re.sub(suffix, "", hooks[repo]) if suffix else hooks[repo]
-        if ecosystem in {"npm", "python"}:
+        if ecosystem in {"npm", "python", "binary"}:
             expected = expected.removeprefix("v")
         if pins.get(ecosystem, {}).get(name) != expected:
             raise ValueError(f"{ecosystem} {name} must match {repo}@{expected}")

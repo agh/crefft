@@ -1,0 +1,37 @@
+extends: existence
+message: "Remove the filler phrase '%s'."
+level: error
+ignorecase: true
+tokens:
+  - "I['’]d be happy to"
+  - 'Great question'
+  - 'Let me'
+  - "Here['’]s"
+  - 'aims to'
+  - 'helps with'
+tests:
+  - name: catches filler
+    input: Let me explain the change.
+    contains: Crefft.Direct
+  - name: catches a straight apostrophe
+    input: "I'd be happy to explain. Here's the change."
+    contains:
+      - "'I'd be happy to'"
+      - "'Here's'"
+  - name: catches curly apostrophes
+    input: "I’d be happy to explain. Here’s the change."
+    contains:
+      - "'I’d be happy to'"
+      - "'Here’s'"
+  - name: accepts direct prose
+    input: The change fixes the parser.
+    want: ''
+  - name: catches padded descriptions and praise
+    input: Great question. This aims to explain and helps with the change.
+    contains:
+      - "'Great question'"
+      - "'aims to'"
+      - "'helps with'"
+  - name: leaves code alone
+    input: 'The example prints `Let me` and `Here’s`.'
+    want: ''

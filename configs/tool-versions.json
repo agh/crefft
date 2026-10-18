@@ -31,6 +31,19 @@
     "rustsec/audit-check": "69366f33c96575abad1ee0dba8212993eecbe998",
     "tj-actions/changed-files": "9426d40962ed5378910ee2e21d5f8c6fcbf2dd96"
   },
+  "binary": {
+    "vale": "3.24.0"
+  },
+  "checksum": {
+    "vale_3.24.0_Linux_64-bit.tar.gz":
+      "sha256:867534ddb678abca7f214bc4706ead0922bd5252ffe8035fc227013f66c8b214",
+    "vale_3.24.0_Linux_arm64.tar.gz":
+      "sha256:104cbd349279e50c4cb40adb70adf345d93cc4a3a0191f9e68bdccb97086b582",
+    "vale_3.24.0_macOS_64-bit.tar.gz":
+      "sha256:eeb39e86f1daac27cc2a77fef3af1824d50559bdc22329fb25fb921c80c79472",
+    "vale_3.24.0_macOS_arm64.tar.gz":
+      "sha256:87b513f26499f6657c15cf7175ba5b058a7c1ff2bb2d4e07265db2dd43451e44"
+  },
   "docker": {
     "danielqsj/kafka-exporter": "v1.10.0",
     "geerlingguy/docker-debian12-ansible":
@@ -60,6 +73,9 @@
     "golang.org/x/tools/cmd/deadcode": "v0.52.0",
     "golang.org/x/vuln/cmd/govulncheck": "v1.9.0",
     "mvdan.cc/sh/v3/cmd/shfmt": "v3.12.0"
+  },
+  "hook": {
+    "vale-cli/vale": "v3.24.0"
   },
   "npm": {
     "@axe-core/cli": "4.14.0",

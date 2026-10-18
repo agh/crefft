@@ -1,0 +1,77 @@
+name: Release Crefft package
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.14'
+
+      - name: Validate tag and prepare release notes
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          test "$RELEASE_TAG" = "v$(cat VERSION)"
+          python3 scripts/prepare_vale_release.py --tag "$RELEASE_TAG" \
+            --output-dir .tmp-check/vale-package
+
+      - name: Test packaging and release policy
+        run: python3 -m unittest discover scripts
+
+      - name: Build and test the package as a consumer
+        run: make vale-package-check
+
+      - name: Test source rule coverage
+        run: .tmp-check/vale-3.24.0/vale --no-global test --coverage configs/vale/Crefft/styles/Crefft
+
+      - name: Upload release bytes
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: crefft-release
+          if-no-files-found: error
+          # These exact files live under the ignored .tmp-check directory.
+          include-hidden-files: true
+          path: |
+            .tmp-check/vale-package/Crefft.zip
+            .tmp-check/vale-package/Crefft.zip.sha256
+            .tmp-check/vale-package/notes.md
+
+  release:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download release bytes
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: crefft-release
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" Crefft.zip Crefft.zip.sha256 \
+            --verify-tag --title "crefft $version" --notes-file notes.md

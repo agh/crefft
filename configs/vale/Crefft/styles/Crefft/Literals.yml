@@ -1,0 +1,45 @@
+extends: existence
+message: "Put the literal '%s' in a code span."
+level: error
+scope: [text, link]
+nonword: true
+# This is a bounded vocabulary, not a claim to recognize every possible literal.
+tokens:
+  - '(?<![\w/])(?:\.shellcheckrc|\.editorconfig|\.vale\.ini|_typos\.toml|lychee\.toml|go\.mod|go\.sum)(?![\w/])'
+  - '(?<![\w-])--[a-z][a-z0-9-]*\b'
+  - '\b(?:git commit|git add|prek run|vale sync)\b'
+tests:
+  - name: catches an unmarked file
+    input: Edit .shellcheckrc first.
+    contains: Crefft.Literals
+  - name: catches a flag
+    input: Pass --all-files first.
+    contains: Crefft.Literals
+  - name: catches a command
+    input: Run vale sync first.
+    contains: Crefft.Literals
+  - name: catches a literal in a heading
+    input: '# Edit .editorconfig'
+    contains: Crefft.Literals
+  - name: catches literal link text
+    input: 'Edit [.editorconfig](https://example.com/config) first.'
+    contains: Crefft.Literals
+  - name: leaves inline code alone
+    input: 'Edit `.shellcheckrc`, then run `prek run --all-files`.'
+    want: ''
+  - name: leaves a code-span heading alone
+    input: '# Edit `.editorconfig`'
+    want: ''
+  - name: leaves code-span link text alone
+    input: 'Edit [`.editorconfig`](https://example.com/config) first.'
+    want: ''
+  - name: leaves a fenced block alone
+    input: |
+      ```sh
+      vale sync --all-files
+      # .editorconfig
+      ```
+    want: ''
+  - name: accepts ordinary prose
+    input: The editor settings match the repository.
+    want: ''

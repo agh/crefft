@@ -107,6 +107,15 @@ repos:
   # =============================================================================
   # Markdown and Prose
   # =============================================================================
+  # Crefft prose rules (uncomment after adding .vale.ini and running
+  # `vale --no-global sync`; see configs/vale/README.md).
+  # - repo: https://github.com/vale-cli/vale
+  #   rev: v3.24.0
+  #   hooks:
+  #     - id: vale
+  #       args: [--no-global]
+  #       types: [markdown]
+  #
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v4.0.0-alpha.8
     hooks:
