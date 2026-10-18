@@ -7,6 +7,8 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+## [2026.10.2] - 2026-10-17
+
 ### Fixed
 
 - crefft.dev shows only recorded facts beside a rule. A guide's rules no longer
@@ -629,7 +631,8 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 - Vendored Google style guides (Python, Markdown, Shell, C#, HTML/CSS, Go,
   TypeScript)
 
-[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.1...HEAD
+[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.2...HEAD
+[2026.10.2]: https://github.com/agh/crefft/compare/v2026.10.1...v2026.10.2
 [2026.10.1]: https://github.com/agh/crefft/compare/v2026.10.0...v2026.10.1
 [2026.10.0]: https://github.com/agh/crefft/compare/v2.11.0...v2026.10.0
 [2.11.0]: https://github.com/agh/crefft/compare/v2.10.0...v2.11.0
