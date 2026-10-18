@@ -853,7 +853,7 @@ can delete project files or silently omit part of a release.
 Run from the consuming project's root:
 
 ```bash
-CREFFT_REF=v2026.10.0
+CREFFT_REF=v2026.10.1
 git clone --branch "${CREFFT_REF}" --depth 1 \
   https://github.com/agh/crefft.git "${HOME}/.crefft"
 "${HOME}/.crefft/scripts/sync-claude-config.sh" --ref "${CREFFT_REF}" "${PWD}"
@@ -863,7 +863,7 @@ For an existing clone, fetch the chosen release, check it out, and call the
 same script:
 
 ```bash
-CREFFT_REF=v2026.10.0
+CREFFT_REF=v2026.10.1
 git -C "${HOME}/.crefft" fetch --depth 1 origin \
   "refs/tags/${CREFFT_REF}:refs/tags/${CREFFT_REF}"
 git -C "${HOME}/.crefft" checkout --detach "${CREFFT_REF}"
@@ -914,12 +914,12 @@ not an embedded copying workflow:
 ```bash
 mkdir -p .github/workflows
 curl -fsSL -o .github/workflows/sync-crefft.yml \
-  https://raw.githubusercontent.com/agh/crefft/v2026.10.0/configs/github/workflows/sync-crefft.yml
+  https://raw.githubusercontent.com/agh/crefft/v2026.10.1/configs/github/workflows/sync-crefft.yml
 ```
 
 Follow the [adoption notes](../../configs/github/README.md#adopting-sync-crefftyml)
 for repository permissions. The template checks out `CREFFT_REF`
-(`v2026.10.0` by default) into `.crefft-upstream/` and calls
+(`v2026.10.1` by default) into `.crefft-upstream/` and calls
 `.crefft-upstream/scripts/sync-claude-config.sh`. Set `CREFFT_COMMIT` to a
 reviewed full commit SHA for additional verification. Every action remains
 pinned by full SHA.
