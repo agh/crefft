@@ -22,6 +22,8 @@ ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = ROOT / "scripts/sync-claude-config.sh"
 TEMPLATE = ROOT / "configs/github/workflows/sync-crefft.yml"
 RELEASE = "v2026.10.0"
+# The sync template defaults to the first release that ships this applier.
+TEMPLATE_DEFAULT_REF = "v2026.10.1"
 PAYLOADS = {
     "agents/code/reviewer.md": b"Review code.\n",
     "commands/code.md": b"Check code.\n",
@@ -341,7 +343,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("printf '%s\\n'", preview["run"])
 
     def test_template_uses_only_the_pinned_applier_and_full_action_shas(self):
-        self.assertEqual(self.workflow["env"]["CREFFT_REF"], RELEASE)
+        self.assertEqual(self.workflow["env"]["CREFFT_REF"], TEMPLATE_DEFAULT_REF)
         self.assertIn("CREFFT_COMMIT", self.workflow["env"])
         sync = next(step for step in self.steps if step.get("id") == "sync")
         self.assertIn(".crefft-upstream/scripts/sync-claude-config.sh", sync["run"])
@@ -509,7 +511,7 @@ class GuideTests(unittest.TestCase):
         for forbidden in ("archive/main", "rsync ", "cp -r", "checkout@v"):
             self.assertNotIn(forbidden, section)
         self.assertIn("--ref", section)
-        self.assertIn("v2026.10.0", section)
+        self.assertIn("v2026.10.1", section)
 
 
 if __name__ == "__main__":

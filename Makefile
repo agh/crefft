@@ -80,6 +80,11 @@ endef
 export GITLEAKS_FIXTURE_PY
 
 .DEFAULT_GOAL := help
+.PHONY: site-check
+
+site-check: ## Build and check the static website (install with npm ci --prefix site)
+	npm --prefix site run verify
+
 .PHONY: help check install lint typos links links-external secrets versions snippets test clean
 
 help: ## Show this help
@@ -95,7 +100,7 @@ node_modules: package.json package-lock.json
 	@touch node_modules
 
 lint: install ## Lint Markdown with markdownlint-cli2
-	$(NODE_BIN)/markdownlint-cli2 "**/*.md"
+	$(NODE_BIN)/markdownlint-cli2 $(MARKDOWN_FILES) site/README.md SITE-CHANGELOG.md
 
 typos: $(TYPOS) ## Enforce US spelling in first-party code and prose
 	$(TYPOS) --version
@@ -122,7 +127,7 @@ secrets: $(GITLEAKS) ## Scan for secrets, and prove the allowlist still bites
 	@rm -rf $(TMP)/gitleaks-fixture
 	@mkdir -p $(TMP)/gitleaks-fixture
 	@python3 -c "$$GITLEAKS_FIXTURE_PY" $(TMP)/gitleaks-fixture/leak.js
-	@if $(GITLEAKS) dir $(TMP)/gitleaks-fixture --config .gitleaks.toml \
+	@if $(GITLEAKS) dir $(TMP)/gitleaks-fixture --config site/gitleaks.toml \
 	      --no-banner --redact >/dev/null 2>&1; then \
 	  rm -rf $(TMP)/gitleaks-fixture; \
 	  echo "FAIL: .gitleaks.toml no longer detects a realistic token"; exit 1; \
@@ -130,7 +135,7 @@ secrets: $(GITLEAKS) ## Scan for secrets, and prove the allowlist still bites
 	  rm -rf $(TMP)/gitleaks-fixture; \
 	  echo "self-test passed: realistic tokens are still detected"; \
 	fi
-	$(GITLEAKS) dir . --config .gitleaks.toml --no-banner --redact --verbose
+	$(GITLEAKS) dir . --config site/gitleaks.toml --no-banner --redact --verbose
 
 versions: test ## Check canonical versions, action SHAs, and image pins
 	python3 scripts/validate_versions.py

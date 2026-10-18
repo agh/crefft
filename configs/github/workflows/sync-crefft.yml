@@ -35,7 +35,7 @@ permissions:
 
 env:
   CREFFT_REPO: agh/crefft
-  CREFFT_REF: v2026.10.0
+  CREFFT_REF: v2026.10.1
   # Optional full commit SHA: the applier verifies it against the release checkout.
   CREFFT_COMMIT: ''
 

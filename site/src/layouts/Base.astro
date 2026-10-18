@@ -1,0 +1,61 @@
+---
+import '../generated/tokens.css';
+import '../styles/global.css';
+import mark from '../brand/mark.svg?raw';
+import { markdownFor, version } from '../lib/paths.mjs';
+interface Props { title: string; route: string; description?: string }
+const { title, route, description = 'Engineering practice, pinned. Rules, reasons, and recorded tool versions.' } = Astro.props;
+const markHTML = mark.replace(/<title[\s\S]*?<\/desc>/, '')
+  .replace('role="img" aria-labelledby="title desc"', 'aria-hidden="true"');
+---
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={`${title} | crefft`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={`https://crefft.dev${route}`} />
+    <meta property="og:image" content="https://crefft.dev/social-preview.png" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+    <meta property="og:image:alt" content="crefft. Engineering practice, pinned. Explicit rules, their reasons, and recorded tool versions." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="generator" content={Astro.generator} />
+    {['/404/', '/search/'].includes(route) && <meta name="robots" content="noindex" />}
+    <title>{title} | crefft</title>
+    <link rel="canonical" href={`https://crefft.dev${route}`} />
+    <link rel="alternate" type="text/markdown" href={markdownFor(route)} />
+    <link rel="icon" type="image/svg+xml" sizes="16x16" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/x-icon" sizes="16x16 32x32" href="/favicon.ico" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="wrap">
+      <header class="masthead">
+        <a class="brand" href="/" aria-label="crefft home"><Fragment set:html={markHTML} />crefft</a>
+        <span class="edition">Source {version}</span>
+        <nav aria-label="Main navigation">
+          <a href="/guides/" aria-current={route.startsWith('/guides/') ? 'page' : undefined}>Guides</a>
+          <a href="/for-agents/" aria-current={route === '/for-agents/' ? 'page' : undefined}>For agents</a>
+          <a href="/search/" aria-current={route === '/search/' ? 'page' : undefined}>Search</a>
+        </nav>
+      </header>
+      <main id="main"><slot /></main>
+      <footer>
+        <span>crefft / Engineering practice, pinned.</span>
+        <nav aria-label="Footer">
+          <a href={markdownFor(route)}>View as Markdown</a>
+          <a href="/privacy/">Privacy</a>
+          <a href="/reference/">Notices</a>
+          <a href="/llms.txt">llms.txt</a>
+        </nav>
+      </footer>
+    </div>
+  </body>
+</html>

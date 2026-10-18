@@ -4,7 +4,7 @@
 # Requires Bash, Python 3, and Git. Run from a clean release checkout.
 # Only files recorded in .claude/crefft-receipt.json belong to crefft.
 #
-# Usage: scripts/sync-claude-config.sh --ref v2026.10.0 [--commit SHA]
+# Usage: scripts/sync-claude-config.sh --ref v2026.10.1 [--commit SHA]
 #          [--adopt] [--overwrite-settings] [project-dir]
 set -euo pipefail
 

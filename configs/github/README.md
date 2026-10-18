@@ -43,19 +43,19 @@ Keeps a downstream project's `.claude/` tree in step with crefft.
 ```bash
 mkdir -p .github/workflows
 curl -fsSL -o .github/workflows/sync-crefft.yml \
-  https://raw.githubusercontent.com/agh/crefft/v2026.10.0/configs/github/workflows/sync-crefft.yml
+  https://raw.githubusercontent.com/agh/crefft/v2026.10.1/configs/github/workflows/sync-crefft.yml
 ```
 
 ### Configure
 
 Set `CREFFT_REF` to the release tag you have reviewed. It **MUST NOT** be a
-branch such as `main`. The default is `v2026.10.0`. Optionally set
+branch such as `main`. The default is `v2026.10.1`. Optionally set
 `CREFFT_COMMIT` to the independently reviewed full commit SHA:
 
 ```yaml
 env:
   CREFFT_REPO: agh/crefft
-  CREFFT_REF: v2026.10.0
+  CREFFT_REF: v2026.10.1
   CREFFT_COMMIT: ''
 ```
 

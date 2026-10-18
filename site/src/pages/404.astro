@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import { pages } from '../lib/pages.mjs';
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+const page = pages.find((page) => page.route === '/404/')!;
+const processor = await createMarkdownProcessor({ syntaxHighlight: false });
+const html = (await processor.render(page.body)).code;
+---
+<Base title={page.title} route="/404/">
+  <article class="standalone reading" set:html={html} />
+</Base>

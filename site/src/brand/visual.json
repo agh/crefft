@@ -1,0 +1,26 @@
+{
+  "light": {
+    "canvas": "#FCFCFA",
+    "surface": "#EFEFEB",
+    "ink": "#202A36",
+    "secondary": "#56616F",
+    "accent": "#164BC1",
+    "accentHover": "#103990",
+    "good": "#376348",
+    "bad": "#A13C32",
+    "edge": "#7B838C",
+    "focus": "#164BC1"
+  },
+  "dark": {
+    "canvas": "#151B22",
+    "surface": "#252C34",
+    "ink": "#EDF0F2",
+    "secondary": "#B7C0CD",
+    "accent": "#8FB5F4",
+    "accentHover": "#ADC9F8",
+    "good": "#ABCAB3",
+    "bad": "#EBAAA0",
+    "edge": "#81909F",
+    "focus": "#8FB5F4"
+  }
+}

@@ -1,0 +1,26 @@
+/*
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  X-Frame-Options: DENY
+  Content-Security-Policy: default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self'; style-src-attr 'none'; base-uri 'none'; object-src 'none'; img-src 'self'; font-src 'self'; connect-src 'self'; frame-src 'none'; form-action 'self'; worker-src 'self'; frame-ancestors 'none'
+
+/search/
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; script-src-attr 'none'; style-src 'self'; style-src-attr 'none'; base-uri 'none'; object-src 'none'; img-src 'self'; font-src 'self'; connect-src 'self'; frame-src 'none'; form-action 'self'; worker-src 'self'; frame-ancestors 'none'
+
+/pagefind/pagefind-worker.js
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self'
+
+/*.md
+  Content-Type: text/markdown; charset=utf-8
+
+/raw/*
+  ! Content-Type
+  Content-Type: text/plain; charset=utf-8
+  Content-Disposition: attachment
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

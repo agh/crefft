@@ -1,0 +1,12 @@
+{
+  "config": { "extends": "../.markdownlint.json" },
+  "ignores": [
+    "node_modules/**",
+    "dist/**",
+    ".astro/**",
+    ".cache/**",
+    ".venv/**",
+    ".wrangler/**",
+    "test-results/**"
+  ]
+}

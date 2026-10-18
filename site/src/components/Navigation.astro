@@ -1,0 +1,16 @@
+---
+interface Item {
+  title: string;
+  url?: string;
+  source?: string;
+  children: Item[];
+}
+interface Props { items: Item[] }
+const { items } = Astro.props;
+---
+<ul class="nav-list">
+  {items.map((item) => <li>
+    {item.url ? <a href={item.url}>{item.title}</a> : <span>{item.title}</span>}
+    {item.children.length > 0 && <Astro.self items={item.children} />}
+  </li>)}
+</ul>

@@ -7,19 +7,22 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+## [2026.10.1] - 2026-10-17
+
 ### Breaking
 
 - Libraries in every ecosystem now use Semantic Versioning 2.0.0;
   everything else uses calendar versioning (`YYYY.M.N`). Projects that
   publish both commands and importable packages count as libraries, and
   release automation selects the matching calculation.
-- The sync template takes `CREFFT_REF` (default `v2026.10.0`) and an optional
+- The sync template takes `CREFFT_REF` (default `v2026.10.1`, the first release
+  with the new applier) and an optional
   `CREFFT_COMMIT` instead of `CREFFT_BRANCH: main`, and calls
   `scripts/sync-claude-config.sh` instead of copying files itself. The script
   installs a pinned release, records what it owns in a receipt, refuses to
   overwrite or delete files it does not own, and installs `settings.json` only
-  when it is absent. Copies of the template **MUST** set `CREFFT_REF` to a
-  release tag.
+  when it is absent. Copies of the template **MUST** set `CREFFT_REF` to
+  `v2026.10.1` or a later release tag.
 - Release agents no longer publish. Continuous release and "Auto-release
   eligible" are gone: agents assess readiness and prepare a release, a named
   person approves it, and a separate step only the maintainer can trigger tags
@@ -49,6 +52,10 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ### Added
 
+- crefft.dev: a static reference site rendering every guide in place, with
+  a Markdown twin of every page, `/llms.txt`, `/files.json` with byte-exact raw
+  downloads and SHA-256 digests, local search, no cookies, and no third-party
+  requests. `make site-check` gates it, and release tags deploy it.
 - `make typos` checks US spelling and typos with a checksum-pinned
   typos 1.51.1, in `make check` and CI; the Go guide enables golangci-lint's
   `misspell` with `locale: US`.
@@ -614,7 +621,8 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 - Vendored Google style guides (Python, Markdown, Shell, C#, HTML/CSS, Go,
   TypeScript)
 
-[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.0...HEAD
+[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.1...HEAD
+[2026.10.1]: https://github.com/agh/crefft/compare/v2026.10.0...v2026.10.1
 [2026.10.0]: https://github.com/agh/crefft/compare/v2.11.0...v2026.10.0
 [2.11.0]: https://github.com/agh/crefft/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/agh/crefft/compare/v2.9.0...v2.10.0

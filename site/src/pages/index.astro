@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import ProofSheet from '../components/ProofSheet.astro';
+import { definition, strapline } from '../lib/home.mjs';
+import { guideNavigation } from '../lib/navigation.mjs';
+---
+<Base title={strapline} route="/" description={definition}>
+  <section class="intro" aria-labelledby="definition">
+    <h1 id="definition">{strapline}</h1>
+    <div>
+      <p class="definition">{definition}</p>
+      <nav class="actions" aria-label="Explore the standard">
+        <a class="primary" href="/guides/">Browse guides <span aria-hidden="true">&rarr;</span></a>
+        <a href="/for-agents/">For agents</a>
+      </nav>
+    </div>
+  </section>
+  <ProofSheet />
+  <section class="home-index" aria-labelledby="browse">
+    <h2 id="browse">Browse the standard</h2>
+    <ul>{guideNavigation.map((item) => <li><a href={item.url}>{item.title}</a></li>)}</ul>
+  </section>
+</Base>
