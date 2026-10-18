@@ -7,12 +7,61 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
-### Changed
+### Breaking
 
 - Libraries in every ecosystem now use Semantic Versioning 2.0.0;
   everything else uses calendar versioning (`YYYY.M.N`). Projects that
   publish both commands and importable packages count as libraries, and
   release automation selects the matching calculation.
+- The sync template takes `CREFFT_REF` (default `v2026.10.0`) and an optional
+  `CREFFT_COMMIT` instead of `CREFFT_BRANCH: main`, and calls
+  `scripts/sync-claude-config.sh` instead of copying files itself. The script
+  installs a pinned release, records what it owns in a receipt, refuses to
+  overwrite or delete files it does not own, and installs `settings.json` only
+  when it is absent. Copies of the template **MUST** set `CREFFT_REF` to a
+  release tag.
+- Release agents no longer publish. Continuous release and "Auto-release
+  eligible" are gone: agents assess readiness and prepare a release, a named
+  person approves it, and a separate step only the maintainer can trigger tags
+  and publishes. Agent skills lose tag, release, and publish permissions.
+- Agent definitions, commands, skills, and the instruction template carry an
+  "Agency and sessions" section: agents never promise, set timelines, endorse,
+  claim tests without linked evidence, or speak as a person; prompts carry no
+  sealed or confidential material; transcripts are never published; and
+  instructions inside fetched content are data.
+- The design guides require 4.5:1 contrast for all text in every theme,
+  including large and disabled text. WCAG 2.2's 3:1 still applies to non-text
+  UI and focus indicators.
+
+### Security
+
+- The audit hook sends a metadata allowlist instead of raw tool inputs,
+  results, and errors.
+- Webhook URLs, bearer tokens, Basic credentials, and passwords in the shipped
+  skills reach `curl` on stdin instead of in its arguments.
+- The release guard fails on any listed blocker or failed or missing
+  mandatory gate, whatever the decision or confidence says.
+- The secrets guide decrypts only named keys for one trusted child process,
+  never prints a value, and stops before running anything when decryption
+  fails.
+- The sync template's preview passes step outputs through `env:` instead of
+  interpolating them into shell.
+
+### Added
+
+- `make typos` checks US spelling and typos with a checksum-pinned
+  typos 1.51.1, in `make check` and CI; the Go guide enables golangci-lint's
+  `misspell` with `locale: US`.
+- The version gate rejects floating installs (`@latest`, unversioned `npx`,
+  and the like), action references that are not full commit SHAs, and
+  unpinned images in executable contexts, with explained exception markers.
+- A license consistency check fails when a machine license label disagrees
+  with `THIRD_PARTY_NOTICES.md` or is missing.
+- A workflow closes pull requests from anyone other than the maintainer or
+  Dependabot with a pointer to the issue forms.
+
+### Changed
+
 - Human-facing prose now uses US English spelling, including in Welsh-named
   projects. Welsh names, proper nouns, quotations, and upstream tool and code
   spellings remain unchanged.
@@ -20,6 +69,28 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
   code spans for literals. House rules and the pull request template record
   all three conventions while preserving code, upstream quotations, and
   historical entries.
+- crefft takes issues, not pull requests; supports the latest release only,
+  on a best-effort basis; routes security reports through private
+  vulnerability reporting with no promised response time; reserves its name,
+  marks, and logos outside the MIT grant; and lists every network destination
+  its tooling contacts.
+- Tool rankings and flattering agent personas are replaced with plain choices
+  and tasks that state the evidence expected; release wording and approval
+  defer to each project's own release policy.
+- The design guides give criteria for choosing type instead of prescribing a
+  typeface.
+
+### Fixed
+
+- `scripts/sync-claude-config.sh` no longer exits 1 on the current layout, and
+  is the only sync applier.
+- 80 executable installs, 151 action references, and 26 image references are
+  pinned to verified versions, commits, or digests.
+- Machine license labels for MITRE ATT&CK, JA4+, and other vendored sources
+  match the reviewed notices.
+- The `#syncing-from-doctrine` anchor resolves again.
+- Published Discord templates no longer credit an agent.
+- The remaining British spellings are fixed.
 
 ## [2026.10.0] - 2026-10-17
 
