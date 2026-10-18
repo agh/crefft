@@ -1,0 +1,42 @@
+extends: substitution
+message: "Use '%s' instead of '%s' in house prose."
+level: error
+ignorecase: true
+swap:
+  colour: color
+  colours: colors
+  behaviour: behavior
+  behaviours: behaviors
+  organisation: organization
+  organisations: organizations
+  summarise: summarize
+  summarises: summarizes
+  summarised: summarized
+  summarising: summarizing
+tests:
+  - name: catches house spellings
+    input: The colour and behaviour summarise the organisation.
+    contains:
+      - Crefft.US
+      - "'color'"
+      - "'behavior'"
+      - "'summarize'"
+      - "'organization'"
+  - name: catches plural and inflected spellings
+    input: The colours and behaviours of organisations are summarised. It summarises by summarising.
+    contains:
+      - "'colors'"
+      - "'behaviors'"
+      - "'organizations'"
+      - "'summarized'"
+      - "'summarizes'"
+      - "'summarizing'"
+  - name: accepts US spellings
+    input: Summarize the colors and behaviors of the organizations.
+    want: ''
+  - name: preserves an upstream literal
+    input: 'The upstream flag is `--colour`.'
+    want: ''
+  - name: preserves a code-span spelling
+    input: 'The upstream key is `colour`.'
+    want: ''

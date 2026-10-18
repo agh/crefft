@@ -329,7 +329,7 @@ When PostgreSQL is unavailable, agents should:
 | -------- | -------- |
 | Deployment history | Parse git tags and CI artifacts |
 | Error correlation | Use log files or monitoring APIs |
-| Release metrics | Derive from git commit history |
+| Release metrics | Derive from Git history |
 
 ## Security Considerations
 

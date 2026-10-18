@@ -565,7 +565,7 @@ Projects **MUST** commit both `go.mod` and `go.sum` to version control.
 
 - **Official**: Standard dependency management system since Go 1.11
 - **Reproducible**: MVS algorithm ensures consistent builds across environments
-- **Cryptographic verification**: go.sum checksums prevent supply chain attacks
+- **Cryptographic verification**: `go.sum` checksums prevent supply chain attacks
 - **Version selection**: Automatic minimum version selection prevents dependency conflicts
 - **No external tools**: Built into the Go toolchain
 
@@ -596,7 +596,7 @@ go mod verify
 go mod download
 ```
 
-### go.mod and go.sum
+### `go.mod` and `go.sum`
 
 Both files **MUST** be committed to version control.
 

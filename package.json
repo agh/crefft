@@ -1,6 +1,6 @@
 {
   "name": "crefft",
-  "version": "2026.10.2",
+  "version": "2026.10.3",
   "private": true,
   "description": "Documentation toolchain for the crefft style guides. Not published.",
   "license": "MIT",

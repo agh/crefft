@@ -7,6 +7,15 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+## [2026.10.3] - 2026-10-18
+
+### Added
+
+- `Crefft`, a Vale 3.24.0 package for US spellings, direct prose, and code
+  spans around known literals. `make vale` checks crefft's own Markdown,
+  rule fixtures, and the deterministic release archive; tag releases publish
+  `Crefft.zip` and its SHA-256 checksum.
+
 ## [2026.10.2] - 2026-10-17
 
 ### Fixed
@@ -158,7 +167,7 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 - Rust guide: API design and documentation, dependency policy and supply
   chain (cargo-deny, cargo-vet), property, mutation, SemVer, and benchmark
   testing, and a tested version matrix. Axum guide: HTTP hardening, WebSocket
-  controls, RFC 9457 problem details, negative and lifecycle tests.
+  controls, RFC 9457 problem details, negative tests, and lifecycle tests.
 - `LICENSE` (MIT) for crefft-authored content and `THIRD_PARTY_NOTICES.md`
   recording the license, upstream, and required attribution of every vendored
   source, with license texts and NOTICE files placed next to the material
@@ -627,11 +636,12 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 - Dependencies and package management guide
 - GitHub templates guide (CONTRIBUTING, SECURITY, PR templates, issue templates)
 - Versioning guide (SemVer, Keep a Changelog, Conventional Commits)
-- Configuration template files (.editorconfig, .prettierrc, pre-commit)
+- Configuration template files (`.editorconfig`, `.prettierrc`, pre-commit)
 - Vendored Google style guides (Python, Markdown, Shell, C#, HTML/CSS, Go,
   TypeScript)
 
-[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.2...HEAD
+[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.3...HEAD
+[2026.10.3]: https://github.com/agh/crefft/compare/v2026.10.2...v2026.10.3
 [2026.10.2]: https://github.com/agh/crefft/compare/v2026.10.1...v2026.10.2
 [2026.10.1]: https://github.com/agh/crefft/compare/v2026.10.0...v2026.10.1
 [2026.10.0]: https://github.com/agh/crefft/compare/v2.11.0...v2026.10.0

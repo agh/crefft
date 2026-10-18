@@ -1,0 +1,7 @@
+# Clean prose
+
+The color change fixes the parser.
+
+Edit `.editorconfig` and pass `--all-files` first.
+
+We ship apples, pears, and plums.

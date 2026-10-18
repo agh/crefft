@@ -2,7 +2,7 @@
 
 # crefft
 
-**Version: 2026.10.2** | [Changelog](CHANGELOG.md) | [AGENTS.md](AGENTS.md)
+**Version: 2026.10.3** | [Changelog](CHANGELOG.md) | [AGENTS.md](AGENTS.md)
 
 *crefft* (Welsh: craft) is the canonical style guide for
 all projects. Vendored from
@@ -239,6 +239,7 @@ Ready-to-copy configuration files:
 | EditorConfig | [configs/editorconfig/.editorconfig](configs/editorconfig/.editorconfig) | Editor settings |
 | Pre-commit | [configs/pre-commit/.pre-commit-config.yaml](configs/pre-commit/.pre-commit-config.yaml) | Git hooks |
 | Prettier | [configs/prettier/.prettierrc](configs/prettier/.prettierrc) | Code formatting |
+| Vale | [`configs/vale/`](configs/vale/README.md) | Crefft writing rules and release package |
 | **crefft Sync** | [.github/workflows/sync-crefft.yml](configs/github/workflows/sync-crefft.yml) | Auto-sync configs to projects |
 
 ---
@@ -412,7 +413,7 @@ their schedules, requests only these network operations:
 
 - `npm ci` contacts `registry.npmjs.org` for locked packages and npm's
   dependency audit. `make check` installs dependencies only when needed.
-- The Makefile and documentation CI download pinned Gitleaks and typos
+- The Makefile and documentation CI download pinned Gitleaks, typos, and Vale
   binaries from `github.com`, following GitHub's asset redirects to
   `release-assets.githubusercontent.com` or `objects.githubusercontent.com`.
 - Workflow checkout, action downloads, runtime setup, and cache access use
@@ -442,6 +443,11 @@ their schedules, requests only these network operations:
 No other network requests are configured by crefft. The ordinary lint,
 internal-link, version, vendored-integrity, and unit-test checks are offline
 once their tools are installed. Syntax checks do not execute the examples.
+
+`make vale` syncs its package from the local `configs/vale/Crefft/` directory
+without a network request once Vale is installed. Consumers of the published
+package explicitly run `vale --no-global sync` to download the pinned release
+asset from GitHub; linting does not upload their prose.
 
 **Why**: network access is limited to the operation requested, rather than
 background reporting or usage collection.
