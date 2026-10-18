@@ -123,8 +123,16 @@ try {
             })),
           })),
         });
-        if (violations.some(({ impact }) => ['serious', 'critical'].includes(impact))) {
+        const blocking = violations.filter(({ impact }) => ['serious', 'critical'].includes(impact));
+        if (blocking.length) {
           report.errors.push(`${name}/${colorScheme}/${viewport.width}: serious or critical axe findings`);
+          // Name the rule and the elements, so a failure in CI explains itself.
+          for (const { id, impact, nodes } of blocking) {
+            console.error(`axe ${impact} ${id} on ${name}/${colorScheme}/${viewport.width}:`);
+            for (const { target, failureSummary } of nodes.slice(0, 5)) {
+              console.error(`  ${target.join(' ')}: ${(failureSummary ?? '').split('\n').join(' ')}`);
+            }
+          }
         }
         if (['home', 'rule'].includes(name)) {
           const layout = await page.evaluate(() => {
