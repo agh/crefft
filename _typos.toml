@@ -4,6 +4,8 @@ extend-exclude = [
   "node_modules/**",
   "package-lock.json",
   ".tmp-check/**",
+  # Git's own metadata and sample hooks, present in a full clone.
+  ".git/**",
 ]
 ignore-hidden = false
 
