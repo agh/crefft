@@ -144,14 +144,14 @@ try {
               spineWidth: parseFloat(getComputedStyle(main).borderLeftWidth),
               phoneDivider: parseFloat(getComputedStyle(record).borderTopWidth),
               readingX: main.getBoundingClientRect().left + parseFloat(getComputedStyle(main).paddingLeft) + parseFloat(getComputedStyle(main).borderLeftWidth),
-              unassigned: record.querySelector('.id-note').textContent,
+              identity: [...record.querySelectorAll('.citation-identity p')].map((p) => p.textContent).join(' / '),
             };
           });
           const phone = viewport.width === 390;
           assert.equal(layout.titleSize, phone ? 44 : name === 'home' ? 88 : 70);
           assert.equal(layout.identitySize, phone ? 24 : 43);
           assert.equal(phone ? layout.phoneDivider : layout.spineWidth, 2);
-          assert.equal(layout.unassigned, 'Identifier not yet assigned');
+          assert.equal(layout.identity, 'Python / Pre-commit Configuration');
           if (!phone) assert.equal(layout.readingX, 352);
           report.layout.push({ page: name, colorScheme, viewport, ...layout });
         }
@@ -160,6 +160,22 @@ try {
           const hookRule = page.locator('[data-rule-section="pre-commit-configuration"]');
           assert.ok(await hookRule.count() === 1);
           assert.ok((await hookRule.locator('.context').textContent()).includes('v0.16.6'));
+          // The page title and each heading already name the rule, so the margin holds pins only,
+          // and a rule with none sits on the same reading line as the prose around it.
+          assert.equal(await page.locator('.guide-rule .citation-identity').count(), 0);
+          const bare = await page.evaluate(() => {
+            const main = document.querySelector('.guide-rule > .record-main:only-child');
+            const prose = document.querySelector('.guide-reading > p');
+            if (!main) return { found: false };
+            const style = getComputedStyle(main);
+            return {
+              found: true,
+              mainX: main.getBoundingClientRect().left + parseFloat(style.paddingLeft) + parseFloat(style.borderLeftWidth),
+              proseX: prose.getBoundingClientRect().left,
+            };
+          });
+          assert.ok(bare.found, 'expected a guide rule with no recorded pins');
+          if (viewport.width !== 390) assert.equal(bare.mainX, bare.proseX);
         }
         if (['home', 'guide', 'rule'].includes(name)) {
           const screenshot = `../SITE-OUT/round2-${name}-${colorScheme}-${viewport.width}x${viewport.height}.png`;

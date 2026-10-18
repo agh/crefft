@@ -23,7 +23,6 @@ export const proofContext = {
   guide: 'Python',
   section: 'Pre-commit Configuration',
   url: proofURL,
-  pins: [`ruff-pre-commit ${pin}`],
 };
 export const traceMarkdown = `## Trace this rule
 
@@ -32,11 +31,10 @@ export const traceMarkdown = `## Trace this rule
    the incompatible Ruff revision described in its rationale; it is not an executed fixture.
 3. **Checker.** Review required. This site build does not run a compatibility or tag-existence check.
 4. **Context.** Read the [complete Python guide](${proofURL}) for configuration and migration notes.
-   No rule identifier or per-rule review date is assigned.
 `;
 export const specimenMarkdown = `# ${proofTitle}
 
-Identity: Python / Pre-commit Configuration. Identifier not yet assigned.
+Identity: Python / Pre-commit Configuration.
 Recorded Ruff pin: ${pin}. Source version: ${version}.
 
 Quoted from [Python: Pre-commit Configuration](${proofURL}).
@@ -73,8 +71,6 @@ Both Ruff examples use \`https://github.com/astral-sh/ruff-pre-commit\`.
 \`\`\`yaml
 ${bad}
 \`\`\`
-
-Identifier not yet assigned. No per-rule review date is recorded.
 
 [Read the rule specimen](${specimenURL.slice(0, -1)}.md).
 `;

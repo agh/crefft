@@ -5,7 +5,7 @@ import { load } from 'cheerio';
 import { Resvg } from '@resvg/resvg-js';
 import { contrastPairs } from '../src/brand/contrast.mjs';
 import { artwork } from '../scripts/artwork.mjs';
-import { citationHTML, element } from '../src/lib/citation.mjs';
+import { citationHTML, citationNode, element } from '../src/lib/citation.mjs';
 import ruleBlocks from '../src/lib/rule-blocks.mjs';
 import { repository } from '../src/lib/paths.mjs';
 
@@ -91,11 +91,13 @@ test('banner and social sources are deterministic outlined artwork without font 
   assert.match(await readFile('../README.md', 'utf8'), /!\[crefft\]\(banner\.svg\)/);
 });
 
-test('citations escape text and never assign rule identifiers or review dates', () => {
+test('citations escape text, show only recorded facts, and render nothing without them', () => {
   const html = citationHTML({ guide: '<script>', section: 'A & B', url: '/guides/' });
   assert.ok(!html.includes('<script>'));
-  assert.match(html, /Identifier not yet assigned/);
-  assert.match(html, /See this section for applicable tool versions/);
+  assert.doesNotMatch(html, /Identifier|Scope|Review date|Evidence|<dl/);
+  assert.match(citationHTML({ pins: ['astral-sh/ruff-pre-commit v0.16.6'] }),
+    /^<aside[^>]*><dl class="context"><dt>Recorded pin<\/dt><dd><code class="pin">astral-sh\/ruff-pre-commit v0\.16\.6<\/code><\/dd><\/dl><\/aside>$/);
+  assert.equal(citationNode({}), null);
 });
 
 test('guide rule blocks preserve source nodes and anchors, without treating code as an obligation', () => {
@@ -109,7 +111,9 @@ test('guide rule blocks preserve source nodes and anchors, without treating code
   const tree = { type: 'root', children: [title, heading, statement, why, exampleHeading, code] };
   ruleBlocks()(tree, { path: `${repository}/guides/languages/python.md` });
   assert.equal(tree.children.length, 4);
-  assert.deepEqual(tree.children[1].children[1].children, [heading, statement, why]);
+  // No recorded pin, so the rule has no margin: its only child is the source content.
+  assert.equal(tree.children[1].children.length, 1);
+  assert.deepEqual(tree.children[1].children[0].children, [heading, statement, why]);
   assert.equal(tree.children[1].properties.dataRuleSection, 'hooks');
   assert.deepEqual(tree.children.slice(2), [exampleHeading, code]);
 });
