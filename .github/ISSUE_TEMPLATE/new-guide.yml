@@ -8,6 +8,8 @@ body:
       value: |
         A new guide is a real commitment: it has to be maintained, its tool
         versions kept current, and its claims kept true. Make the case.
+        The maintainer writes and maintains accepted guides. Propose the
+        coverage here, not in a pull request, so scope is agreed first.
 
   - type: input
     id: topic
@@ -50,7 +52,7 @@ body:
       description: >
         Lint, format, type check, test, coverage, fuzz, package management, and
         vulnerability scanning. Name the tool, the version, and why it beats
-        the alternatives. Every version MUST be pinned and sourced.
+        the alternatives. Every version **MUST** be pinned and sourced.
       render: markdown
     validations:
       required: true
@@ -61,8 +63,8 @@ body:
       label: Upstream style guides to reference
       description: >
         Existing authoritative guides for this topic, with URLs and their
-        licenses. Anything vendored into `reference/` must have its license
-        recorded in THIRD_PARTY_NOTICES.md.
+        licenses. Anything vendored into `reference/` **MUST** have its license
+        recorded in `THIRD_PARTY_NOTICES.md`.
 
   - type: textarea
     id: overlap
@@ -71,17 +73,6 @@ body:
       description: >
         Which existing crefft guides does this touch? crefft links rather
         than duplicates.
-
-  - type: dropdown
-    id: offer
-    attributes:
-      label: Are you offering to write it?
-      options:
-        - "Yes, I will write and maintain it"
-        - "Yes, I will write the first draft"
-        - "No, this is a request"
-    validations:
-      required: true
 
   - type: checkboxes
     id: houserules
