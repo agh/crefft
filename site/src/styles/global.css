@@ -130,6 +130,7 @@ summary { color: var(--accent); min-height: 44px; padding: 8px 0; cursor: pointe
 blockquote { border-left: 2px solid var(--edge); padding-left: 20px; margin-inline: 0; }
 table { display: block; overflow: auto; max-width: 100%; border-collapse: collapse; font-size: 17px; margin: 24px 0; }
 th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--edge); min-width: 110px; }
+.data-footnote-backref { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; min-height: 24px; text-decoration: none; }
 th { background: var(--surface); font-weight: 600; }
 hr { border: 0; border-top: 1px solid var(--edge); margin: 32px 0; }
 li { margin-block: 8px; }
