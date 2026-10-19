@@ -2,7 +2,7 @@
 
 # crefft
 
-**Version: 2026.10.4** | [Changelog](CHANGELOG.md) | [AGENTS.md](AGENTS.md)
+**Version: 2026.10.5** | [Changelog](CHANGELOG.md) | [AGENTS.md](AGENTS.md)
 
 *crefft* (Welsh: craft) is the canonical style guide for
 all projects. Vendored from

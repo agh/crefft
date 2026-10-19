@@ -7,6 +7,8 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+## [2026.10.5] - 2026-10-18
+
 ### Added
 
 - `make workflows`: checksum-pinned actionlint and PyPI-pinned zizmor check
@@ -692,7 +694,8 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 - Vendored Google style guides (Python, Markdown, Shell, C#, HTML/CSS, Go,
   TypeScript)
 
-[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.4...HEAD
+[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.5...HEAD
+[2026.10.5]: https://github.com/agh/crefft/compare/v2026.10.4...v2026.10.5
 [2026.10.4]: https://github.com/agh/crefft/compare/v2026.10.3...v2026.10.4
 [2026.10.3]: https://github.com/agh/crefft/compare/v2026.10.2...v2026.10.3
 [2026.10.2]: https://github.com/agh/crefft/compare/v2026.10.1...v2026.10.2
