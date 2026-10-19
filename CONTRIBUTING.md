@@ -218,14 +218,21 @@ roots. Native managers also maintain the root and site npm manifests and
 both workflow directories. Astro and Tailwind CSS updates have separate
 package groups; Vale's binary and hook share one group.
 
-`python3 scripts/sync_tool_versions.py` runs once per Renovate branch, after
-upgrades and before the commit. It compares the working tree with `HEAD`,
-adopts native-manager updates into the registry, and rewrites the affected
-executable examples, shipped configurations, workflow comments, Makefile
-pins, and overlapping pre-commit revisions. Conflicting updates fail
+During local integration of a Renovate branch, the maintainer runs
+`python3 scripts/sync_tool_versions.py`. It compares the working tree with
+`HEAD`, adopts native-manager updates into the registry, and rewrites the
+affected executable examples, shipped configurations, workflow comments,
+Makefile pins, and overlapping pre-commit revisions. Conflicting updates fail
 explicitly. Independently pinned npm manifests are not downgraded to an older
 registry version; manifests matching the previous registry pin are updated
 and their lock files regenerated with lifecycle scripts disabled.
+
+The `renovate-sync` forge workflow runs the synchronizer in its job workspace,
+prints the resulting status and diff summary, and then runs `make check`. It
+does not write changes back to the branch. Pull requests that touch the
+registry fail the normal version gate until their derived pins are synchronized.
+During integration, the maintainer reviews the synchronization diff and commits
+the result with a signature.
 
 For a changed binary, the script downloads the upstream checksum list and all
 four supported archives, verifies every archive's SHA-256, and refreshes both
@@ -240,7 +247,7 @@ also disabled because its pre-commit wrapper has a separately versioned
 revision. The existing golangci-lint command path is restricted to v1 updates;
 a v2 migration requires changing the module path. Vendored `reference/**`
 payloads, released changelogs, legal notices, release identity, and generated
-output are ignored, and post-upgrade commit filters exclude them.
+output are excluded from synchronization.
 
 **Why**: updating only the registry leaves checked examples and binary
 checksums inconsistent. A deterministic synchronizer keeps those changes
@@ -249,24 +256,18 @@ together without maintaining a separate regex for every example.
 #### Runner Contract
 
 The runner **MUST** use the Renovate version in the registry's `npm` section,
-provide a supported Node.js runtime and Python 3.14+, and allow exactly this
-command regex in its global `allowedCommands`:
+provide a supported Node.js runtime, and allow no post-upgrade commands
+(`allowedCommands: []`). Pull requests that touch the registry fail the
+version gate until their derived pins are synchronized. The `renovate-sync`
+workflow shows whether an update passes once synchronized; the workflow does
+not write back to the pull request branch. During local integration, the
+maintainer runs `python3 scripts/sync_tool_versions.py`, reviews its diff, and
+commits the result with a signature.
 
-```json
-{
-  "allowedCommands": ["^python3 scripts/sync_tool_versions\\.py$"]
-}
-```
-
-The repository uses `postUpgradeTasks.commands`, `fileFilters`, and
-`executionMode: "branch"`. The script invokes npm itself only when it rewrites
-a manifest; no additional top-level command needs to be allowed. The runner
-**MUST NOT** enable arbitrary commands or automatic merging, and **MUST**
-execute repository code only in its trusted dependency-update environment.
-
-**Why**: post-upgrade tasks execute repository code. An exact allowlist limits
-the entry point, but is not a sandbox or permission to execute untrusted
-branches.
+**Why**: Renovate's command allowlist is global and matches command text, not
+the repository. Allowing the synchronizer would let any enrolled repository
+run code in the job that holds the bot token, so synchronization belongs in
+read-only CI and local integration instead.
 
 Validate the repository config with `make renovate-check`. To inspect the
 working tree before a new config file is tracked, use the registry's Renovate

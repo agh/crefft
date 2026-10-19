@@ -7,6 +7,12 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+### Changed
+
+- Renovate runners allow no post-upgrade commands; a read-only forge workflow
+  synchronizes pins for checks, while maintainers synchronize and commit them
+  during local integration.
+
 ## [2026.10.5] - 2026-10-18
 
 ### Added

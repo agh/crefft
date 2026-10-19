@@ -23,7 +23,9 @@ WORKFLOWS = ROOT / ".forgejo/workflows"
 class ForgeWorkflowTests(unittest.TestCase):
     def test_forge_workflow_triggers_and_pins(self):
         every_push = {"doc-lint.yml", "config-validation.yml", "site.yml"}
-        expected = every_push | {"check-security-refs.yml", "external-links.yml"}
+        expected = every_push | {
+            "check-security-refs.yml", "external-links.yml", "renovate-sync.yml",
+        }
         self.assertEqual({path.name for path in WORKFLOWS.iterdir()}, expected)
         security_paths = [
             "reference/security/**", ".forgejo/workflows/check-security-refs.yml",
@@ -43,6 +45,9 @@ class ForgeWorkflowTests(unittest.TestCase):
                     self.assertEqual(
                         triggers["push"], {"branches": ["**"], "paths": security_paths},
                     )
+                elif name == "renovate-sync.yml":
+                    self.assertEqual(triggers["push"], {"branches": ["renovate/**"]})
+                    self.assertIsNone(triggers["pull_request"])
                 else:
                     # External availability is not a property of a change.
                     self.assertEqual(set(triggers), {"schedule", "workflow_dispatch"})
@@ -59,6 +64,36 @@ class ForgeWorkflowTests(unittest.TestCase):
                             self.assertEqual(sha, pins[action])
                             if action == "actions/checkout":
                                 self.assertIs(step["with"]["persist-credentials"], False)
+
+    def test_renovate_sync_checks_a_synchronized_update_without_writing_back(self):
+        workflow = load_workflow(WORKFLOWS / "renovate-sync.yml")
+        job = workflow["jobs"]["sync"]
+        self.assertIn("github.event_name != 'pull_request'", job["if"])
+        self.assertIn("startsWith(github.head_ref, 'renovate/')", job["if"])
+        steps = job["steps"]
+        commands = [step.get("run", "") for step in steps]
+        sync_index = commands.index("python3 scripts/sync_tool_versions.py")
+        diff_index = next(
+            index for index, command in enumerate(commands)
+            if "git status --short" in command and "git diff --stat" in command
+        )
+        check_index = commands.index("make check")
+        self.assertLess(sync_index, diff_index)
+        self.assertLess(diff_index, check_index)
+
+        actions = {
+            step["uses"].split("@", 1)[0]: step
+            for step in steps if "uses" in step
+        }
+        self.assertIn("actions/setup-node", actions)
+        self.assertIn("astral-sh/setup-uv", actions)
+        self.assertIs(actions["actions/checkout"]["with"]["persist-credentials"], False)
+        self.assertFalse(any(
+            action.startswith("actions/upload-artifact")
+            or action.startswith("actions/download-artifact")
+            or action == "actions/setup-python"
+            for action in actions
+        ))
 
     def test_workflow_lint_runs_in_forge_with_the_local_install_path(self):
         workflow = load_workflow(WORKFLOWS / "config-validation.yml")

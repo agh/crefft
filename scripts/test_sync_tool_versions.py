@@ -297,13 +297,6 @@ class RenovateConfigurationTests(unittest.TestCase):
         self.assertEqual(self.config["packageRules"][0]["semanticCommitType"], "chore")
         self.assertEqual(self.config["packageRules"][0]["matchPackageNames"], ["*"])
 
-    def test_runner_command_and_commit_file_filters_are_bounded(self):
-        tasks = self.config["postUpgradeTasks"]
-        self.assertEqual(tasks["commands"], ["python3 scripts/sync_tool_versions.py"])
-        self.assertEqual(tasks["executionMode"], "branch")
-        self.assertNotIn("**/*", tasks["fileFilters"])
-        self.assertNotIn("reference/**", tasks["fileFilters"])
-
     def test_forge_runs_strict_validation_using_the_pinned_make_target(self):
         steps = load_workflow(ROOT / ".forgejo/workflows/config-validation.yml")[
             "jobs"

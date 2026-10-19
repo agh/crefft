@@ -397,7 +397,7 @@ The private forge also runs `make workflows` and `make renovate-check`.
 Renovate opens reviewed dependency pull requests there; the maintainer
 squash-signs them locally, and nothing merges automatically. See
 [dependency updates](CONTRIBUTING.md#dependency-updates) for the registry
-synchronizer, exclusions, and runner command allowlist.
+synchronizer, exclusions, and runner contract.
 
 **Why**: restricting contribution channels does not lower release standards.
 
@@ -443,8 +443,10 @@ their schedules, requests only these network operations:
   Renovate npm package. Renovate extraction is local; its scheduled runner
   queries dependency registries, GitHub release and tag metadata, and OSV's
   vulnerability database, and opens pull requests on the private forge.
-  Its post-upgrade script downloads binary checksum lists and archives from
-  GitHub and refreshes changed npm lock files without lifecycle scripts.
+  The `renovate-sync` workflow runs the synchronizer in its job workspace,
+  downloading binary checksum lists and archives from GitHub and refreshing
+  changed npm lock files without lifecycle scripts; it does not write changes
+  back to the branch.
 - `python3 scripts/check_vendored.py --refresh` explicitly downloads the
   upstream URLs in `reference/UPSTREAM.json` from `raw.githubusercontent.com`
   and queries commit metadata at `api.github.com`. Normal verification is offline.
