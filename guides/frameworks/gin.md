@@ -4822,7 +4822,7 @@ efficient middleware composition, and conditional execution for complex routing 
 
 [^13]: **Asynq** - Simple, reliable distributed task queue backed by Redis. Features retries, scheduling, priority queues, and web UI (Asynqmon). [GitHub](https://github.com/hibiken/asynq)
 
-[^14]: **Ristretto** - High-performance, concurrent cache library for Go by Dgraph. Features LFU eviction and memory-bounded caching. [GitHub](https://github.com/dgraph-io/ristretto) | [Blog Post](https://dgraph.io/blog/post/introducing-ristretto-high-perf-go-cache/)
+[^14]: **Ristretto** - High-performance, concurrent cache library for Go by Dgraph. Features LFU eviction and memory-bounded caching. [Upstream repository](https://github.com/dgraph-io/ristretto)
 
 [^15]: **go-redis** - Type-safe Redis client for Go. Supports Redis 7+ features, clustering, and sentinel. [GitHub](https://github.com/redis/go-redis) | [pkg.go.dev](https://pkg.go.dev/github.com/redis/go-redis/v9)
 

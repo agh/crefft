@@ -7,6 +7,22 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+### Security
+
+- Override `smol-toml` to `1.9.0` and `katex` to `0.18.2` to remediate
+  GHSA-r4xh-jqrq-34v2 and GHSA-238p-pmpm-9mq7 without changing direct
+  dependency versions.
+- Override `basic-ftp` to `6.2.3` for GHSA-c475-qrg2-pj4r; this crosses
+  `get-uri`'s declared `^5.3.1` dependency range.
+- The remaining `braces` advisory has no fix (`3.0.3` is latest); its
+  dependency path is limited to `markdownlint-cli2` matching repository globs.
+
+### Fixed
+
+- Replace or remove dead OWASP, SANS, GitHub, Google, AICPA, Flask-CORS, Dgraph, CIS,
+  BEM, Uvicorn, Microsoft, Software Testing Help, SQL Shack, and Rails links
+  with current publisher pages or repositories.
+
 ## [2026.10.4] - 2026-10-18
 
 ### Removed

@@ -924,4 +924,4 @@ LogLevel INFO    # Default
 - [OpenSSH Manual](https://www.openssh.com/manual.html)
 - [Mozilla SSH Guidelines](https://infosec.mozilla.org/guidelines/openssh)
 - [SSH Audit](https://github.com/jtesta/ssh-audit) - SSH configuration auditing
-- [CIS Benchmark - SSH](https://www.cisecurity.org/benchmark/distribution_independent_linux)
+- [CIS Benchmarks](https://www.cisecurity.org/cis-benchmarks)

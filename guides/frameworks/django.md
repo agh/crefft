@@ -3131,6 +3131,6 @@ def test_feature_flag_percentage_rollout():
 [^25]: [pybreaker](https://github.com/danielfm/pybreaker) - Python implementation of the Circuit Breaker pattern
 [^26]: [Django Channels](https://channels.readthedocs.io/) - Async support for Django, including WebSocket
 [^27]: [Daphne](https://github.com/django/daphne) - HTTP, HTTP2, and WebSocket protocol server for ASGI
-[^28]: [Uvicorn](https://www.uvicorn.org/) - Lightning-fast ASGI server
+[^28]: [Uvicorn documentation](https://uvicorn.dev/) - Lightning-fast ASGI server
 [^29]: [django-celery-beat](https://django-celery-beat.readthedocs.io/) - Database-backed periodic task scheduler for Celery
 [^30]: [django-tasks-db](https://github.com/RealOrangeOne/django-tasks-db) - Database-backed backend and worker for Django's Tasks framework

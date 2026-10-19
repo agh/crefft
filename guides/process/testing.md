@@ -374,7 +374,7 @@ fixtures for complex scenarios that need exact reproduction.
 
 [^12]: **pytest-bdd** - [pytest-bdd](https://pytest-bdd.readthedocs.io/) - BDD library for pytest
 
-[^13]: **Performance Testing** - [Performance Testing Guidance - Microsoft Docs](https://learn.microsoft.com/en-us/azure/architecture/best-practices/performance-testing)
+[^13]: **Performance Testing** - [Architecture Strategies for Performance Testing - Microsoft Azure Well-Architected Framework](https://learn.microsoft.com/en-us/azure/well-architected/performance-efficiency/performance-test)
 
 [^14]: **pytest-benchmark** - [pytest-benchmark](https://pytest-benchmark.readthedocs.io/) - Python benchmarking plugin
 
@@ -404,11 +404,11 @@ fixtures for complex scenarios that need exact reproduction.
 
 [^27]: **Circuit Breaker Pattern** - [Circuit Breaker - Martin Fowler](https://martinfowler.com/bliki/CircuitBreaker.html)
 
-[^28]: **Compatibility Testing** - [Compatibility Testing Guide - Software Testing Help](https://www.softwaretestinghelp.com/what-is-compatibility-testing/)
+[^28]: **Compatibility Testing** - [What is Software Compatibility Testing? - Software Testing Help](https://www.softwaretestinghelp.com/software-compatibility-testing/)
 
 [^29]: **Internationalization (i18n) Testing** - [Internationalization Testing - W3C](https://www.w3.org/International/questions/qa-i18n)
 
-[^30]: **Data Integrity Testing** - [Database Testing Best Practices](https://www.sqlshack.com/database-unit-testing-best-practices/)
+[^30]: **Data Integrity Testing** - [SQL unit testing best practices](https://www.sqlshack.com/sql-unit-testing-best-practices/)
 
 [^31]: **Feature Flag Testing** - [Feature Toggles - Martin Fowler](https://martinfowler.com/articles/feature-toggles.html)
 

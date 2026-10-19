@@ -432,7 +432,7 @@ Don't use when:
 
 ## References
 
-- [OWASP Machine Learning Security Top 10](https://owasp.org/www-project-machine-learning-security-top-10/)
+- [OWASP Machine Learning Security Top Ten](https://owasp.org/projects/machine-learning-security-top-ten)
 - [OWASP LLM Top 10](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 - [MITRE ATLAS](https://atlas.mitre.org/)
 - [NIST Post-Quantum Cryptography](https://csrc.nist.gov/projects/post-quantum-cryptography)

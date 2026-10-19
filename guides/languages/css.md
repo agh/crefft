@@ -472,7 +472,7 @@ jobs:
 [^11]: [Lightning CSS](https://lightningcss.dev/) - An extremely fast CSS parser, transformer, bundler, and minifier written in Rust
 [^12]: [PostCSS](https://postcss.org/) - A tool for transforming CSS with JavaScript plugins
 [^13]: [Vite](https://vitejs.dev/) - Next generation frontend tooling with instant server start and lightning fast HMR
-[^14]: [BEM](https://getbem.com/) - Block Element Modifier methodology for creating reusable components and code sharing in front-end development
+[^14]: [BEM methodology](https://github.com/bem-site/bem-method) - Block Element Modifier methodology for creating reusable components and code sharing in front-end development
 
 ## See Also
 

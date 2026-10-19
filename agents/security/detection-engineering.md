@@ -634,7 +634,7 @@ detection_metrics:
 - [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team)
 - [Sigma Rules](https://github.com/SigmaHQ/sigma)
 - [Detection Engineering Weekly](https://detectionengineering.substack.com/)
-- [SANS Detection Engineering](https://www.sans.org/cyber-security-courses/advanced-detection-engineering/)
+- [SANS SEC555: Detection Engineering and SIEM Analytics](https://www.sans.org/cyber-security-courses/detection-engineering-siem-analytics)
 
 ## Guidelines
 

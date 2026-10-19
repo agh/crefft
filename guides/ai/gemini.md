@@ -3329,7 +3329,7 @@ test_safety_filter("Analyze this SQL injection vulnerability: {code}")
     caching, and grounding prices, including introductory rates
 [^8]: [Grounding with Google Search](https://cloud.google.com/vertex-ai/docs/generative-ai/grounding/ground-with-google-search) - Search grounding documentation
 [^9]: [Context Caching](https://ai.google.dev/gemini-api/docs/caching) - Prompt caching guide for cost optimization
-[^10]: [Code Execution](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-execution-overview) - Python code execution feature
+[^10]: [Gemini Enterprise Agent Platform code execution](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/tools/code-execution) - Python code execution feature
 [^12]: [Vertex AI Python SDK](https://cloud.google.com/python/docs/reference/aiplatform/latest) - Google Cloud AI Platform SDK
 [^16]: [Function Calling Guide](https://ai.google.dev/gemini-api/docs/function-calling) -
     Function calling documentation and best practices
@@ -3357,10 +3357,8 @@ test_safety_filter("Analyze this SQL injection vulnerability: {code}")
 
 **Security and Compliance**:
 
-- [Vertex AI Security](https://cloud.google.com/vertex-ai/docs/general/security) - Security
-  features and best practices
-- [Data Usage FAQ](https://ai.google.dev/gemini-api/docs/faq) - Privacy and data usage
-  policies
+- [Vertex AI shared responsibility](https://cloud.google.com/vertex-ai/docs/shared-responsibility)
+- [Gemini API logs policy][^26] - Privacy and data usage policies
 - [Google Cloud Compliance](https://cloud.google.com/security/compliance) - Compliance
   certifications
 
@@ -3379,7 +3377,8 @@ test_safety_filter("Analyze this SQL injection vulnerability: {code}")
 
 - [Google AI Discord](https://discord.gg/google-ai-dev) - Community discussions
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/google-gemini) - Q&A tagged with google-gemini
-- [GitHub Discussions](https://github.com/google/generative-ai-python/discussions) - Python SDK discussions
+- [Google Gen AI Python SDK issues](https://github.com/googleapis/python-genai/issues) -
+  issue tracking for the current Python SDK
 
 ---
 

@@ -482,7 +482,7 @@ cloudnativenow.com code.claude.com code.visualstudio.com commonmark.org confiden
 cookbook.openai.com coverage.readthedocs.io crates.io creativecommons.org cryptography.io
 csrc.nist.gov cucumber.io cursor.com cwe.mitre.org cyclonedx.org d3fend.mitre.org dannorth.net
 datatracker.ietf.org debian-handbook.info detectionengineering.substack.com dev.mysql.com
-develop.sentry.dev developer.mozilla.org developers.openai.com devguide.python.org dgraph.io
+develop.sentry.dev developer.mozilla.org developers.openai.com devguide.python.org
 discord.com discord.gg django-celery-beat.readthedocs.io django-guardian.readthedocs.io
 django-ratelimit.readthedocs.io django-rest-framework-simplejwt.readthedocs.io doc.rust-lang.org
 docs.allauth.org docs.ansible.com docs.anthropic.com docs.astral.sh docs.authlib.org
@@ -492,10 +492,10 @@ docs.python.org docs.renovatebot.com docs.rs docs.ruby-lang.org docs.semgrep.dev
 docs.vllm.ai dora.dev dotnetcli.blob.core.windows.net drafts.csswg.org echo.labstack.com
 en.wikipedia.org eslint.org eur-lex.europa.eu excalidraw.com faker.readthedocs.io fakerjs.dev
 fast-check.dev fastapi.tiangolo.com flagsmith.com flask-caching.readthedocs.io
-flask-cors.readthedocs.io flask-featureflags.readthedocs.io flask-limiter.readthedocs.io
+flask-featureflags.readthedocs.io flask-limiter.readthedocs.io
 flask-login.readthedocs.io flask-migrate.readthedocs.io flask-socketio.readthedocs.io
 flask-sqlalchemy.palletsprojects.com flask-wtf.readthedocs.io flask.palletsprojects.com
-fluentassertions.com gatling.io gdpr.eu geminicli.com genai.owasp.org getbem.com getbootstrap.com
+fluentassertions.com gatling.io gdpr.eu geminicli.com genai.owasp.org getbootstrap.com
 gin-gonic.com git-scm.com github.com github.github.com gitignore.io gitlab.com go.dev gofiber.io
 golangci-lint.run google.github.io grantjenks.com guides.rubyonrails.org hanamirb.org
 haveibeenpwned.com help.openai.com hotwired.dev huey.readthedocs.io huggingface.co hyper.rs
@@ -512,7 +512,7 @@ pnpm.io postcss.org posthog.com pre-commit.com prettier.io principlesofchaos.org
 puma.io purgecss.com pusher.com pyjwt.readthedocs.io pypi.org pytest-bdd.readthedocs.io
 pytest-benchmark.readthedocs.io pytest-cov.readthedocs.io pytest-django.readthedocs.io
 pytest-xdist.readthedocs.io python-rq.org pythonhosted.org pytorch.org quart.palletsprojects.com
-radon.readthedocs.io rails.rubystyle.guide raw.githubusercontent.com react.dev redis.io
+radon.readthedocs.io raw.githubusercontent.com react.dev redis.io
 redis.readthedocs.io redux-toolkit.js.org refactoring.guru registry.npmjs.org relay.dev
 reproducible-builds.org restfulapi.net rocket.rs rom-rb.org rspec.info rubocop.org
 ruby-style-guide.shopify.dev rubystyle.guide rust-lang.github.io rustsec.org rustup.rs sass-lang.com
@@ -523,9 +523,9 @@ specflow.org squawkhq.com sre.google stackoverflow.com static.rust-lang.org stat
 statsig.com stimulus.hotwired.dev strawberry.rocks styled-components.com stylelint.io systemd.io
 tailwindcss.com testcontainers.com testinfra.readthedocs.io testing-library.com testmon.org
 thoughtbot.com tokio.rs trigger.dev trustee.ietf.org turbo.build turbo.hotwired.dev typeorm.io
-ubuntu.com unicode-org.github.io vercel.com viewcomponent.org vitejs.dev vitest.dev
+ubuntu.com unicode-org.github.io uvicorn.dev vercel.com viewcomponent.org vitejs.dev vitest.dev
 waffle.readthedocs.io wasm-bindgen.github.io wave.webaim.org webaim.org websockets.readthedocs.io
-webstatus.dev wiki.archlinux.org workingbackwards.com www.aicpa.org www.anthropic.com www.apache.org
+webstatus.dev wiki.archlinux.org workingbackwards.com www.aicpa-cima.com www.anthropic.com www.apache.org
 www.appsignal.com www.artillery.io www.better-auth.com www.cisa.gov www.cisecurity.org
 www.contributor-covenant.org www.conventionalcommits.org www.cypress.io www.debian.org www.deque.com
 www.djangoproject.com www.docker.com www.drawio.com www.exampler.com www.first.org www.flagsmith.com
@@ -537,7 +537,7 @@ www.promptingguide.ai www.python.org www.rfc-editor.org www.sans.org www.seleniu
 www.shellcheck.net www.simonholywell.com www.skylight.io www.softwaretestinghelp.com
 www.sqlfluff.com
 www.sqlite.org www.sqlshack.com www.sqlstyle.guide www.typescriptlang.org www.unicode.org
-www.uvicorn.org www.w3.org xunit.net xunitpatterns.com yamllint.readthedocs.io zod.dev
+www.w3.org xunit.net xunitpatterns.com yamllint.readthedocs.io zod.dev
 zustand.docs.pmnd.rs
 ```
 

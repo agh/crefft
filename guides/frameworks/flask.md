@@ -2005,7 +2005,7 @@ def create_app(config_name: str = "development") -> Flask:
 [^6]: [Flask-Migrate](https://flask-migrate.readthedocs.io/) - Database migrations with Alembic
 [^7]: [Flask-Login](https://flask-login.readthedocs.io/) - User session management
 [^8]: [Flask-WTF](https://flask-wtf.readthedocs.io/) - WTForms integration
-[^9]: [Flask-CORS](https://flask-cors.readthedocs.io/) - Cross-Origin Resource Sharing
+[^9]: [Flask-CORS project](https://github.com/corydolphin/flask-cors) - Cross-Origin Resource Sharing
 [^10]: [Authlib](https://authlib.org/) - OAuth and OpenID Connect client/server library
 [^11]: [PyJWT](https://pyjwt.readthedocs.io/) - JSON Web Token implementation in Python
 [^12]: [Flask-Principal](https://pythonhosted.org/Flask-Principal/) - Identity management for Flask

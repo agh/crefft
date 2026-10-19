@@ -2717,7 +2717,7 @@ appropriate safeguards at every layer.
 
 [^3]: **HIPAA (Health Insurance Portability and Accountability Act)**: US federal law requiring protection of sensitive patient health information. Healthcare organizations and their business associates must implement safeguards for PHI. [HHS HIPAA Portal](https://www.hhs.gov/hipaa/index.html) | [HIPAA Security Rule](https://www.hhs.gov/hipaa/for-professionals/security/index.html)
 
-[^4]: **SOC 2 Type II**: Service Organization Control 2 attestation focusing on security, availability, processing integrity, confidentiality, and privacy. [AICPA SOC 2](https://www.aicpa.org/interestareas/frc/assuranceadvisoryservices/aicpasoc2report.html)
+[^4]: **SOC 2 Type II**: Service Organization Control 2 attestation focusing on security, availability, processing integrity, confidentiality, and privacy. [AICPA SOC Suite of Services](https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services)
 
 [^5]: **Prompt Injection Research**: Academic research and security advisories have documented numerous prompt injection attack vectors. See: Perez et al. (2022) "Ignore Previous Prompt: Attack Techniques For Language Models" | [Simon Willison's Prompt Injection Resources](https://simonwillison.net/tags/promptinjection/) | [Prompt Injection Primer](https://github.com/TakSec/Prompt-Injection-Everywhere)
 

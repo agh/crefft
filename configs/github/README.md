@@ -175,7 +175,7 @@ files that changed. It never fails the build.
 
 Every `uses:` reference in these templates is pinned to a full commit SHA
 with the release tag in a trailing comment, per
-[GitHub's secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use-reference).
+[GitHub's secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use).
 A tag is a mutable pointer; `tj-actions/changed-files` had its tags
 retargeted during the March 2025 supply-chain incident, which a SHA pin would
 have contained.

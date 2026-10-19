@@ -9,7 +9,7 @@ interpreted as described in [RFC 2119][rfc2119].
 [rfc2119]: https://datatracker.ietf.org/doc/html/rfc2119
 
 Extends [Ruby style guide](../languages/ruby.md) with Rails-specific conventions from
-[Rails Style Guide](https://rails.rubystyle.guide/).
+the [Rails Style Guide repository](https://github.com/rubocop/rails-style-guide).
 
 **Target Version**: Rails 8.1+ with Ruby 3.4
 

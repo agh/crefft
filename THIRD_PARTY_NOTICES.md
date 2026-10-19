@@ -236,8 +236,7 @@ license-tracking capability booleans are not license declarations.
 
 - **Upstream**: Ruby Style Guide —
   <https://github.com/rubocop/ruby-style-guide>, <https://rubystyle.guide>;
-  Rails Style Guide — <https://github.com/rubocop/rails-style-guide>,
-  <https://rails.rubystyle.guide>
+  Rails Style Guide — <https://github.com/rubocop/rails-style-guide>
 - **Copyright**: Bozhidar Batsov and the Ruby/Rails style guide contributors
 - **License**: Creative Commons Attribution 3.0 Unported (CC BY 3.0), declared
   inline in the "License" section at the end of each upstream document.
