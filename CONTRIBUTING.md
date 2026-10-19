@@ -32,6 +32,8 @@ it is not an invitation to submit changes on GitHub.
 | Lint Markdown | `npx markdownlint-cli2@0.23.2 "**/*.md"` |
 | Check writing rules and package | `make vale` |
 | Validate tool versions | `python3 scripts/validate_versions.py` |
+| Lint GitHub and forge workflows | `make workflows` |
+| Validate Renovate configuration | `make renovate-check` |
 | Validate a JSON file | `jq . reference/security/manifest.json` |
 | Check the site | `make site-check` |
 | Preview release publication | `make publish-release TAG=vYYYY.M.N` |
@@ -148,6 +150,7 @@ logs, not artifact upload or download actions.
 `make check` **MUST** pass before every commit. It runs Markdown linting,
 US spelling, Crefft writing rules and package fixtures, internal links,
 secret scanning, script unit tests, tool-version
+validation, workflow security and syntax linting, strict Renovate configuration
 validation, vendored integrity and license checks, and advisory snippet checks.
 See the [Makefile](Makefile) for the exact commands and pinned versions.
 
@@ -157,6 +160,129 @@ single-file lint cannot detect.
 Markdown lint configuration lives in `.markdownlint.json` and
 `reference/security/.markdownlint.json`. Do not relax a rule to make a lint
 error go away; fix the content.
+
+### Workflow Linting
+
+`make workflows` checks every YAML workflow in `.github/workflows/` and
+`.forgejo/workflows/` with actionlint and zizmor. The private forge runs the
+same target on every branch push and pull request. GitHub's release workflows
+remain restricted to `v*` tags.
+
+actionlint uses checksum-verified release archives for Linux and macOS on
+amd64 and arm64, following Vale's download pattern. zizmor uses its
+exact-version PyPI wheel in an isolated environment installed with `uv pip`.
+Both pins and actionlint's four archive digests live in
+[`configs/tool-versions.json`](configs/tool-versions.json). Local checks require
+`uv` in addition to the existing Node.js, Python, curl, and tar prerequisites.
+
+zizmor runs with `--offline --persona=pedantic`: there are no token-dependent
+network audits or persona-hidden findings. actionlint explicitly disables
+ShellCheck and Pyflakes integration instead of discovering unpinned tools on
+`PATH`. This target checks workflow syntax, expressions, and security, not
+general shell or Python style.
+
+**Why**: local and forge results use the same reviewed tools and policy.
+Release jobs do not restore dependency caches, and checkouts do not persist
+credentials.
+
+### Dependency Updates
+
+Self-hosted Renovate opens pull requests on the private forge using
+[`renovate.json`](renovate.json). The maintainer reviews every change,
+squash-signs it locally, includes the DCO sign-off, and fast-forwards `main`
+only after the checks pass. Nothing merges automatically, including
+vulnerability fixes. The bot, scheduler, credentials, and global runner
+configuration are managed separately.
+
+Ordinary updates wait at least three days and run Mondays from 3:00 through
+6:59 a.m. in `America/Los_Angeles`. Releases without a usable timestamp remain
+pending for review rather than bypassing the age gate. Lock file maintenance
+runs during the same hours on the first day of each month. OSV alerts cover
+supported direct dependencies without relying on native forge alerts;
+vulnerability pull requests bypass the age gate and ordinary schedule.
+The dependency dashboard shows pending updates, and ordinary concurrency is
+limited to three branches and three pull requests.
+
+**Why**: a review queue and release-age gate reduce update churn without
+delaying known vulnerability fixes.
+
+#### Registry Synchronization
+
+Regex managers extract every non-checksum section of the canonical registry:
+actions use `github-tags`, binaries and hooks use `github-releases`, images
+use `docker`, Go modules use `go`, npm packages use `npm`, and Python packages
+use `pypi`. Action values record `tag@commit`, preserving full SHA pins in the
+workflows with the tag in a trailing comment. CodeQL sub-actions share the
+upstream repository identity, and Go command paths resolve to their module
+roots. Native managers also maintain the root and site npm manifests and
+both workflow directories. Astro and Tailwind CSS updates have separate
+package groups; Vale's binary and hook share one group.
+
+`python3 scripts/sync_tool_versions.py` runs once per Renovate branch, after
+upgrades and before the commit. It compares the working tree with `HEAD`,
+adopts native-manager updates into the registry, and rewrites the affected
+executable examples, shipped configurations, workflow comments, Makefile
+pins, and overlapping pre-commit revisions. Conflicting updates fail
+explicitly. Independently pinned npm manifests are not downgraded to an older
+registry version; manifests matching the previous registry pin are updated
+and their lock files regenerated with lifecycle scripts disabled.
+
+For a changed binary, the script downloads the upstream checksum list and all
+four supported archives, verifies every archive's SHA-256, and refreshes both
+the registry and Makefile digests. Checksum entries are derived data, not
+independent Renovate dependencies. Running the script again is idempotent.
+Tests exercise registry and native updates, all registry sections, checksum
+failures, conflicts, and vendored-file exclusion.
+
+The six digest-only image entries have no recorded upstream tag and are
+explicitly disabled until a maintainer selects one. The Go `shfmt` entry is
+also disabled because its pre-commit wrapper has a separately versioned
+revision. The existing golangci-lint command path is restricted to v1 updates;
+a v2 migration requires changing the module path. Vendored `reference/**`
+payloads, released changelogs, legal notices, release identity, and generated
+output are ignored, and post-upgrade commit filters exclude them.
+
+**Why**: updating only the registry leaves checked examples and binary
+checksums inconsistent. A deterministic synchronizer keeps those changes
+together without maintaining a separate regex for every example.
+
+#### Runner Contract
+
+The runner **MUST** use the Renovate version in the registry's `npm` section,
+provide a supported Node.js runtime and Python 3.14+, and allow exactly this
+command regex in its global `allowedCommands`:
+
+```json
+{
+  "allowedCommands": ["^python3 scripts/sync_tool_versions\\.py$"]
+}
+```
+
+The repository uses `postUpgradeTasks.commands`, `fileFilters`, and
+`executionMode: "branch"`. The script invokes npm itself only when it rewrites
+a manifest; no additional top-level command needs to be allowed. The runner
+**MUST NOT** enable arbitrary commands or automatic merging, and **MUST**
+execute repository code only in its trusted dependency-update environment.
+
+**Why**: post-upgrade tasks execute repository code. An exact allowlist limits
+the entry point, but is not a sandbox or permission to execute untrusted
+branches.
+
+Validate the repository config with `make renovate-check`. To inspect the
+working tree before a new config file is tracked, use the registry's Renovate
+pin as `PIN` and run:
+
+```bash
+PIN=$(node -p "require('./configs/tool-versions.json').npm.renovate")
+RENOVATE_CONFIG_FILE=renovate.json \
+  npx --yes --package "renovate@$PIN" renovate \
+  --platform=local --onboarding=false --require-config=ignored --dry-run=extract
+```
+
+The explicit global config file avoids onboarding and reads the uncommitted
+configuration; these overrides are for local extraction only, not the runner.
+Extraction does not prove registry lookups, vulnerability remediation, or
+pull request creation on the private forge.
 
 ### Commit Messages
 

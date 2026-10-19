@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import re
 import sys
 import tempfile
@@ -56,7 +55,7 @@ class ValeReleaseWorkflowTests(unittest.TestCase):
         release = self.jobs["release"]
         self.assertIn("needs: package", release)
         actions = re.findall(r"uses: (\S+)", release)
-        pins = json.loads((ROOT / "configs/tool-versions.json").read_text())
+        pins = parse_tool_versions(ROOT / "configs/tool-versions.json", {})
         self.assertEqual(actions, [
             f"actions/download-artifact@{pins['action']['actions/download-artifact']}"
         ])

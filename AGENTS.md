@@ -71,6 +71,8 @@ consistent without exposing private development.
 | Check writing rules and package | `make vale` |
 | Check links | `npx --yes markdown-link-check@3.15.0 --quiet README.md` |
 | Validate tool versions | `python3 scripts/validate_versions.py` |
+| Lint GitHub and forge workflows | `make workflows` |
+| Validate Renovate configuration | `make renovate-check` |
 | Check navigation coverage | `python3 scripts/gen_nav.py --check` |
 | Regenerate `SUMMARY.md` | `python3 scripts/gen_nav.py` |
 | Check the site | `make site-check` |

@@ -1,10 +1,9 @@
 # crefft — local checks
 #
-# `make check` runs the same checks as .forgejo/workflows/doc-lint.yml, in the
-# same order and with the same pinned tool versions, so a green local run
-# means a green CI run.
+# `make check` runs the local documentation, configuration, and workflow gates
+# with the same pinned tools as the private forge.
 #
-# Requirements: Node.js 24+, Python 3.14+, curl, tar. Everything else is
+# Requirements: Node.js 24+, Python 3.14+, uv, curl, tar. Everything else is
 # fetched at a pinned version into .tmp-check/.
 
 SHELL := /bin/bash
@@ -76,6 +75,30 @@ VALE_ARCHIVE := vale_$(VALE_VERSION)_$(VALE_PLATFORM).tar.gz
 VALE := $(TMP)/vale-$(VALE_VERSION)/vale
 VALE_PACKAGE_DIR := $(TMP)/vale-package
 
+ACTIONLINT_VERSION := 1.7.12
+ACTIONLINT_PLATFORM_Darwin_arm64 := darwin_arm64
+ACTIONLINT_PLATFORM_Darwin_x86_64 := darwin_amd64
+ACTIONLINT_PLATFORM_Linux_aarch64 := linux_arm64
+ACTIONLINT_PLATFORM_Linux_x86_64 := linux_amd64
+ACTIONLINT_PLATFORM := $(ACTIONLINT_PLATFORM_$(UNAME_S)_$(UNAME_M))
+ACTIONLINT_SHA256_darwin_arm64 := \
+  aba9ced2dee8d27fecca3dc7feb1a7f9a52caefa1eb46f3271ea66b6e0e6953f
+ACTIONLINT_SHA256_darwin_amd64 := \
+  5b44c3bc2255115c9b69e30efc0fecdf498fdb63c5d58e17084fd5f16324c644
+ACTIONLINT_SHA256_linux_arm64 := \
+  325e971b6ba9bfa504672e29be93c24981eeb1c07576d730e9f7c8805afff0c6
+ACTIONLINT_SHA256_linux_amd64 := \
+  8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+ACTIONLINT_SHA256 := $(ACTIONLINT_SHA256_$(ACTIONLINT_PLATFORM))
+ACTIONLINT_ARCHIVE := actionlint_$(ACTIONLINT_VERSION)_$(ACTIONLINT_PLATFORM).tar.gz
+ACTIONLINT := $(TMP)/actionlint-$(ACTIONLINT_VERSION)/actionlint
+
+ZIZMOR_VERSION := 1.31.1
+ZIZMOR := $(TMP)/zizmor-$(ZIZMOR_VERSION)/bin/zizmor
+RENOVATE_VERSION := 44.164.7
+WORKFLOW_FILES := $(sort $(wildcard .github/workflows/*.yml .github/workflows/*.yaml \
+  .forgejo/workflows/*.yml .forgejo/workflows/*.yaml))
+
 # Include new files and omit deleted paths while checking an uncommitted move.
 MARKDOWN_FILES = $(wildcard $(shell git ls-files --cached --others \
 	--exclude-standard --deduplicate '*.md' ':!:reference/**'))
@@ -110,13 +133,13 @@ publish-release: export RELEASE_TAG = $(TAG)
 publish-release: ## Verify a signed forge release and print its GitHub push (TAG=vYYYY.M.N)
 	@python3 scripts/publish_release.py --tag "$$RELEASE_TAG"
 
-.PHONY: help check install lint typos vale vale-package vale-package-check links links-external secrets versions snippets test clean
+.PHONY: help check install lint typos vale vale-package vale-package-check links links-external secrets versions snippets test clean workflows renovate-check
 
 help: ## Show this help
 	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) \
 	  | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
-check: lint typos vale links secrets versions vendored snippets ## Run every check CI runs
+check: lint typos vale links secrets versions vendored workflows renovate-check snippets ## Run every check CI runs
 
 install: node_modules ## Install the pinned documentation toolchain
 
@@ -181,6 +204,15 @@ versions: test ## Check canonical versions, action SHAs, and image pins
 test: ## Run the script unit tests
 	python3 -m unittest discover scripts
 
+workflows: $(ACTIONLINT) $(ZIZMOR) ## Lint GitHub and forge workflows without network audits
+	$(ACTIONLINT) -version
+	$(ACTIONLINT) -shellcheck= -pyflakes= $(WORKFLOW_FILES)
+	$(ZIZMOR) --version
+	$(ZIZMOR) --offline --persona=pedantic $(WORKFLOW_FILES)
+
+renovate-check: ## Strictly validate the repository's Renovate configuration
+	npx --yes --package renovate@$(RENOVATE_VERSION) renovate-config-validator --strict renovate.json
+
 snippets: install ## Syntax-check fenced code blocks (advisory)
 	python3 scripts/check_snippets.py --warn
 
@@ -216,6 +248,21 @@ $(VALE):
 	tar -xzf $(TMP)/$(VALE_ARCHIVE) -C $(TMP)/vale-$(VALE_VERSION)
 	@test -x $(VALE) || { echo "Vale binary missing after extraction" >&2; exit 1; }
 	@rm -f $(TMP)/$(VALE_ARCHIVE)
+
+$(ACTIONLINT):
+	@test -n "$(ACTIONLINT_SHA256)" || { echo "Unsupported actionlint platform: $(UNAME_S)/$(UNAME_M)"; exit 1; }
+	@mkdir -p $(TMP)/actionlint-$(ACTIONLINT_VERSION)
+	curl --fail-with-body --location --silent --show-error --retry 3 \
+	  --output $(TMP)/$(ACTIONLINT_ARCHIVE) \
+	  "https://github.com/rhysd/actionlint/releases/download/v$(ACTIONLINT_VERSION)/$(ACTIONLINT_ARCHIVE)"
+	@echo "$(ACTIONLINT_SHA256)  $(TMP)/$(ACTIONLINT_ARCHIVE)" | shasum -a 256 -c -
+	tar -xzf $(TMP)/$(ACTIONLINT_ARCHIVE) -C $(TMP)/actionlint-$(ACTIONLINT_VERSION) actionlint
+	@test -x $(ACTIONLINT) || { echo "actionlint binary missing after extraction" >&2; exit 1; }
+	@rm -f $(TMP)/$(ACTIONLINT_ARCHIVE)
+
+$(ZIZMOR):
+	uv venv $(TMP)/zizmor-$(ZIZMOR_VERSION)
+	uv pip install --python $(TMP)/zizmor-$(ZIZMOR_VERSION)/bin/python 'zizmor==$(ZIZMOR_VERSION)'
 
 clean: ## Remove downloaded tools and caches
 	rm -rf $(TMP) node_modules scripts/__pycache__

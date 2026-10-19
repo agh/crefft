@@ -633,10 +633,33 @@ class ActionPinTests(unittest.TestCase):
 
 
 class ToolVersionsTests(unittest.TestCase):
+    def test_workflow_lint_pins_and_all_platforms_match_makefile(self):
+        pins = vv.parse_tool_versions(vv.TOOL_VERSIONS_FILE, vv.parse_canonical(vv.CONFIG_FILE))
+        self.assertIn("actionlint", pins["binary"])
+        self.assertIn("zizmor", pins["python"])
+        self.assertEqual(vv.collect_toolchain_mismatches(pins), [])
+
+    def test_toolchain_version_checksum_and_missing_platform_drift_fail(self):
+        import copy
+
+        pins = vv.parse_tool_versions(vv.TOOL_VERSIONS_FILE, vv.parse_canonical(vv.CONFIG_FILE))
+        for section, name, value in (
+            ("binary", "actionlint", "0.0.1"),
+            ("python", "zizmor", "0.0.1"),
+            ("checksum", f"actionlint_{pins['binary']['actionlint']}_linux_arm64.tar.gz",
+             "sha256:" + "a" * 64),
+        ):
+            with self.subTest(section=section, name=name):
+                changed = copy.deepcopy(pins)
+                changed[section][name] = value
+                self.assertTrue(vv.collect_toolchain_mismatches(changed))
+        del pins["checksum"][f"actionlint_{pins['binary']['actionlint']}_darwin_amd64.tar.gz"]
+        self.assertTrue(vv.collect_toolchain_mismatches(pins))
+
     def test_canonical_file_has_exact_versions_and_agrees_with_hooks(self):
         pins = vv.parse_tool_versions(vv.TOOL_VERSIONS_FILE, vv.parse_canonical(vv.CONFIG_FILE))
-        self.assertEqual(pins["go"]["github.com/pkg/errors"], "v0.9.1")
-        self.assertEqual(pins["go"]["mvdan.cc/sh/v3/cmd/shfmt"], "v3.12.0")
+        for name in ("github.com/pkg/errors", "mvdan.cc/sh/v3/cmd/shfmt"):
+            self.assertTrue(vv.pinned_reference("go", pins["go"][name]))
 
     def test_invalid_or_floating_canonical_config_fails(self):
         for text in ('[]', '{"npm": []}', '{"npm": {"tool": "latest"}}'):

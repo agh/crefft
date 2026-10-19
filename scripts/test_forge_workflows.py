@@ -14,6 +14,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from test_sync_claude_config import load_workflow  # noqa: E402
+from validate_versions import parse_tool_versions  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS = ROOT / ".forgejo/workflows"
@@ -27,7 +28,7 @@ class ForgeWorkflowTests(unittest.TestCase):
         security_paths = [
             "reference/security/**", ".forgejo/workflows/check-security-refs.yml",
         ]
-        pins = json.loads((ROOT / "configs/tool-versions.json").read_text())["action"]
+        pins = parse_tool_versions(ROOT / "configs/tool-versions.json", {})["action"]
         for name in sorted(expected):
             with self.subTest(workflow=name):
                 workflow = load_workflow(WORKFLOWS / name)
@@ -56,6 +57,25 @@ class ForgeWorkflowTests(unittest.TestCase):
                                 "actions/github-script", "actions/setup-python",
                             })
                             self.assertEqual(sha, pins[action])
+                            if action == "actions/checkout":
+                                self.assertIs(step["with"]["persist-credentials"], False)
+
+    def test_workflow_lint_runs_in_forge_with_the_local_install_path(self):
+        workflow = load_workflow(WORKFLOWS / "config-validation.yml")
+        steps = workflow["jobs"]["workflows"]["steps"]
+        self.assertIn("make workflows", [step.get("run") for step in steps])
+        self.assertTrue(any(
+            step.get("uses", "").startswith("astral-sh/setup-uv@")
+            and step["with"]["activate-environment"] is True
+            for step in steps
+        ))
+        makefile = (ROOT / "Makefile").read_text()
+        self.assertRegex(makefile, r"check:.* workflows")
+        self.assertIn("-shellcheck= -pyflakes= $(WORKFLOW_FILES)", makefile)
+        self.assertIn("--offline --persona=pedantic $(WORKFLOW_FILES)", makefile)
+        for directory in (".github", ".forgejo"):
+            for extension in ("yml", "yaml"):
+                self.assertIn(f"{directory}/workflows/*.{extension}", makefile)
 
     def test_schedules_are_preserved(self):
         for name, cron in (

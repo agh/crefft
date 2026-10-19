@@ -1,40 +1,49 @@
 {
   "action": {
-    "DavidAnson/markdownlint-cli2-action": "eb5ca3ab411449c66620fe7f1b3c9e10547144b0",
-    "Swatinem/rust-cache": "6323deb102c322ba6fcbdcafc7e3dddab59af2b6",
-    "actions/attest": "1e69f48acb82d1966a394da916b4c1698aa569d6",
-    "actions/cache": "55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
-    "actions/checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
-    "actions/download-artifact": "37930b1c2abaa49bbe596cd826c3c89aef350131",
-    "actions/github-script": "3a2844b7e9c422d3c10d287c895573f7108da1b3",
-    "actions/setup-dotnet": "67a3573c9a986a3f9c594539f4ab511d57bb3ce9",
-    "actions/setup-go": "b7ad1dad31e06c5925ef5d2fc7ad053ef454303e",
-    "actions/setup-node": "949feb2413d6458794dcd2491c4babbbce0c15c1",
-    "actions/setup-python": "5fda3b95a4ea91299a34e894583c3862153e4b97",
-    "actions/upload-artifact": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
-    "anthropics/claude-code-action": "9c5ddab2e6d17b83ea679153b31f1d5f023cf636",
-    "aquasecurity/trivy-action": "ed142fd0673e97e23eac54620cfb913e5ce36c25",
-    "astral-sh/setup-uv": "1c37ad07a6a961277cf70c0d37d6f313000f5884",
-    "codecov/codecov-action": "fb8b3582c8e4def4969c97caa2f19720cb33a72f",
-    "docker/build-push-action": "ca052bb54ab0790a636c9b5f226502c73d547a25",
-    "docker/login-action": "c94ce9fb468520275223c153574b00df6fe4bcc9",
-    "docker/setup-buildx-action": "8d2750c68a42422c14e847fe6c8ac0403b4cbd6f",
-    "dtolnay/rust-toolchain": "683b588c487a69d01f6c6ddf40f036ff682cc2c8",
-    "gaurav-nelson/github-action-markdown-link-check": "5c5dfc0ac2e225883c0e5f03a85311ec2830d368",
-    "github/codeql-action/analyze": "6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee",
-    "github/codeql-action/init": "6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee",
-    "github/codeql-action/upload-sarif": "6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee",
-    "golangci/golangci-lint-action": "55c2c1448f86e01eaae002a5a3a9624417608d84",
-    "ludeeus/action-shellcheck": "00cae500b08a931fb5698e11e79bfbd38e612a38",
-    "peter-evans/create-pull-request": "5f6978faf089d4d20b00c7766989d076bb2fc7f1",
-    "ruby/setup-ruby": "651ff0d62c5c79bed6d53ec518387aae20e72c1a",
-    "rustsec/audit-check": "69366f33c96575abad1ee0dba8212993eecbe998",
-    "tj-actions/changed-files": "9426d40962ed5378910ee2e21d5f8c6fcbf2dd96"
+    "DavidAnson/markdownlint-cli2-action": "v18.0.0@eb5ca3ab411449c66620fe7f1b3c9e10547144b0",
+    "Swatinem/rust-cache": "v2.9.2@6323deb102c322ba6fcbdcafc7e3dddab59af2b6",
+    "actions/attest": "v4.2.2@1e69f48acb82d1966a394da916b4c1698aa569d6",
+    "actions/cache": "v6.1.0@55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
+    "actions/checkout": "v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1",
+    "actions/download-artifact": "v7.0.0@37930b1c2abaa49bbe596cd826c3c89aef350131",
+    "actions/github-script": "v9.0.0@3a2844b7e9c422d3c10d287c895573f7108da1b3",
+    "actions/setup-dotnet": "v4.3.1@67a3573c9a986a3f9c594539f4ab511d57bb3ce9",
+    "actions/setup-go": "v7.0.0@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e",
+    "actions/setup-node": "v7.1.0@949feb2413d6458794dcd2491c4babbbce0c15c1",
+    "actions/setup-python": "v7.0.0@5fda3b95a4ea91299a34e894583c3862153e4b97",
+    "actions/upload-artifact": "v7.0.1@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+    "anthropics/claude-code-action": "v1.0.217@9c5ddab2e6d17b83ea679153b31f1d5f023cf636",
+    "aquasecurity/trivy-action": "v0.36.0@ed142fd0673e97e23eac54620cfb913e5ce36c25",
+    "astral-sh/setup-uv": "v10.3.0@1c37ad07a6a961277cf70c0d37d6f313000f5884",
+    "codecov/codecov-action": "v7.0.0@fb8b3582c8e4def4969c97caa2f19720cb33a72f",
+    "docker/build-push-action": "v5.4.0@ca052bb54ab0790a636c9b5f226502c73d547a25",
+    "docker/login-action": "v3.7.0@c94ce9fb468520275223c153574b00df6fe4bcc9",
+    "docker/setup-buildx-action": "v3.12.0@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f",
+    "dtolnay/rust-toolchain": "v1@683b588c487a69d01f6c6ddf40f036ff682cc2c8",
+    "gaurav-nelson/github-action-markdown-link-check": "v1@5c5dfc0ac2e225883c0e5f03a85311ec2830d368",
+    "github/codeql-action/analyze": "v4.39.0@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee",
+    "github/codeql-action/init": "v4.39.0@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee",
+    "github/codeql-action/upload-sarif": "v4.39.0@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee",
+    "golangci/golangci-lint-action": "v6.5.2@55c2c1448f86e01eaae002a5a3a9624417608d84",
+    "ludeeus/action-shellcheck": "2.0.0@00cae500b08a931fb5698e11e79bfbd38e612a38",
+    "peter-evans/create-pull-request": "v8.1.1@5f6978faf089d4d20b00c7766989d076bb2fc7f1",
+    "ruby/setup-ruby": "v1.329.0@651ff0d62c5c79bed6d53ec518387aae20e72c1a",
+    "rustsec/audit-check": "v2.0.0@69366f33c96575abad1ee0dba8212993eecbe998",
+    "tj-actions/changed-files": "v47.0.6@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96"
   },
   "binary": {
+    "actionlint": "1.7.12",
     "vale": "3.24.0"
   },
   "checksum": {
+    "actionlint_1.7.12_darwin_amd64.tar.gz":
+      "sha256:5b44c3bc2255115c9b69e30efc0fecdf498fdb63c5d58e17084fd5f16324c644",
+    "actionlint_1.7.12_darwin_arm64.tar.gz":
+      "sha256:aba9ced2dee8d27fecca3dc7feb1a7f9a52caefa1eb46f3271ea66b6e0e6953f",
+    "actionlint_1.7.12_linux_amd64.tar.gz":
+      "sha256:8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8",
+    "actionlint_1.7.12_linux_arm64.tar.gz":
+      "sha256:325e971b6ba9bfa504672e29be93c24981eeb1c07576d730e9f7c8805afff0c6",
     "vale_3.24.0_Linux_64-bit.tar.gz":
       "sha256:867534ddb678abca7f214bc4706ead0922bd5252ffe8035fc227013f66c8b214",
     "vale_3.24.0_Linux_arm64.tar.gz":
@@ -115,6 +124,7 @@
     "purgecss": "8.0.0",
     "pusher": "5.3.4",
     "pusher-js": "8.6.0",
+    "renovate": "44.164.7",
     "stylelint": "16.0.0",
     "stylelint-config-standard": "36.0.0",
     "stylelint-config-tailwindcss": "1.0.1",
@@ -137,6 +147,7 @@
     "sqlfluff": "3.5.0",
     "torch": "2.13.0",
     "transformers": "5.20.1",
-    "yamllint": "1.35.1"
+    "yamllint": "1.35.1",
+    "zizmor": "1.31.1"
   }
 }

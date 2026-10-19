@@ -20,16 +20,16 @@ env:
 
 jobs:
   check:
+    name: Build and check the release site
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '26.11.1'
-          cache: npm
-          cache-dependency-path: site/package-lock.json
+          package-manager-cache: false
       - run: npm ci --prefix site
       - run: site/node_modules/.bin/playwright install --with-deps chromium
       - name: Check release identity
@@ -40,7 +40,7 @@ jobs:
       - run: make site-check
       - name: Retain verification evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: site-evidence
           path: |
@@ -49,7 +49,7 @@ jobs:
           retention-days: 14
       - name: Retain the checked publication artifact
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: site-dist
           path: site/dist
@@ -58,6 +58,7 @@ jobs:
           retention-days: 30
 
   deploy:
+    name: Deploy the checked release site
     if: startsWith(github.ref, 'refs/tags/v')
     needs: check
     runs-on: ubuntu-24.04
@@ -66,14 +67,15 @@ jobs:
       group: crefft-site-deploy
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '26.11.1'
+          package-manager-cache: false
       - run: npm ci --prefix site --ignore-scripts
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: site-dist
           path: site/dist

@@ -267,6 +267,10 @@ instructions; YAML `run:` steps, `image:` values, and `uses:` actions; and
 inline spans beginning with a package-manager command. Native shell,
 Dockerfile, and YAML configuration files are checked too. All `uses:` references
 in `.github/workflows/` and `.forgejo/workflows/` are checked, with no exceptions.
+`make workflows` runs checksum-pinned actionlint and version-pinned zizmor
+against every workflow in both directories, including pedantic security
+checks. zizmor's audits are offline, and actionlint does not discover
+ShellCheck or Pyflakes from `PATH`.
 YAML examples are
 checked even when their fence has a generic syntax-check skip marker.
 
@@ -389,6 +393,11 @@ maintainer's changes; `make check` **MUST** pass before every commit.
 Development checks live in `.forgejo/workflows/`. GitHub runs only
 `.github/workflows/site.yml` and `.github/workflows/release.yml`, both on
 `v*` tags, to deploy the checked site and publish the Vale release package.
+The private forge also runs `make workflows` and `make renovate-check`.
+Renovate opens reviewed dependency pull requests there; the maintainer
+squash-signs them locally, and nothing merges automatically. See
+[dependency updates](CONTRIBUTING.md#dependency-updates) for the registry
+synchronizer, exclusions, and runner command allowlist.
 
 **Why**: restricting contribution channels does not lower release standards.
 
@@ -411,7 +420,7 @@ their schedules, requests only these network operations:
 
 - `npm ci` contacts `registry.npmjs.org` for locked packages and npm's
   dependency audit. `make check` installs dependencies only when needed.
-- The Makefile and documentation CI download pinned Gitleaks, typos, and Vale
+- The Makefile and documentation CI download pinned Gitleaks, typos, Vale, and actionlint
   binaries from `github.com`, following GitHub's asset redirects to
   `release-assets.githubusercontent.com` or `objects.githubusercontent.com`.
 - Development workflow checkout and cache access use the private forge.
@@ -429,6 +438,13 @@ their schedules, requests only these network operations:
   `files.pythonhosted.org`. Config validation downloads collections from
   `galaxy.ansible.com`; the exercised Ruby pre-commit hook uses local tools
   and does not install gems.
+- `make workflows` installs zizmor from PyPI through `uv pip`; subsequent
+  workflow audits are offline. `make renovate-check` downloads the pinned
+  Renovate npm package. Renovate extraction is local; its scheduled runner
+  queries dependency registries, GitHub release and tag metadata, and OSV's
+  vulnerability database, and opens pull requests on the private forge.
+  Its post-upgrade script downloads binary checksum lists and archives from
+  GitHub and refreshes changed npm lock files without lifecycle scripts.
 - `python3 scripts/check_vendored.py --refresh` explicitly downloads the
   upstream URLs in `reference/UPSTREAM.json` from `raw.githubusercontent.com`
   and queries commit metadata at `api.github.com`. Normal verification is offline.

@@ -7,6 +7,33 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+### Added
+
+- `make workflows`: checksum-pinned actionlint and PyPI-pinned zizmor check
+  every GitHub and forge workflow offline, including pedantic security
+  findings, on branch pushes and pull requests on the private forge.
+- Review-only Renovate configuration, strict validation through
+  `make renovate-check`, weekly dependency updates, monthly lock file
+  maintenance, and OSV vulnerability alerts. A tested post-upgrade
+  synchronizer updates registry mirrors and verifies refreshed binary
+  checksums before a dependency commit is created.
+
+### Changed
+
+- `make check` includes workflow linting and Renovate configuration validation.
+  The pin validator also checks Makefile versions and all supported binary
+  checksums. Action registry entries retain release selectors alongside SHAs
+  for dependency extraction.
+- Every workflow checkout disables credential persistence. Release site jobs
+  disable dependency caches, history scanning passes event values through
+  environment variables, and all workflows declare concurrency limits.
+
+### Fixed
+
+- Replace or remove dead OWASP, SANS, GitHub, Google, AICPA, Flask-CORS,
+  Dgraph, CIS, BEM, Uvicorn, Microsoft, Software Testing Help, SQL Shack, and
+  Rails links with current publisher pages or repositories.
+
 ### Security
 
 - Override `smol-toml` to `1.9.0` and `katex` to `0.18.2` to remediate
@@ -16,12 +43,6 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
   `get-uri`'s declared `^5.3.1` dependency range.
 - The remaining `braces` advisory has no fix (`3.0.3` is latest); its
   dependency path is limited to `markdownlint-cli2` matching repository globs.
-
-### Fixed
-
-- Replace or remove dead OWASP, SANS, GitHub, Google, AICPA, Flask-CORS, Dgraph, CIS,
-  BEM, Uvicorn, Microsoft, Software Testing Help, SQL Shack, and Rails links
-  with current publisher pages or repositories.
 
 ## [2026.10.4] - 2026-10-18
 

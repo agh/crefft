@@ -67,6 +67,8 @@ iif = "iif"
 chage = "chage"
 
 [default.extend-identifiers]
+# Renovate's public option name uses this upstream spelling.
+minimumReleaseAgeBehaviour = "minimumReleaseAgeBehaviour"
 # The vendored Holywell license file is named LICENCE.
 LICENCE = "LICENCE"
 # Devise's upstream authentication module is named rememberable.

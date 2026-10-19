@@ -141,6 +141,22 @@ EXACT_VERSION_RE = re.compile(
 COMMIT_RE = re.compile(r"[0-9a-f]{40}")
 DIGEST_RE = re.compile(r"sha256:[0-9a-f]{64}")
 IMAGE_VERSION_RE = re.compile(r"v?\d+\.\d+(?:\.\d+)?(?:[-+][0-9A-Za-z.-]+)?")
+BINARY_PLATFORMS = {
+    "actionlint": ("darwin_amd64", "darwin_arm64", "linux_amd64", "linux_arm64"),
+    "vale": ("Linux_64-bit", "Linux_arm64", "macOS_64-bit", "macOS_arm64"),
+}
+TOOL_OVERLAPS = {
+    ("binary", "vale"): ("vale-cli/vale", ""),
+    ("hook", "vale-cli/vale"): ("vale-cli/vale", ""),
+    ("go", "github.com/golangci/golangci-lint/cmd/golangci-lint"):
+        ("golangci/golangci-lint", ""),
+    ("go", "mvdan.cc/sh/v3/cmd/shfmt"): ("scop/pre-commit-shfmt", r"-\d+$"),
+    ("npm", "@biomejs/biome"): ("biomejs/pre-commit", ""),
+    ("npm", "prettier"): ("pre-commit/mirrors-prettier", ""),
+    ("npm", "markdownlint-cli"): ("igorshubovych/markdownlint-cli", ""),
+    ("python", "sqlfluff"): ("sqlfluff/sqlfluff", ""),
+    ("docker", "hadolint/hadolint"): ("hadolint/hadolint", ""),
+}
 
 
 @dataclass(frozen=True)
@@ -559,21 +575,14 @@ def parse_tool_versions(path: Path, hooks: dict[str, str]) -> dict[str, dict[str
         raise ValueError("expected ecosystem objects mapping package names to exact versions")
     for ecosystem, tools in pins.items():
         for name, version in tools.items():
+            if ecosystem == "action" and "@" in version:
+                tag, version = version.split("@", 1)
+                if not re.fullmatch(r"v?\d+(?:\.\d+){0,2}(?:[-+][\w.-]+)?", tag):
+                    raise ValueError(f"action {name}: {tag!r} is not a release selector")
+                tools[name] = version
             if not pinned_reference(ecosystem, version):
                 raise ValueError(f"{ecosystem} {name}: {version!r} is not an exact version")
-    overlaps = {
-        ("binary", "vale"): ("vale-cli/vale", ""),
-        ("hook", "vale-cli/vale"): ("vale-cli/vale", ""),
-        ("go", "github.com/golangci/golangci-lint/cmd/golangci-lint"):
-            ("golangci/golangci-lint", ""),
-        ("go", "mvdan.cc/sh/v3/cmd/shfmt"): ("scop/pre-commit-shfmt", r"-\d+$"),
-        ("npm", "@biomejs/biome"): ("biomejs/pre-commit", ""),
-        ("npm", "prettier"): ("pre-commit/mirrors-prettier", ""),
-        ("npm", "markdownlint-cli"): ("igorshubovych/markdownlint-cli", ""),
-        ("python", "sqlfluff"): ("sqlfluff/sqlfluff", ""),
-        ("docker", "hadolint/hadolint"): ("hadolint/hadolint", ""),
-    }
-    for (ecosystem, name), (repo, suffix) in overlaps.items():
+    for (ecosystem, name), (repo, suffix) in TOOL_OVERLAPS.items():
         if repo not in hooks:
             continue
         expected = re.sub(suffix, "", hooks[repo]) if suffix else hooks[repo]
@@ -582,6 +591,45 @@ def parse_tool_versions(path: Path, hooks: dict[str, str]) -> dict[str, dict[str
         if pins.get(ecosystem, {}).get(name) != expected:
             raise ValueError(f"{ecosystem} {name} must match {repo}@{expected}")
     return pins
+
+
+def collect_toolchain_mismatches(
+    pins: dict[str, dict[str, str]], root: Path = PROJECT_ROOT,
+) -> list[dict[str, object]]:
+    """Check Makefile tool versions and every supported binary archive digest."""
+    path = root / "Makefile"
+    if not path.exists():
+        return []
+    text = path.read_text(encoding="utf-8").replace("\\\n", "")
+    assignments = dict(re.findall(r"^([\w-]+) :=[ \t]+(\S+)[ \t]*$", text, re.MULTILINE))
+    findings: list[dict[str, object]] = []
+
+    def compare(name: str, expected: str) -> None:
+        found = assignments.get(name, "(missing)")
+        if found != expected:
+            findings.append({
+                "location": "Makefile", "repo": name, "found": found, "expected": expected,
+            })
+
+    for tool, platforms in BINARY_PLATFORMS.items():
+        version = pins.get("binary", {}).get(tool)
+        if version is None:
+            continue
+        compare(f"{tool.upper()}_VERSION", version)
+        for platform in platforms:
+            archive = f"{tool}_{version}_{platform}.tar.gz"
+            digest = pins.get("checksum", {}).get(archive, "")
+            if not DIGEST_RE.fullmatch(digest):
+                findings.append({
+                    "location": "configs/tool-versions.json", "repo": archive,
+                    "found": digest or "(missing)", "expected": "a complete SHA-256 digest",
+                })
+            else:
+                compare(f"{tool.upper()}_SHA256_{platform}", digest.removeprefix("sha256:"))
+    for section, tool in (("python", "zizmor"), ("npm", "renovate")):
+        if version := pins.get(section, {}).get(tool):
+            compare(f"{tool.upper()}_VERSION", version)
+    return findings
 
 
 def collect_install_mismatches(
@@ -878,6 +926,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     undocumented = [u for u in unknown if not u["documented"]]
     floating, floating_exceptions = collect_floating(args.root)
     mismatches.extend(collect_install_mismatches(tool_versions, args.root))
+    mismatches.extend(collect_toolchain_mismatches(tool_versions, args.root))
 
     if args.json:
         json.dump(

@@ -1,0 +1,227 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:best-practices"],
+  "enabledManagers": ["npm", "github-actions", "custom.regex"],
+  "ignorePaths": [
+    "reference/**",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "CHANGELOG.md",
+    "SITE-CHANGELOG.md",
+    "VERSION",
+    "**/node_modules/**",
+    ".tmp-check/**",
+    "site/dist/**",
+    "site/.astro/**",
+    "site/.cache/**",
+    "site/src/generated/**"
+  ],
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "commitMessageLowerCase": "auto",
+  "osvVulnerabilityAlerts": true,
+  "minimumReleaseAge": "3 days",
+  "minimumReleaseAgeBehaviour": "timestamp-required",
+  "internalChecksFilter": "strict",
+  "timezone": "America/Los_Angeles",
+  "schedule": ["* 3-6 * * 1"],
+  "dependencyDashboard": true,
+  "automerge": false,
+  "platformAutomerge": false,
+  "prConcurrentLimit": 3,
+  "branchConcurrentLimit": 3,
+  "prHourlyLimit": 2,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["* 3-6 1 * *"]
+  },
+  "vulnerabilityAlerts": {
+    "minimumReleaseAge": "0 days",
+    "minimumReleaseAgeBuffer": null,
+    "schedule": ["at any time"],
+    "dependencyDashboardApproval": false,
+    "automerge": false,
+    "platformAutomerge": false
+  },
+  "npm": {
+    "managerFilePatterns": ["/^(?:site/)?package\\.json$/"]
+  },
+  "github-actions": {
+    "managerFilePatterns": ["/^\\.(?:github|forgejo)/workflows/[^/]+\\.ya?ml$/"],
+    "pinDigests": true
+  },
+  "postUpgradeTasks": {
+    "commands": ["python3 scripts/sync_tool_versions.py"],
+    "fileFilters": [
+      "configs/**",
+      "guides/**",
+      "agents/**",
+      "commands/**",
+      ".github/workflows/**",
+      ".forgejo/workflows/**",
+      "AGENTS.md",
+      "CONTRIBUTING.md",
+      "README.md",
+      "Makefile",
+      "package.json",
+      "package-lock.json",
+      "site/package.json",
+      "site/package-lock.json"
+    ],
+    "executionMode": "branch"
+  },
+  "packageRules": [
+    {
+      "description": "Override the preset's fix prefix for production dependencies.",
+      "matchPackageNames": ["*"],
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "deps"
+    },
+    {
+      "description": "Workflow pins and their registry entries use the repository's ci scope.",
+      "matchManagers": ["github-actions"],
+      "semanticCommitType": "ci"
+    },
+    {
+      "matchDepTypes": ["action"],
+      "semanticCommitType": "ci",
+      "pinDigests": true
+    },
+    {
+      "description": "Keep Astro's packages together across both npm manifests and the registry.",
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["astro", "@astrojs/**"],
+      "groupName": "Astro"
+    },
+    {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["tailwindcss", "@tailwindcss/**"],
+      "groupName": "Tailwind CSS"
+    },
+    {
+      "description": "Binary archives and the pre-commit wrapper share one Vale release.",
+      "matchPackageNames": ["vale-cli/vale"],
+      "groupName": "Vale"
+    },
+    {
+      "description": "Digest-only images have no recorded tag; selecting a tag requires manual review.",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "geerlingguy/docker-debian12-ansible",
+        "geerlingguy/docker-debian13-ansible",
+        "geerlingguy/docker-ubuntu2204-ansible",
+        "geerlingguy/docker-ubuntu2404-ansible",
+        "geerlingguy/docker-ubuntu2604-ansible",
+        "vllm/vllm-openai"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "shfmt's separate pre-commit wrapper revision requires a manual tag selection.",
+      "matchDatasources": ["go"],
+      "matchPackageNames": ["mvdan.cc/sh/v3"],
+      "enabled": false
+    },
+    {
+      "description": "The existing golangci-lint install path is for v1, not the v2 module.",
+      "matchDatasources": ["go"],
+      "matchPackageNames": ["github.com/golangci/golangci-lint"],
+      "allowedVersions": "<2"
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^configs/tool-versions\\.json$/"],
+      "matchStringsStrategy": "recursive",
+      "matchStrings": [
+        "\"action\":\\s*\\{[\\s\\S]*?\\}",
+        "\"(?<depName>[^\"/]+/[^\"/]+)(?:/[^\"@]+)?\":\\s*\"(?<currentValue>[^\"@]+)@(?<currentDigest>[a-f0-9]{40})\""
+      ],
+      "datasourceTemplate": "github-tags",
+      "depTypeTemplate": "action"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^configs/tool-versions\\.json$/"],
+      "matchStringsStrategy": "recursive",
+      "matchStrings": [
+        "\"binary\":\\s*\\{[\\s\\S]*?\\}",
+        "\"actionlint\":\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "depNameTemplate": "rhysd/actionlint",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$",
+      "depTypeTemplate": "binary"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^configs/tool-versions\\.json$/"],
+      "matchStringsStrategy": "recursive",
+      "matchStrings": [
+        "\"binary\":\\s*\\{[\\s\\S]*?\\}",
+        "\"vale\":\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "depNameTemplate": "vale-cli/vale",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$",
+      "depTypeTemplate": "binary"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^configs/tool-versions\\.json$/"],
+      "matchStringsStrategy": "recursive",
+      "matchStrings": [
+        "\"hook\":\\s*\\{[\\s\\S]*?\\}",
+        "\"(?<depName>[^\"]+)\":\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "github-releases",
+      "depTypeTemplate": "hook"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^configs/tool-versions\\.json$/"],
+      "matchStringsStrategy": "recursive",
+      "matchStrings": [
+        "\"docker\":\\s*\\{[\\s\\S]*?\\}",
+        "\"(?<depName>[^\"]+)\":\\s*\"(?<currentValue>(?:v?[0-9][^\"]*|sha256:[a-f0-9]{64}))\""
+      ],
+      "datasourceTemplate": "docker",
+      "depTypeTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^configs/tool-versions\\.json$/"],
+      "matchStringsStrategy": "recursive",
+      "matchStrings": [
+        "\"go\":\\s*\\{[\\s\\S]*?\\}",
+        "\"(?<depName>[^\" ]+?)(?:/cmd/[^\" ]+|/mockgen)?\":\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "go",
+      "depTypeTemplate": "go"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^configs/tool-versions\\.json$/"],
+      "matchStringsStrategy": "recursive",
+      "matchStrings": [
+        "\"npm\":\\s*\\{[\\s\\S]*?\\}",
+        "\"(?<depName>[^\"]+)\":\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "npm",
+      "depTypeTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^configs/tool-versions\\.json$/"],
+      "matchStringsStrategy": "recursive",
+      "matchStrings": [
+        "\"python\":\\s*\\{[\\s\\S]*?\\}",
+        "\"(?<depName>[^\"]+)\":\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "pypi",
+      "depTypeTemplate": "python"
+    }
+  ]
+}

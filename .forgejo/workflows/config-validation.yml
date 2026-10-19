@@ -13,7 +13,46 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: config-validation-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  renovate:
+    name: Validate Renovate configuration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24.22.0' # Renovate supports Node 24 only
+
+      - name: Strictly validate Renovate configuration
+        run: make renovate-check
+
+  workflows:
+    name: Lint workflow security and syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python with uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: '3.14'
+          activate-environment: true
+
+      - name: Lint all workflow files
+        run: make workflows
+
   ansible:
     name: Validate Ansible configs
     runs-on: ubuntu-latest
@@ -21,6 +60,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Python with uv
         # The forge's Debian job image has no setup-python build and no pip;
@@ -64,6 +105,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Python with uv
         # The forge's Debian job image has no setup-python build and no pip;

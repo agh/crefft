@@ -41,6 +41,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -126,6 +128,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Install Gitleaks
@@ -182,12 +185,16 @@ jobs:
         run: gitleaks dir . --config .gitleaks.toml --no-banner --redact --verbose
 
       - name: Scan history
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           # On pull requests scan only the commits this PR adds; a full fetch also
           # brings in every other branch, whose commits are not under review here.
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
+          if [ "$EVENT_NAME" = "pull_request" ]; then
             gitleaks git . --config .gitleaks.toml --no-banner --redact \
-              --log-opts="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+              --log-opts="${BASE_SHA}..${HEAD_SHA}"
           else
             # On pushes scan the history of the pushed branch only; the checkout
             # fetches every ref, and unmerged branches are not this push's concern.
@@ -200,6 +207,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Python with uv
         # The forge's Debian job image has no setup-python build and no pip;
@@ -221,6 +230,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Python with uv
         # The forge's Debian job image has no setup-python build and no pip;
@@ -246,6 +257,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Python with uv
         # The forge's Debian job image has no setup-python build and no pip;

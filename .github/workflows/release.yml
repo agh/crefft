@@ -13,6 +13,7 @@ concurrency:
 
 jobs:
   package:
+    name: Build and check the release package
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -57,10 +58,11 @@ jobs:
             .tmp-check/vale-package/notes.md
 
   release:
+    name: Publish the checked release package
     needs: package
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write # Create the release and upload its already-checked bytes.
     steps:
       - name: Download release bytes
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
