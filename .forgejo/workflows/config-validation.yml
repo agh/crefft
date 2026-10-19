@@ -7,14 +7,11 @@ name: Config Validation
 
 on:
   pull_request:
-    paths:
-      - 'configs/**'
-      - '.github/workflows/config-validation.yml'
   push:
-    branches: [main]
-    paths:
-      - 'configs/**'
-      - '.github/workflows/config-validation.yml'
+    branches: ['**']
+
+permissions:
+  contents: read
 
 jobs:
   ansible:
@@ -25,13 +22,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - name: Set up Python with uv
+        # The forge's Debian job image has no setup-python build and no pip;
+        # uv supplies the pinned Python in a job-local virtual environment.
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
           python-version: '3.13'
+          activate-environment: true
 
       - name: Install Ansible tooling
-        run: python -m pip install 'ansible-lint==26.8.0'
+        run: uv pip install 'ansible-lint==26.8.0'
 
       - name: Resolve every Galaxy requirement
         run: |
@@ -65,13 +65,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - name: Set up Python with uv
+        # The forge's Debian job image has no setup-python build and no pip;
+        # uv supplies the pinned Python in a job-local virtual environment.
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
           python-version: '3.13'
+          activate-environment: true
 
       - name: Install pre-commit
-        run: python -m pip install 'pre-commit==4.6.2'
+        run: uv pip install 'pre-commit==4.6.2'
 
       - name: Validate the shipped configuration
         run: |

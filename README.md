@@ -266,7 +266,8 @@ and `configs/`: `bash`, `sh`, `shell`, `console`, and `zsh` fences; Dockerfile
 instructions; YAML `run:` steps, `image:` values, and `uses:` actions; and
 inline spans beginning with a package-manager command. Native shell,
 Dockerfile, and YAML configuration files are checked too. All `uses:` references
-in `.github/workflows/` are checked, with no exceptions. YAML examples are
+in `.github/workflows/` and `.forgejo/workflows/` are checked, with no exceptions.
+YAML examples are
 checked even when their fence has a generic syntax-check skip marker.
 
 Action pins **MUST** be resolved with the exact upstream tag, not copied from
@@ -375,30 +376,27 @@ records the upstream, version, and license of every source.
 
 ## Contributing and support
 
-Contribute by opening an [issue form](https://github.com/agh/crefft/issues/new/choose):
-**Bug in a guide** for incorrect content, configuration, or provenance;
-**Outdated version** for stale pins; and **New guide proposal** for missing
-coverage. Search existing issues first, identify the latest crefft release
-and affected file and section, and include reproduction steps, expected and
-actual behavior, and primary-source evidence. Include the date checked for
-version claims.
+crefft is developed in a private repository. GitHub carries tagged
+releases and the corresponding `main`, updated only when a release is cut.
+GitHub issues, pull requests, projects, the wiki, and discussions are disabled.
+There is no public contribution or general-support channel.
 
-crefft does not accept external pull requests. Pull requests from anyone
-other than the maintainer are closed with a pointer to the issue forms;
-the maintainer makes the changes. Dependabot pull requests continue.
+**Why**: development, review, and day-to-day CI stay private; readers retain
+public release sources, the site, and package downloads.
 
-**Why**: issues let the maintainer verify the evidence and scope before
-implementing a consistent change across the guides.
-
-The [house style and checks](CONTRIBUTING.md) still bind the maintainer's
-changes; `make check` **MUST** pass before every commit.
+The [house style, checks, and release process](CONTRIBUTING.md) still bind the
+maintainer's changes; `make check` **MUST** pass before every commit.
+Development checks live in `.forgejo/workflows/`. GitHub runs only
+`.github/workflows/site.yml` and `.github/workflows/release.yml`, both on
+`v*` tags, to deploy the checked site and publish the Vale release package.
 
 **Why**: restricting contribution channels does not lower release standards.
 
-Support is best effort, for the latest release only, with no service levels,
-promised response times, or guaranteed fixes. Security reports **MUST** use
+Security reports **MUST** use
 [GitHub's private vulnerability reporting](https://github.com/agh/crefft/security/advisories/new),
-not public issues. See [SECURITY.md](SECURITY.md) for the policy, including
+the only public reporting channel. Support for those reports is best effort,
+for the latest release only, with no service levels, promised response times,
+or guaranteed fixes. See [SECURITY.md](SECURITY.md) for the policy, including
 reports about other projects.
 
 **Why**: crefft does not provide a support service, and private reports protect
@@ -416,7 +414,11 @@ their schedules, requests only these network operations:
 - The Makefile and documentation CI download pinned Gitleaks, typos, and Vale
   binaries from `github.com`, following GitHub's asset redirects to
   `release-assets.githubusercontent.com` or `objects.githubusercontent.com`.
-- Workflow checkout, action downloads, runtime setup, and cache access use
+- Development workflow checkout and cache access use the private forge.
+  `make publish-release TAG=...` fetches the `forge` and `github` remotes and
+  queries the forge tag; `--push` on `scripts/publish_release.py` sends only
+  the verified release commit and named tag to `github`.
+- Action downloads, runtime setup, and GitHub release-job checkout and cache access use
   `github.com`, `api.github.com`, `codeload.github.com`,
   `raw.githubusercontent.com`, and GitHub's release asset hosts.
   Runtime download fallbacks use `nodejs.org`, `go.dev`, `storage.googleapis.com`,
@@ -430,10 +432,13 @@ their schedules, requests only these network operations:
 - `python3 scripts/check_vendored.py --refresh` explicitly downloads the
   upstream URLs in `reference/UPSTREAM.json` from `raw.githubusercontent.com`
   and queries commit metadata at `api.github.com`. Normal verification is offline.
-- The scheduled security-reference workflow queries `api.github.com` and
-  `cwe-api.mitre.org`. It creates or updates a GitHub tracking issue through
-  `api.github.com`; the external-pull-request workflow uses that same API
-  to comment on and close external pull requests.
+- The security-reference workflow queries `api.github.com` and
+  `cwe-api.mitre.org` read-only and reports drift in the job log.
+- GitHub's tag-triggered release workflow uploads the package and creates
+  the release through `api.github.com`. The site deploy job sends the
+  checked static files to Cloudflare through `api.cloudflare.com`.
+  Site checks download Chromium from Playwright's `cdn.playwright.dev`
+  and `playwright.download.prss.microsoft.com` download hosts.
 - `make links-external` and the scheduled external-link workflow request the
   HTTP(S) links in tracked first-party Markdown, subject to the exclusions
   in `.markdown-link-check.json`, and follow the sites' redirects. The complete

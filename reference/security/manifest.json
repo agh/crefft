@@ -328,9 +328,9 @@
     }
   },
   "update_automation": {
-    "workflow": ".github/workflows/check-security-refs.yml",
-    "schedule": "0 0 1 * *",
-    "pr_creation": true,
+    "workflow": ".forgejo/workflows/check-security-refs.yml",
+    "schedule": "17 3 1 * *",
+    "pr_creation": false,
     "live_apis": {
       "kev": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
       "epss": "https://api.first.org/data/v1/epss"

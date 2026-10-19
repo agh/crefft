@@ -32,7 +32,7 @@ REFERENCE_DIR = PROJECT_ROOT / "reference"
 CHECKSUM_FILE = REFERENCE_DIR / "CHECKSUMS.sha256"
 
 # Upstream families vendored verbatim. reference/security holds crefft-built
-# data files and is checked by .github/workflows/check-security-refs.yml.
+# data files and is checked by .forgejo/workflows/check-security-refs.yml.
 VENDOR_DIRS = (
     "airbnb",
     "google",

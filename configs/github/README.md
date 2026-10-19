@@ -180,9 +180,9 @@ A tag is a mutable pointer; `tj-actions/changed-files` had its tags
 retargeted during the March 2025 supply-chain incident, which a SHA pin would
 have contained.
 
-crefft's Dependabot configuration only scans `.github/workflows/`. These
-templates are **not** updated automatically: when the pins in
-`.github/workflows/` change, update them here in the same commit.
+crefft has no Dependabot configuration. These templates are **not** updated
+automatically: when the pins in `configs/tool-versions.json` change, update
+the templates, `.forgejo/workflows/`, and `.github/workflows/` in the same commit.
 
 Current pins:
 

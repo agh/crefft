@@ -217,16 +217,22 @@ No deployment is performed by a local build.
    script injection, email obfuscation, and browser challenges for public
    HTML, Markdown, and download paths. Confirm the final account settings
    agree with the published privacy notice.
-5. After reviewing the changes, use the repository's release process to
-   publish a `v*` tag matching `VERSION`. The site workflow checks that
+5. Follow the [maintainer release process](../CONTRIBUTING.md#maintainer-release-workflow):
+   sign and tag on the private forge, preview with
+   `make publish-release TAG=vYYYY.M.N`, and explicitly publish the verified
+   commit and tag from the maintainer's clone to `github`.
+   GitHub's `v*` tag-triggered site workflow checks that
    identity, builds and verifies without deployment credentials, and uploads
    `site/dist`. Its protected deployment job downloads that exact artifact
    and runs the lockfile-pinned Wrangler; it does not rebuild.
 
 All workflow actions use the repository's full-SHA pins and only
 `contents: read`. Release builds and deployments use noncanceling
-concurrency groups. Pull requests run the checks but never receive deployment
-credentials.
+concurrency groups. Branch pushes and pull requests run the separate
+`.forgejo/workflows/site.yml` checks on the private forge, without artifact
+actions or deployment credentials. GitHub carries tagged releases, with
+issues and pull requests disabled. The only public reporting channel is
+[GitHub private vulnerability reporting](https://github.com/agh/crefft/security/advisories/new).
 
 After publication, check HTTPS, custom-domain routing, search, CSP, Markdown
 MIME types, raw downloads, and the real 404 again on both domains.

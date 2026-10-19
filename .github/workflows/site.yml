@@ -1,30 +1,15 @@
 name: Site
 
 on:
-  pull_request:
-    paths:
-      - 'site/**'
-      - 'guides/**'
-      - 'agents/**'
-      - 'commands/**'
-      - 'configs/**'
-      - 'SUMMARY.md'
-      - 'AGENTS.md'
-      - 'VERSION'
-      - 'THIRD_PARTY_NOTICES.md'
-      - 'Makefile'
-      - 'banner.svg'
-      - '.gitignore'
-      - '.github/workflows/site.yml'
   push:
     tags: ['v*']
 
 permissions:
   contents: read
 
-# Release builds and deploys share one serial group. PRs never cancel a release.
+# Release builds and deploys share one serial group.
 concurrency:
-  group: site-${{ github.event.pull_request.number || 'production' }}
+  group: site-production
   cancel-in-progress: false
 
 env:

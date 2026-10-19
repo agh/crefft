@@ -128,10 +128,24 @@ test('Wrangler shape and deployment credential isolation match the release contr
   });
   const workflow = await readFile('../.github/workflows/site.yml', 'utf8');
   const deploy = workflow.slice(workflow.indexOf('  deploy:'));
+  const check = workflow.slice(workflow.indexOf('  check:'), workflow.indexOf('  deploy:'));
+  assert.match(deploy, /needs: check/);
+  assert.match(check, /make site-check/);
+  assert.doesNotMatch(check, /secrets\./);
   assert.match(deploy, /environment: production/);
   assert.match(deploy, /secrets\.CLOUDFLARE_ACCOUNT_ID/);
   assert.match(deploy, /secrets\.CLOUDFLARE_API_TOKEN/);
   assert.match(deploy, /startsWith\(github\.ref, 'refs\/tags\/v'\)/);
   assert.match(deploy, /cancel-in-progress: false/);
   assert.doesNotMatch(deploy, /vars\.|npm run build|make site-check/);
+  const forge = await readFile('../.forgejo/workflows/site.yml', 'utf8');
+  assert.match(forge, /make site-check/);
+  assert.match(forge, /runs-on: ubuntu-latest/);
+  assert.doesNotMatch(forge, /secrets\.|upload-artifact|download-artifact|deploy:/);
+});
+
+test('guide tools link to read-only public source without inviting submissions', async () => {
+  const page = await readFile('src/pages/[...path].astro', 'utf8');
+  assert.match(page, /https:\/\/github.com\/agh\/crefft\/blob\/main\/\$\{entry.id\}`}>View source/);
+  assert.doesNotMatch(page, /Edit on GitHub|\/edit\/|github.com\/agh\/crefft\/(?:issues|pulls)/);
 });

@@ -10,6 +10,15 @@ The brief is [AGENTS.md](/raw/AGENTS.md): the repository's instructions for
 working with crefft, including scope, writing conventions, and checks.
 It is not a claim that every harness automatically loads this file.
 
+## Development and reporting
+
+crefft is developed in a private repository.
+[GitHub carries tagged releases](https://github.com/agh/crefft/releases),
+not ongoing development. GitHub issues and pull requests are disabled;
+source links are for reading, not submitting changes.
+[GitHub private vulnerability reporting](https://github.com/agh/crefft/security/advisories/new)
+is the only public reporting channel.
+
 ## Fetch only what the task needs
 
 Start with [llms.txt](/llms.txt), a short routing map, or the

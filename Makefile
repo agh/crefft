@@ -1,6 +1,6 @@
 # crefft — local checks
 #
-# `make check` runs the same checks as .github/workflows/doc-lint.yml, in the
+# `make check` runs the same checks as .forgejo/workflows/doc-lint.yml, in the
 # same order and with the same pinned tool versions, so a green local run
 # means a green CI run.
 #
@@ -13,7 +13,7 @@ SHELL := /bin/bash
 NODE_BIN := node_modules/.bin
 TMP := .tmp-check
 
-# Pinned to match .github/workflows/doc-lint.yml.
+# Pinned to match .forgejo/workflows/doc-lint.yml.
 GITLEAKS_VERSION := 8.30.1
 GITLEAKS_SHA256_darwin_arm64 := b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5
 GITLEAKS_SHA256_linux_x64 := 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
@@ -76,8 +76,9 @@ VALE_ARCHIVE := vale_$(VALE_VERSION)_$(VALE_PLATFORM).tar.gz
 VALE := $(TMP)/vale-$(VALE_VERSION)/vale
 VALE_PACKAGE_DIR := $(TMP)/vale-package
 
-# Tracked first-party Markdown: everything except the vendored reference tree.
-MARKDOWN_FILES = $(shell git ls-files '*.md' ':!:reference/**')
+# Include new files and omit deleted paths while checking an uncommitted move.
+MARKDOWN_FILES = $(wildcard $(shell git ls-files --cached --others \
+	--exclude-standard --deduplicate '*.md' ':!:reference/**'))
 
 # Generates a deliberately realistic pair of tokens for the Gitleaks
 # self-test. Built at run time so no credential-shaped literal is committed.
@@ -100,10 +101,14 @@ endef
 export GITLEAKS_FIXTURE_PY
 
 .DEFAULT_GOAL := help
-.PHONY: site-check
+.PHONY: site-check publish-release
 
 site-check: ## Build and check the static website (install with npm ci --prefix site)
 	npm --prefix site run verify
+
+publish-release: export RELEASE_TAG = $(TAG)
+publish-release: ## Verify a signed forge release and print its GitHub push (TAG=vYYYY.M.N)
+	@python3 scripts/publish_release.py --tag "$$RELEASE_TAG"
 
 .PHONY: help check install lint typos vale vale-package vale-package-check links links-external secrets versions snippets test clean
 
@@ -130,7 +135,7 @@ vale: $(VALE) vale-package-check ## Enforce the Crefft writing rules in tracked 
 	$(VALE) --no-global --version
 	$(VALE) --no-global sync
 	$(VALE) --no-global test --coverage configs/vale/Crefft/styles/Crefft
-	@git ls-files -z '*.md' ':!:reference/**' | xargs -0 $(VALE) --no-global
+	@printf '%s\0' $(MARKDOWN_FILES) | xargs -0 $(VALE) --no-global
 
 vale-package: ## Build the deterministic Crefft archive and checksum
 	python3 scripts/build_vale_package.py --output-dir $(VALE_PACKAGE_DIR)
@@ -140,14 +145,14 @@ vale-package-check: $(VALE) vale-package ## Sync and exercise the built archive 
 	  --package $(VALE_PACKAGE_DIR)/Crefft.zip
 
 links: install ## Check internal links in all first-party Markdown (blocking)
-	@git ls-files -z '*.md' ':!:reference/**' \
+	@printf '%s\0' $(MARKDOWN_FILES) \
 	  | xargs -0 $(NODE_BIN)/markdown-link-check \
 	      --config .markdown-link-check-internal.json --quiet
 
 links-external: install ## Check external URLs (what CI runs weekly; network-bound)
 	@set -uo pipefail; \
 	report=$$(mktemp); \
-	git ls-files -z '*.md' ':!:reference/**' \
+	printf '%s\0' $(MARKDOWN_FILES) \
 	  | xargs -0 -P 4 -I{} sh -c '$(NODE_BIN)/markdown-link-check \
 	      --config .markdown-link-check.json --quiet "$$1" 2>&1 \
 	      || echo "FAILED: $$1"' _ {} >> "$$report" 2>&1 || true; \

@@ -50,7 +50,7 @@ def tree_hash(root: Path) -> str:
     return hashlib.sha256(json.dumps(entries).encode()).hexdigest()
 
 
-def load_workflow() -> dict:
+def load_workflow(path: Path = TEMPLATE) -> dict:
     if not (ROOT / "node_modules").exists():
         raise unittest.SkipTest("YAML checks require npm documentation tools (make check)")
     parsed = subprocess.run(
@@ -60,7 +60,7 @@ def load_workflow() -> dict:
             "const fs = require('node:fs');"
             "console.log(JSON.stringify(require('js-yaml').load("
             "fs.readFileSync(process.argv[1], 'utf8'))));",
-            str(TEMPLATE),
+            str(path),
         ],
         cwd=ROOT,
         check=True,

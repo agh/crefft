@@ -17,6 +17,7 @@ material crefft tells people to copy into their own projects:
 
 - configuration files under `configs/`
 - GitHub Actions workflows under `.github/workflows/`
+- private forge CI workflows under `.forgejo/workflows/`
 - agent definitions under `agents/` and `commands/`
 - shell commands, install instructions, and pinned versions inside the guides
 - the vendored security reference data under `reference/security/`
@@ -28,7 +29,7 @@ wrong in a way that would make a reader's system less safe.
 
 Vulnerabilities in someone else's project, including upstream tools crefft
 recommends, **MUST** go through that project's own security policy, never a
-public issue here.
+report to crefft.
 
 **Why**: that project's maintainers control the fix and its disclosure.
 
@@ -41,15 +42,17 @@ public issue here.
 
 Only the [latest release](https://github.com/agh/crefft/releases/latest) is
 supported. Check the problem against that release before reporting.
-Fixes are developed on `main` and published in a release; older releases
-are not patched.
+Fixes are developed on the private forge's `main` and published in a release;
+older releases are not patched. GitHub carries tagged releases, not ongoing
+development.
 
 **Why**: a single supported release keeps limited maintenance effort on the
 material readers are directed to use.
 
 ## Reporting a Vulnerability
 
-Security vulnerabilities **MUST NOT** be reported in public issues.
+Security vulnerabilities **MUST** use GitHub private vulnerability reporting.
+GitHub issues and pull requests are disabled.
 
 Report privately through GitHub:
 
@@ -58,8 +61,8 @@ Report privately through GitHub:
    could do with it.
 3. Include the steps you took to confirm it.
 
-GitHub's private vulnerability reporting is enabled for crefft. Use that
-channel rather than opening a public issue, including a placeholder issue.
+GitHub's private vulnerability reporting is enabled for crefft and is the
+only public reporting channel.
 
 **Why**: the private advisory thread lets the reporter and maintainer discuss
 the vulnerability without exposing readers before a fix.
@@ -98,6 +101,6 @@ No legal action will be taken against anyone reporting in good faith.
 
 ## See Also
 
-- [CONTRIBUTING.md](CONTRIBUTING.md) — how to propose changes
+- [CONTRIBUTING.md](CONTRIBUTING.md) — private development and release policy
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — community expectations
 - [guides/ai/security.md](guides/ai/security.md) — LLM security considerations

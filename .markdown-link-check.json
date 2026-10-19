@@ -1,6 +1,6 @@
 {
   "_comment": [
-    "Policy for the weekly external URL check (.github/workflows/external-links.yml,",
+    "Policy for the weekly external URL check (.forgejo/workflows/external-links.yml,",
     "also `make links-external`). Internal links use .markdown-link-check-internal.json.",
     "The timeout and retry budget are deliberately small: with four files checked in",
     "parallel, a throttling host must cost seconds, not minutes.",

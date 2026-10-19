@@ -33,7 +33,7 @@ LICENSE
 
 Projects **SHOULD** include a `CONTRIBUTING.md` file. It **MUST** state which
 contribution channels the maintainer accepts and what happens to submissions
-outside that policy. The example below uses crefft's issues-only policy;
+outside that policy. The example below uses an issues-only policy;
 projects accepting external pull requests **MUST** adapt the channel and
 workflow text to their own policy.
 
@@ -396,7 +396,7 @@ body:
 
 All @agh projects **MUST** include a pull request template[^3] to ensure comprehensive change documentation.
 
-For an issues-only project such as crefft, the template **MUST** open with
+For an issues-only project, the template **MUST** open with
 the external-pull-request closure policy and a link to its issue forms.
 Keep the checklist for the maintainer's own pull requests.
 

@@ -39,6 +39,29 @@ Do:    "Security check not run; next update: set by the incident lead."
 Don't: "We will fix this within 24 hours. All checks pass."
 ```
 
+## Development and releases
+
+crefft is developed in a private repository. Development, review,
+and day-to-day CI stay there; `.forgejo/workflows/` runs branch-push and
+pull-request checks. GitHub carries tagged releases and the matching `main`
+only at release time. GitHub issues and pull requests are disabled.
+[GitHub private vulnerability reporting](https://github.com/agh/crefft/security/advisories/new)
+is the only public reporting channel.
+
+Agents **MUST NOT** publish development branches to `github`, configure
+forge-to-GitHub mirroring, or record private infrastructure details in the
+repository. Refer to the private forge only by that description and to
+remotes as `forge` and `github`.
+
+The maintainer signs and tags the release on the private forge, then uses
+`make publish-release TAG=vYYYY.M.N` in the maintainer's clone to verify and
+preview the GitHub push. Execution requires the publisher's explicit
+`--push` option. Only `v*` tags trigger GitHub's site deployment and Vale
+package release. See [CONTRIBUTING.md](CONTRIBUTING.md#maintainer-release-workflow).
+
+**Why**: one guarded release path keeps public source and release artifacts
+consistent without exposing private development.
+
 ## Commands
 
 | Task | Command |
@@ -50,6 +73,8 @@ Don't: "We will fix this within 24 hours. All checks pass."
 | Validate tool versions | `python3 scripts/validate_versions.py` |
 | Check navigation coverage | `python3 scripts/gen_nav.py --check` |
 | Regenerate `SUMMARY.md` | `python3 scripts/gen_nav.py` |
+| Check the site | `make site-check` |
+| Preview release publication | `make publish-release TAG=vYYYY.M.N` |
 
 `make check` **MUST** pass before every commit. `scripts/gen_nav.py --check`
 fails when a guide is missing from `README.md` or from its category
@@ -61,6 +86,8 @@ fails when a guide is missing from `README.md` or from its category
 
 ```text
 crefft/
+├── .forgejo/          # Private review template and development CI
+├── .github/workflows/ # Tag-triggered site deploy and package release only
 ├── agents/            # 53 agent definitions, grouped by family
 │   ├── code/          # Review, performance, accessibility, API, tests
 │   ├── docs/          # Documentation planning, writing, review, publishing

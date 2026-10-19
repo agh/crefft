@@ -5,7 +5,7 @@
 # run while it lived in doc-lint.yml, and canceled by the next push more often
 # than not) and the result is advisory: several hosts crefft cites throttle
 # or refuse CI clients by design, so a failure is a report to read, not a gate.
-# It therefore runs weekly and on demand, never on pull requests or pushes.
+# It runs weekly, on demand, and advisorily on pull requests and branch pushes.
 # Internal links and heading anchors are still checked on every change by
 # doc-lint.yml, deterministically and without the network.
 #
@@ -19,10 +19,8 @@ on:
     # Mondays at 06:23 UTC. An off-peak minute reduces the chance of a
     # scheduling backlog silently dropping the run.
     - cron: '23 6 * * 1'
-  pull_request:
-    paths:
-      - '.github/workflows/external-links.yml'
-      - '.markdown-link-check.json'
+  # Third-party availability is not a property of a change, so development
+  # events rely on doc-lint's internal link check instead.
   workflow_dispatch:
 
 permissions:
@@ -41,11 +39,6 @@ jobs:
     name: External URLs
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # On the weekly schedule and on demand a dead link fails the run so the
-    # owner is notified. On a pull request that edits this workflow or its
-    # config the run is a live test of the mechanism, and third-party outages
-    # must not paint the PR red, so the result is advisory there.
-    continue-on-error: ${{ github.event_name == 'pull_request' }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

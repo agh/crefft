@@ -523,7 +523,9 @@ class ActionPinTests(unittest.TestCase):
                 self.assertEqual(len(findings), 1)
 
     def test_native_workflows_and_configs_cannot_use_illustrative_marker(self):
-        for relative in (".github/workflows/ci.yml", "configs/workflow.yaml"):
+        for relative in (
+            ".github/workflows/ci.yml", ".forgejo/workflows/ci.yml", "configs/workflow.yaml",
+        ):
             with self.subTest(relative=relative):
                 findings, exceptions = self._scan(
                     f"{self.MARKER}\n- uses: actions/checkout@v7\n", relative
@@ -588,7 +590,8 @@ class ActionPinTests(unittest.TestCase):
 
     def test_all_first_party_surfaces_are_scanned(self):
         for relative in (
-            ".github/workflows/ci.yml", "guides/example.md", "configs/example.md",
+            ".github/workflows/ci.yml", ".forgejo/workflows/ci.yml",
+            "guides/example.md", "configs/example.md",
             "agents/example.md", "commands/example.md",
         ):
             with self.subTest(relative=relative):
@@ -597,6 +600,18 @@ class ActionPinTests(unittest.TestCase):
                     body = f"```yaml\n{body}```\n"
                 findings, _ = self._scan(body, relative)
                 self.assertEqual(len(findings), 1)
+
+    def test_forge_workflow_action_sha_must_match_registered_pin(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / ".forgejo/workflows/ci.yml"
+            path.parent.mkdir(parents=True)
+            path.write_text(f"- uses: actions/checkout@{self.SHA}\n", encoding="utf-8")
+            mismatches = vv.collect_install_mismatches(
+                {"action": {"actions/checkout": "b" * 40}}, root,
+            )
+            self.assertEqual(len(mismatches), 1)
+            self.assertEqual(mismatches[0]["location"], ".forgejo/workflows/ci.yml:1")
 
     def test_image_digest_is_complete_and_tag_is_a_release(self):
         for version in ("latest", "18", "alpine", "sha256:abc123...", "sha256:" + "a" * 63):

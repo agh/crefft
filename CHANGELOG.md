@@ -7,6 +7,14 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+### Changed
+
+- Development, review, and day-to-day CI move to the private forge. GitHub
+  carries only release-time `main`, tags, site deployment, and Vale package
+  releases; public source links are read-only, and security reports use
+  GitHub private vulnerability reporting. `make publish-release` previews
+  a guarded push of the signed forge release before explicit publication.
+
 ## [2026.10.3] - 2026-10-18
 
 ### Added

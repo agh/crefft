@@ -69,7 +69,7 @@ if (route === '/search/') {
       </details>
       <nav class="page-tools" aria-label="Source and formats">
         <a href={markdownFor(route)}>View as Markdown</a>
-        <a href={`https://github.com/agh/crefft/edit/main/${entry.id}`}>Edit on GitHub</a>
+        <a href={`https://github.com/agh/crefft/blob/main/${entry.id}`}>View source</a>
       </nav>
       <p class="source-note">Source {version}<br /><a href={sourceURL(entry.id)}>Commit <code>{commit.slice(0, 8)}</code></a></p>
     </aside>

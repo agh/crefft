@@ -17,6 +17,17 @@ from validate_versions import parse_canonical, parse_tool_versions  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 
 
+class GitHubWorkflowPolicyTests(unittest.TestCase):
+    def test_only_release_workflows_exist_and_only_version_tags_trigger_them(self):
+        workflows = ROOT / ".github/workflows"
+        self.assertEqual({path.name for path in workflows.iterdir()}, {"release.yml", "site.yml"})
+        for path in workflows.iterdir():
+            with self.subTest(workflow=path.name):
+                header = path.read_text().split("\njobs:\n", 1)[0]
+                trigger = header.split("\non:\n", 1)[1].split("\npermissions:", 1)[0]
+                self.assertEqual(trigger.strip(), "push:\n    tags: ['v*']")
+
+
 class ValeReleaseWorkflowTests(unittest.TestCase):
     def setUp(self):
         self.workflow = (ROOT / ".github/workflows/release.yml").read_text()
@@ -142,7 +153,7 @@ class ValeVersionPinTests(unittest.TestCase):
             )
         self.assertIn('shasum -a 256 -c -', makefile)
         self.assertIn('$(VALE) --no-global sync', makefile)
-        self.assertIn("':!:reference/**' | xargs -0 $(VALE) --no-global", makefile)
+        self.assertIn("$(MARKDOWN_FILES) | xargs -0 $(VALE) --no-global", makefile)
 
 
 if __name__ == "__main__":

@@ -5,8 +5,7 @@
 # External URLs are not checked here: that is slow, network-bound, and
 # advisory, so it runs weekly in external-links.yml instead.
 #
-# Runtimes: Node.js 24 (Active LTS until 2026-10-20, EOL 2028-04-30) and
-# Python 3.14 (the baseline the guides document).
+# Runtimes: Node.js 24 and Python 3.14.
 #
 # Every action is pinned to a full commit SHA, per GitHub's secure-use
 # guidance: https://docs.github.com/en/actions/reference/security/secure-use-reference
@@ -15,38 +14,8 @@ name: Documentation Lint
 
 on:
   pull_request:
-    paths:
-      - '**.md'
-      - '.github/**'
-      - 'scripts/**'
-      - 'configs/**'
-      - '.markdownlint.json'
-      - '.markdownlintignore'
-      - '.markdown-link-check-internal.json'
-      - '.markdownlint-cli2.jsonc'
-      - '.gitleaks.toml'
-      - '_typos.toml'
-      - '.vale.ini'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'Makefile'
   push:
-    branches: [main]
-    paths:
-      - '**.md'
-      - '.github/**'
-      - 'scripts/**'
-      - 'configs/**'
-      - '.markdownlint.json'
-      - '.markdownlintignore'
-      - '.markdown-link-check-internal.json'
-      - '.markdownlint-cli2.jsonc'
-      - '.gitleaks.toml'
-      - '_typos.toml'
-      - '.vale.ini'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'Makefile'
+    branches: ['**']
   workflow_dispatch:
 
 # Least privilege: nothing here writes to the repository.
@@ -67,7 +36,7 @@ env:
 
 jobs:
   markdown:
-    name: Markdown, links and structure
+    name: Markdown, links, and structure
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -232,10 +201,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - name: Set up Python with uv
+        # The forge's Debian job image has no setup-python build and no pip;
+        # uv supplies the pinned Python in a job-local virtual environment.
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+          activate-environment: true
 
       - name: Unit tests
         run: python3 -m unittest discover scripts
@@ -250,10 +222,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - name: Set up Python with uv
+        # The forge's Debian job image has no setup-python build and no pip;
+        # uv supplies the pinned Python in a job-local virtual environment.
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+          activate-environment: true
 
       - name: Verify vendored files match recorded checksums
         # Previously a step inside the advisory external-URL job, where a
@@ -272,10 +247,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - name: Set up Python with uv
+        # The forge's Debian job image has no setup-python build and no pip;
+        # uv supplies the pinned Python in a job-local virtual environment.
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+          activate-environment: true
 
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -292,7 +270,7 @@ jobs:
       - name: Install checkers
         run: |
           npm ci
-          python3 -m pip install --disable-pip-version-check --quiet 'PyYAML==6.0.3'
+          uv pip install --quiet 'PyYAML==6.0.3'
 
       - name: Syntax-check fenced code blocks
         run: python3 scripts/check_snippets.py --warn --summary "${GITHUB_STEP_SUMMARY}"

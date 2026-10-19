@@ -9,16 +9,20 @@ BCP 14 [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)
 [RFC 8174](https://datatracker.ietf.org/doc/html/rfc8174) when, and only
 when, they appear in all capitals, as shown here.
 
-crefft accepts contributions through [issues](https://github.com/agh/crefft/issues/new/choose),
-not pull requests. The maintainer makes the changes. Pull requests from
-anyone other than the maintainer are closed with a pointer to the issue
-forms; Dependabot pull requests continue.
+crefft is developed in a private repository. GitHub carries tagged
+releases and the corresponding `main`, not ongoing development. GitHub issues,
+pull requests, projects, the wiki, and discussions are disabled. There is no
+public contribution or support channel.
 
-**Why**: issues let the maintainer assess the evidence and scope before
-implementing a consistent change across the guides.
+Security reports use
+[GitHub private vulnerability reporting](https://github.com/agh/crefft/security/advisories/new),
+the only public reporting channel. See [SECURITY.md](SECURITY.md).
 
-This document explains how to propose a change and what the maintainer's
-changes **MUST** satisfy before they are merged.
+**Why**: development and review stay private, while releases and security
+reporting remain accessible to readers.
+
+This document records the maintainer's development and release requirements;
+it is not an invitation to submit changes on GitHub.
 
 Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
@@ -31,14 +35,16 @@ Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 | Check writing rules and package | `make vale` |
 | Validate tool versions | `python3 scripts/validate_versions.py` |
 | Validate a JSON file | `jq . reference/security/manifest.json` |
+| Check the site | `make site-check` |
+| Preview release publication | `make publish-release TAG=vYYYY.M.N` |
 
-## What Belongs Here
+## Scope
 
 crefft covers language guides, framework guides, process guides, AI-assisted
 development practices, ready-to-copy configuration files, and vendored
 upstream reference material.
 
-A proposal **SHOULD** fall into one of four shapes:
+Changes **SHOULD** fall into one of four shapes:
 
 1. **Fix a guide** — a rule that is wrong, an example that does not run, a
    command that no longer exists, a broken link.
@@ -48,27 +54,18 @@ A proposal **SHOULD** fall into one of four shapes:
 4. **Correct provenance** — attribution, license, or notice problems in
    `reference/` or [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-Every proposal, including a small fix, **MUST** start with an
-[issue form](https://github.com/agh/crefft/issues/new/choose).
-Use **Bug in a guide** for incorrect prose, examples, configuration, links,
-or provenance; **Outdated version** for stale pins; and **New guide proposal**
-for missing coverage.
+The private review record **MUST** identify the affected file and heading or
+line, expected and actual behavior, reproduction steps or the exact incorrect
+text, and primary-source evidence. Version claims **MUST** include a source
+URL and the date checked.
 
-Search existing issues first. A useful report identifies the latest crefft
-release, the affected file and heading or line, the expected and actual
-behavior, reproduction steps or the exact incorrect text, and primary-source
-evidence. Version claims **MUST** include a source URL and the date checked.
-Suggested wording belongs in the issue; a pull request is not needed.
-
-**Why**: a reproducible, sourced issue gives the maintainer enough information
-to verify the problem without guessing.
+**Why**: reproducible evidence defines the scope without a public issue tracker.
 
 ## House Rules
 
 These rules still bind the maintainer's own changes.
 
-**Why**: an issues-only contribution policy does not lower the standards for
-the changes that ship.
+**Why**: private development does not lower the standards for changes that ship.
 
 - **MUST** use [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119)
   keywords (MUST, MUST NOT, SHOULD, SHOULD NOT, MAY) in **bold uppercase**,
@@ -104,7 +101,7 @@ the changes that ship.
 
 Version numbers, release dates, and deprecation timelines **MUST** be checked
 against a current source before they are written down, and the source
-**SHOULD** be cited in the issue and the maintainer's pull request.
+**SHOULD** be cited in the private review record.
 Memory is not evidence.
 
 **Why**: release information changes independently of crefft's text.
@@ -125,15 +122,28 @@ Memory is not evidence.
 
 ## Maintainer Development Workflow
 
-1. Verify the issue's evidence and scope.
-2. Create a branch in the repository.
+1. Verify the evidence and scope on the private forge.
+2. Create a branch on the private forge; development branches **MUST NOT**
+   be pushed to `github`.
 3. Make the change, following the house rules.
 4. Run `make check` and fix everything it reports before committing.
-5. Commit using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
-6. Open the maintainer's pull request against `main` and fill in the template.
+5. Sign the commit, include the DCO sign-off, and use
+   [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+6. Open a pull request against the private forge's `main` and fill in
+   [the template](.forgejo/PULL_REQUEST_TEMPLATE.md).
+7. Merge only after review and the forge checks pass.
 
-**Why**: the maintainer's pull requests retain the same review record and
-checks even though external pull requests are not accepted.
+**Why**: the private forge holds development, review, and day-to-day CI.
+GitHub receives only release updates.
+
+Development workflows live in `.forgejo/workflows/`. The documentation,
+configuration, and site checks run on every branch push and pull request.
+The external-link check runs weekly and on demand, and the
+security-reference check runs monthly, on demand, and when
+`reference/security/` changes, since both depend on third-party services.
+Actions use the full commit SHAs in
+`configs/tool-versions.json`. Forge workflows use local build output and
+logs, not artifact upload or download actions.
 
 ### Checks
 
@@ -201,25 +211,49 @@ incompatible changes explicit under either policy.
 6. Add the guide to the navigation tables in [README.md](README.md).
 7. Add a `CHANGELOG.md` entry.
 
-## Reporting Problems
+## Maintainer Release Workflow
 
-Use the [issue forms](https://github.com/agh/crefft/issues/new/choose):
+The maintainer's clone **MUST** have remotes named `forge` and `github`.
+The private forge **MUST NOT** mirror to GitHub. Only the maintainer's machine
+publishes releases to GitHub.
 
-- **Bug in a guide** — a rule, example, or command that is wrong.
-- **Outdated version** — a pinned version that has moved on. Include the
-  current version and the URL you checked.
-- **New guide proposal** — a language, framework, or topic crefft should
-  cover.
+1. On the private forge, prepare the release on `main`: update `VERSION`,
+   keep the site package version consistent, and move the unreleased
+   changelog entry into a dated section for that version.
+2. Run `make check`, `python3 -m unittest discover scripts`, and
+   `make site-check`. Review and merge the signed release commit on the
+   private forge.
+3. In the maintainer's clone, sign an annotated tag named `v` plus that
+   commit's `VERSION` and push that tag only to `forge`. For example,
+   `git tag -s "v$(cat VERSION)" -m "crefft $(cat VERSION)"` signs the tag
+   at the checked-out release commit. The tag's commit **MUST** be
+   `forge/main`.
+4. Run `make publish-release TAG=vYYYY.M.N`, substituting the release tag.
+   It fetches both remotes without replacing local tags, compares the
+   local and forge tag objects, requires an annotated tag and a successful
+   `git tag -v`, reads `VERSION` from the tagged commit, and checks
+   `forge/main` and fast-forward ancestry from `github/main`.
+5. Review the exact push printed by the dry run. To execute it with the same
+   checks, run `python3 scripts/publish_release.py --tag vYYYY.M.N --push`.
+   It pushes only the verified commit to `github/main` and the named tag:
+   `git push github <commit>:refs/heads/main refs/tags/<tag>`.
+6. Inspect the tag-triggered GitHub Actions runs. `site.yml` builds and
+   checks the site before its dependent deploy job publishes the checked
+   files to Cloudflare. `release.yml` builds the Vale package and creates
+   the GitHub Release with `Crefft.zip` and its checksum.
 
-Security vulnerabilities **MUST NOT** be reported in public issues. See
-[SECURITY.md](SECURITY.md).
+The dry run fetches and verifies; it does not push or trigger GitHub jobs.
+Only the explicit push triggers deployment and release publication.
+If a guard fails, resolve the mismatch on the private forge or in the local
+clone. The maintainer **MUST NOT** force-push GitHub's `main` to bypass it.
 
-**Why**: public reports can expose readers before a fix is available.
+**Why**: publishing one verified release keeps GitHub's source, site, and
+package tied to the same signed tag without exposing development branches.
 
 ## Support
 
-Support and issue replies are best effort, for the latest release only.
-There are no service levels, promised response times, or guaranteed fixes.
-See [SECURITY.md](SECURITY.md) for private security reporting.
+There is no public general-support channel. Security reports for the latest
+release are best effort, with no service levels, promised response times, or
+guaranteed fixes. Use [SECURITY.md](SECURITY.md) for private security reporting.
 
 **Why**: crefft has one maintainer and does not provide a support service.

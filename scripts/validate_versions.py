@@ -24,7 +24,8 @@ Scanned surfaces:
 Executable package and action pins are registered in ``configs/tool-versions.json``.
 Shell-like fences, Dockerfiles, YAML run steps/images/actions, and inline
 package-manager commands are checked, not surrounding prose. Workflows under
-``.github/workflows`` are checked too. Actions require full commit SHAs;
+``.github/workflows`` and ``.forgejo/workflows`` are checked too.
+Actions require full commit SHAs;
 images require complete SHA-256 digests or exact release tags. A comment
 ``# crefft: allow-floating -- reason`` exempts only the next logical command
 and is reported separately. Actions only accept the narrower
@@ -58,7 +59,10 @@ CONFIG_FILE = PROJECT_ROOT / "configs/pre-commit/.pre-commit-config.yaml"
 TOOL_VERSIONS_FILE = PROJECT_ROOT / "configs/tool-versions.json"
 
 # Every tree that may quote a pinned tool version.
-SCAN_DIRS = ("guides", "agents", "commands", "configs", ".github/workflows")
+SCAN_DIRS = (
+    "guides", "agents", "commands", "configs", ".github/workflows", ".forgejo/workflows",
+)
+WORKFLOW_DIRS = {".github", ".forgejo"}
 
 # Directories never scanned: vendored upstream text and generated output.
 EXCLUDED_DIRS = {".git", "node_modules", "reference", ".venv", "venv", "dist", "build"}
@@ -511,7 +515,7 @@ def collect_floating(
         content = path.read_text(encoding="utf-8")
         suffix = "dockerfile" if path.name.lower().startswith("dockerfile") else path.suffix
         for executable in iter_executables(content, suffix):
-            if path.relative_to(root).parts[0] == ".github" and not re.match(
+            if path.relative_to(root).parts[0] in WORKFLOW_DIRS and not re.match(
                 r"^uses:", executable.command
             ):
                 continue
@@ -594,7 +598,7 @@ def collect_install_mismatches(
                 # collect_floating reports malformed executable install syntax.
                 continue
             for ecosystem, name, version in refs:
-                if path.relative_to(root).parts[0] == ".github" and ecosystem != "action":
+                if path.relative_to(root).parts[0] in WORKFLOW_DIRS and ecosystem != "action":
                     continue
                 expected = pins.get(ecosystem, {}).get(name)
                 if (

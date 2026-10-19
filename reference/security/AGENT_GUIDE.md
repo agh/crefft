@@ -393,6 +393,6 @@ reference/security/
 ## Versioning and Updates
 
 - **Manifest version**: Check `manifest.json` version field (currently 3.1.0)
-- **Update automation**: `.github/workflows/check-security-refs.yml` runs monthly
+- **Update automation**: `.forgejo/workflows/check-security-refs.yml` runs monthly
 - **Staleness policy**: See `manifest.json` `staleness_policy` for max ages
 - **Next review**: Quarterly review scheduled (see `next_review` in manifest)
