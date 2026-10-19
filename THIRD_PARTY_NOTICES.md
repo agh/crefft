@@ -781,25 +781,6 @@ Exploit-DB, Metasploit, Nuclei — but do not reproduce their text. Those
 standards remain under their publishers' own terms. crefft's MIT license
 covers only crefft's expression in these files.
 
-## Other third-party material outside `reference/`
-
-### Contributor Covenant
-
-- **Upstream**: Contributor Covenant 3.0 —
-  <https://www.contributor-covenant.org/version/3/0/>
-- **Steward**: the Organization for Ethical Source
-- **License**: Creative Commons Attribution-ShareAlike 4.0 International
-  (CC BY-SA 4.0)
-- **License URL**: <https://creativecommons.org/licenses/by-sa/4.0/>
-- **Location**: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
-- **crefft's modifications**: the two `[NOTE: ...]` placeholders in the
-  upstream template were replaced with crefft's actual reporting route and
-  enforcement statement, and a markdownlint directive was added at the top of
-  the file. The rest is verbatim.
-- **ShareAlike**: `CODE_OF_CONDUCT.md` is Adapted Material and is offered
-  under CC BY-SA 4.0, not under crefft's MIT license. The Attribution
-  section at the end of the file carries the required credit.
-
 ## Corrections applied
 
 The following labels in `reference/security/manifest.json` were wrong before

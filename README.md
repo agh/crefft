@@ -572,6 +572,3 @@ Controls in `reference/security/cis/` (CC BY-NC-ND 4.0, no derivatives) and
 the JA4+ variant material in `reference/security/fingerprints/` (FoxIO
 License 1.1, non-commercial). `reference/holywell/` is CC BY-SA 4.0 and
 carries a ShareAlike obligation.
-
-[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) is adapted from the Contributor
-Covenant 3.0 and is licensed under CC BY-SA 4.0, not MIT.

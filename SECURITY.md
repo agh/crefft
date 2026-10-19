@@ -102,5 +102,4 @@ No legal action will be taken against anyone reporting in good faith.
 ## See Also
 
 - [CONTRIBUTING.md](CONTRIBUTING.md) — private development and release policy
-- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — community expectations
 - [guides/ai/security.md](guides/ai/security.md) — LLM security considerations

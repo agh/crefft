@@ -24,8 +24,6 @@ reporting remain accessible to readers.
 This document records the maintainer's development and release requirements;
 it is not an invitation to submit changes on GitHub.
 
-Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
-
 ## Quick Reference
 
 | Task | Command |

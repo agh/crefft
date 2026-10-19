@@ -7,6 +7,11 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+### Removed
+
+- `CODE_OF_CONDUCT.md` and its Contributor Covenant notice: crefft has no
+  public community spaces, so it has nothing to govern or report through.
+
 ### Changed
 
 - Development, review, and day-to-day CI move to the private forge. GitHub
