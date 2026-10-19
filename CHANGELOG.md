@@ -7,6 +7,8 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+## [2026.10.4] - 2026-10-18
+
 ### Removed
 
 - `CODE_OF_CONDUCT.md` and its Contributor Covenant notice: crefft has no
@@ -14,7 +16,7 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ### Changed
 
-- Development, review, and day-to-day CI move to the private forge. GitHub
+- Development, review, and day-to-day CI move to a private repository. GitHub
   carries only release-time `main`, tags, site deployment, and Vale package
   releases; public source links are read-only, and security reports use
   GitHub private vulnerability reporting. `make publish-release` previews
@@ -653,7 +655,8 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 - Vendored Google style guides (Python, Markdown, Shell, C#, HTML/CSS, Go,
   TypeScript)
 
-[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.3...HEAD
+[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.4...HEAD
+[2026.10.4]: https://github.com/agh/crefft/compare/v2026.10.3...v2026.10.4
 [2026.10.3]: https://github.com/agh/crefft/compare/v2026.10.2...v2026.10.3
 [2026.10.2]: https://github.com/agh/crefft/compare/v2026.10.1...v2026.10.2
 [2026.10.1]: https://github.com/agh/crefft/compare/v2026.10.0...v2026.10.1
