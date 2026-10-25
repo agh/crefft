@@ -7,11 +7,19 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 
 ## [Unreleased]
 
+## [2026.10.6] - 2026-10-24
+
 ### Changed
 
 - Renovate runners allow no post-upgrade commands; a read-only forge workflow
   synchronizes pins for checks, while maintainers synchronize and commit them
   during local integration.
+
+### Security
+
+- Update the development-only `markdown-it` dependency to `15.0.3` to address
+  vulnerabilities in the linting toolchain. No changes to guides, agents, or
+  configs.
 
 ## [2026.10.5] - 2026-10-18
 
@@ -700,7 +708,8 @@ and this project adheres to [calendar versioning (`YYYY.M.N`)](guides/process/ve
 - Vendored Google style guides (Python, Markdown, Shell, C#, HTML/CSS, Go,
   TypeScript)
 
-[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.5...HEAD
+[Unreleased]: https://github.com/agh/crefft/compare/v2026.10.6...HEAD
+[2026.10.6]: https://github.com/agh/crefft/compare/v2026.10.5...v2026.10.6
 [2026.10.5]: https://github.com/agh/crefft/compare/v2026.10.4...v2026.10.5
 [2026.10.4]: https://github.com/agh/crefft/compare/v2026.10.3...v2026.10.4
 [2026.10.3]: https://github.com/agh/crefft/compare/v2026.10.2...v2026.10.3
